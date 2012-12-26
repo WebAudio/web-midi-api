@@ -321,17 +321,17 @@
 
     <section>
       <h2 id="MIDIAccess"><a>MIDIAccess</a> Interface</h2>
-      <p>This interface provides the methods to enumerate MIDI input and output
+      <p>This interface provides the methods to list MIDI input and output
         devices, and obtain access to an individual device.</p>
 
       <dl title="interface MIDIAccess"
           class="idl">
-        <dt>sequence&lt;MIDIPort&gt; enumerateInputs()</dt>
+        <dt>sequence&lt;MIDIPort&gt; getInputs()</dt>
         <dd>
           Returns a list of the MIDI input ports available on the system.
 <!-- TODO: Specify the steps the UA is required to take. -->
         </dd>
-        <dt>sequence&lt;MIDIPort&gt; enumerateOutputs()</dt>
+        <dt>sequence&lt;MIDIPort&gt; getOutputs()</dt>
         <dd>
           Returns a list of the MIDI output ports available on the system.
 <!-- TODO: Specify the steps the UA is required to take. -->
@@ -356,7 +356,7 @@
               whose <code>id</code> matches the supplied
               DOMString.  If <var>target</var> is a short, <var>target</var>
               will be a <code><a>MIDIPort</a></code> that matches the supplied
-              index in the sequence returned by <code><a>enumerateInputs()</a></code>.
+              index in the sequence returned by <code><a>getInputs()</a></code>.
               If the <var>target</var> parameter is a DOMString and there is no MIDIPort
               that matches the id, or if the <var>target</var> parameter is a 
               short outside the bounds of available MIDI inputs, throw a 
@@ -419,7 +419,7 @@
               whose <code>id</code> matches the supplied
               DOMString. If <var>target</var> is a short, <var>target</var>
               will be a <code><a>MIDIPort</a></code> that matches the supplied
-              index in the sequence returned by <code><a>enumerateOutputs()</a></code>.
+              index in the sequence returned by <code><a>getOutputs()</a></code>.
               If the <var>target</var> parameter is a DOMString and there is no MIDIPort
               that matches the id, or if the <var>target</var> parameter is a 
               short outside the bounds of available MIDI inputs, throw a 
@@ -648,11 +648,11 @@ navigator.requestMIDIAccess( onMIDISuccess, onMIDIFailure );</pre>
       </section>
 
       <section>
-        <h3>Enumerating Inputs and Outputs</h3>
-        <p>This example enumerates the input and output ports, printing information to the console log.
-          <pre class="code es-code">function enumerateInputsAndOutputs( midiAccess ) {
-  var inputs = midiAccess.enumerateInputs();
-  var outputs = midiAccess.enumerateOutputs();
+        <h3>Listing Inputs and Outputs</h3>
+        <p>This example gets the list of the input and output ports and prints their information to the console log.
+          <pre class="code es-code">function listInputsAndOutputs( midiAccess ) {
+  var inputs = midiAccess.getInputs();
+  var outputs = midiAccess.getOutputs();
   var i;
 
   for (i=0; i&lt;inputs.length; i++) {
