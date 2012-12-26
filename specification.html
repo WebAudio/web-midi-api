@@ -617,7 +617,8 @@
           class="idl">
         <dt>readonly attribute double receivedTime</dt>
         <dd>
-          <p>A <code>DOMHighResTimeStamp</code> specifying when the event occurred.  It is noted that the DOM4 <a class="externalDFN">Event</a> object has a timeStamp member in the event object that will be filled out with the current time, but that it is lower precision (DOMTimeStamp is defined as an integer number of milliseconds), has a different zero reference (DOMTimeSTamp is the number of milliseconds that has passed since 00:00:00 UTC on 1 January 1970), and therefore is less suitable for MIDI applications.</p>
+          <p>A <code>DOMHighResTimeStamp</code> specifying when the event occurred.</p>
+          <p class="note">The DOM4 <a class="externalDFN">Event</a> object has a timeStamp member in the event object that will be filled out with the current time, but that it is lower precision (DOMTimeStamp is defined as an integer number of milliseconds), has a different zero reference (DOMTimeSTamp is the number of milliseconds that has passed since 00:00:00 UTC on 1 January 1970), and therefore is less suitable for MIDI applications.</p>
         </dd>
         <dt>readonly attribute Uint8Array data</dt>
         <dd>
