@@ -91,9 +91,9 @@
           </li>
           <li>A <a href="#MIDIPort">MIDIPort</a> interface, which represents a MIDI input or output port and exposes information about the interface - its name, manufacturer, type and unique identifier.
           </li>
-          <li>A <a href="#MIDIInput">MIDIInput</a> interface, which implements MIDIPort but also enables MIDI message handlers to be attached to the device.
+          <li>A <a href="#MIDIInput">MIDIInput</a> interface deriving from MIDIPort that enables MIDI message handlers to be attached to the device.
           </li>
-          <li>A <a href="#MIDIOutput">MIDIOutput</a> interface, which implements MIDIPort and additionally exposes methods to send MIDI messages to the output port.
+          <li>A <a href="#MIDIOutput">MIDIOutput</a> interface deriving from MIDIPort that additionally exposes methods to send MIDI messages to the output port.
           </li>
           <li>A <a href="#MIDIEvent">MIDIEvent</a> interface, which represents the Event object passed to a MIDIInput's onmessage handler and contains a sequence of MIDI data bytes along with a timestamp.
           </li>
@@ -481,7 +481,7 @@
         </dd>
       </dl>
 
-      <dl title="interface MIDIPort : EventTarget"
+      <dl title="interface MIDIPort"
           class="idl">
         <dt>readonly attribute DOMString id</dt>
         <dd>
@@ -533,7 +533,7 @@
       <section>
         <h3 id="MIDIInput"><a>MIDIInput</a> Interface</h3>
 
-          <dl title="interface MIDIInput : MIDIPort"
+          <dl title="interface MIDIInput : MIDIPort implements EventTarget"
             class="idl">
           <dt>attribute EventHandler onmessage</dt>
           <dd>
