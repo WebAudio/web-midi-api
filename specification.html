@@ -134,7 +134,7 @@
         is defined in [[!TYPED-ARRAYS]].
       </p>
       <p>
-        The term <dfn><a href=
+        The term <dfn id="DomHighResTimeStampDfn"><a href=
         "http://dvcs.w3.org/hg/webperf/raw-file/tip/specs/HighResolutionTime/Overview.html#sec-DOMHighResTimeStamp"
         >DOMHighResTimeStamp</a></dfn> is defined in [[!HIGHRES-TIME]].
       </p>
@@ -581,7 +581,7 @@
 
         <dl title="interface MIDIOutput : MIDIPort"
             class="idl">
-          <dt>void send( sequence data, optional DOMHighResTimeStamp? timestamp )</dt>
+          <dt>void send( sequence data, optional double timestamp )</dt>
           <dd>
             <p>
               Enqueues the message to be sent to the corresponding MIDI port.  The underlying implementation will (if necessary) coerce each member of the sequence to an unsigned 8-bit integer.  The use of sequence rather than a UInt8Array enables developers to use the convenience of <code>output.send( [ 0x90, 0x45, 0x7f ] );</code> rather than having to create a UInt8Array, e.g. <code>output.send( new UInt8Array( [ 0x90, 0x45, 0x7f ] ) );</code> - while still enabling use of UInt8Arrays for efficiency in large MIDI data scenarios (e.g. reading Standard MIDI Files and sending sysex messages).
@@ -598,9 +598,9 @@
               <dd>
                 The data to be enqueued, with each sequence entry representing a single byte of data.  
               </dd>
-              <dt>optional DOMHighResTimeStamp? timestamp</dt>
+              <dt>optional double timestamp</dt>
               <dd>
-                The time at which to begin sending the data to the port.  If <code>timestamp</code> is not present, zero or null, the data is to be sent as soon as possible.
+                The time at which to begin sending the data to the port (as a <a href="#DomHighResTimeStampDfn">DOMHighResTimeStamp</a> - a number of milliseconds measured relative to the navigation start of the document).  If <code>timestamp</code> is not present or is set to zero (or another time in the past), the data is to be sent as soon as possible.
               </dd>
             </dl>
           </dd>
@@ -613,9 +613,9 @@
       <p>An event object implementing this interface is passed to a MIDIInput's onmessage handler when MIDI messages are received.</p>
       <dl title="interface MIDIEvent : Event"
           class="idl">
-        <dt>readonly attribute DOMHighResTimeStamp timestamp</dt>
+        <dt>readonly attribute double receivedTime</dt>
         <dd>
-          <p>A <code>DOMHighResTimeStamp</code> specifying when the event occurred.</p>
+          <p>A <code>DOMHighResTimeStamp</code> specifying when the event occurred.  It is noted that the DOM4 Event object has a timeStamp member in the event object that will be filled out with the current time, but that it is lower precision (DOMTimeStamp is defined as an integer number of milliseconds), has a different zero reference (DOMTimeSTamp is the number of milliseconds that has passed since 00:00:00 UTC on 1 January 1970), and therefore is less suitable for MIDI applications.</p>
         </dd>
         <dt>readonly attribute Uint8Array data</dt>
         <dd>
