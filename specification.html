@@ -681,8 +681,9 @@ navigator.requestMIDIAccess( onMIDISuccess, onMIDIFailure );</pre>
         <p>This example prints incoming MIDI messages on a supplied input port to the console log.</p>
         <pre class="code es-code">function onMIDIMessage( event ) {
   var str = "MIDI message received at timestamp " + event.timestamp + "[" + event.data.length + " bytes]: ";
-  for (var i=0; i&lt;event.data.length; i++)
+  for (var i=0; i&lt;event.data.length; i++) {
     str += "0x" + event.data[i].toString(16) + " ";
+  }
   console.log( str );
 }
 
@@ -711,19 +712,20 @@ function startLoggingMIDIInput( midiAccess, indexOfPort ) {
 var output = null;
 
 function echoMIDIMessage( event ) {
-  if (output)
+  if (output) {
     output.send( event.data, event.timestamp );
+  }
 }
 
 function onMIDISuccess( midiAccess ) {
   console.log( "MIDI ready!" );
   try { 
     var input = midiAccess.getInput( 0 );
-    output = midiAccess.getOutput( 0 );
     input.onmessage = echoMIDIMessage;
+    output = midiAccess.getOutput( 0 );
   }
   catch (e) {
-    console.log("Exception! Couldn't get i/o ports." + e );
+    console.error("Exception! Couldn't get i/o ports." + e );
   }
 }
 
