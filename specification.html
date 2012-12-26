@@ -328,12 +328,12 @@
           class="idl">
         <dt>sequence&lt;MIDIPort&gt; getInputs()</dt>
         <dd>
-          Returns a list of the MIDI input ports available on the system.
+          Returns a list of the MIDI input ports available on the system.  This list is not a live list (i.e., if a device is added or removed after calling getInputs(), the list is not changed.)
 <!-- TODO: Specify the steps the UA is required to take. -->
         </dd>
         <dt>sequence&lt;MIDIPort&gt; getOutputs()</dt>
         <dd>
-          Returns a list of the MIDI output ports available on the system.
+          Returns a list of the MIDI output ports available on the system.  This list is not a live list (i.e., if a device is added or removed after calling getOutputs(), the list is not changed.)
 <!-- TODO: Specify the steps the UA is required to take. -->
         </dd>
         <dt><a>MIDIInput</a> getInput(MIDIPort or DOMString or short target)</dt>
