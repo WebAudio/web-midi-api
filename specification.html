@@ -109,7 +109,7 @@
       </p>
       <p>
         Implementations that use ECMAScript to implement the APIs defined in
-        this specification must implement them in a manner consistent with the
+        this specification MUST implement them in a manner consistent with the
         ECMAScript Bindings defined in the Web IDL specification [[!WEBIDL]],
         as this specification uses that specification and terminology.
       </p>
@@ -127,8 +127,7 @@
         The terms <dfn><a href="http://dev.w3.org/html5/spec/webappapis.html#event-handlers">
         event handlers</a></dfn> and
         <dfn><a href="http://dev.w3.org/html5/spec/webappapis.html#event-handler-event-type">
-        event handler event types</a></dfn> are defined in [[!HTML5]].
-      </p>
+      event handler event types</a></dfn> and corresponding <a href="http://www.w3.org/html/wg/drafts/html/master/single-page.html#eventhandler"><code>EventHandler</code></a> Web IDL specification are defined in [[!HTML5]]. </p>
       <p>
         The term <dfn><a href="http://www.khronos.org/registry/typedarray/specs/latest/#TYPEDARRAYS">Uint8Array</a></dfn>
         is defined in [[!TYPED-ARRAYS]].
@@ -193,7 +192,7 @@
               <p>
                 When the <dfn id="dom-navigator-requestmidiaccess">
                 <code>requestMIDIAccess</code></dfn> method is called, the user
-                agent MUST run the <dfn>algorithm to request MIDI Access</dfn>:"
+                agent MUST run the <dfn>algorithm to request MIDI Access</dfn>:
               </p>
 
               <ol>
@@ -344,8 +343,7 @@
           <p>
             When the
             <dfn id="midiaccess-get-input"><code>getInput()</code></dfn>
-            is invoked, the user agent MUST run the following steps:
-          </p>
+          is invoked, the user agent MUST run the <dfn>algorithm to get an input port</dfn>: </p>
 
           <ol>
             <li>
@@ -407,8 +405,7 @@
           <p>
             When the
             <dfn id="midiaccess-get-output"><code>getOutput()</code></dfn>
-            is invoked, the user agent MUST run the following steps:
-          </p>
+          is invoked, the user agent MUST run the <dfn>algorithm to get an output port</dfn>: </p>
 
           <ol>
             <li>
@@ -532,22 +529,25 @@
 
       <section>
         <h3 id="MIDIInput"><a>MIDIInput</a> Interface</h3>
-
-          <dl title="interface MIDIInput : MIDIPort implements EventTarget"
+		
+        <dl title="MIDIInput implements EventTarget" class='idl'></dl>
+        
+        <dl title="interface MIDIInput : MIDIPort"
             class="idl">
-          <dt>attribute EventHandler onmessage</dt>
+          <dt>attribute <a>EventHandler</a> onmessage</dt>
           <dd>
             <p>
-              This event handler, of type <code><a href=
+              This <a>event handler</a>, of type <code><a href=
               "#event-midiinput-message">message</a></code>,
               MUST be supported by all objects implementing
               <code><a>MIDIInput</a></code> interface.
             </p>
           </dd>
         </dl>
+        
       <p id="event-midiinput-message">
           Whenever the MIDI port corresponding to the
-          <code><a>MIDIInput</a></code> sends one or more MIDI messages, the UA MUST
+          <code><a>MIDIInput</a></code> sends one or more MIDI messages, the user agent MUST
           run the following steps:
         </p>
 
@@ -594,7 +594,7 @@
             </p>
             <p>
                 If <var>data</var> is not a valid sequence or does not contain a valid MIDI message, throw a <code>TYPE_ERROR</code> exception.
-              </p>
+            </p>
             <dl class='parameters'>
               <dt>sequence&lt;octet&gt; data</dt>
               <dd>
