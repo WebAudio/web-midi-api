@@ -360,21 +360,21 @@
               If the <var>target</var> parameter is a DOMString and there is no MIDIPort
               that matches the id, or if the <var>target</var> parameter is a 
               short outside the bounds of available MIDI inputs, throw a 
-              <code>REFERENCE_ERROR</code> exception.
+              <code>NOT_FOUND_ERROR</code> exception.
             </li>
 
             <li>
               <p>
                 If <var>target</var> is not a <code><a>MIDIPort</a></code>
                 instance, or if the MIDIPort is not a valid MIDI input
-                port, throw a <code>TYPE_ERROR</code> exception.
+                port, throw a <code>NOT_SUPPORTED_ERROR</code> exception.
               </p>
             </li>
 
             <li>
               <p>
                 If <var>target</var> is not available for access, throw a
-                <code>REFERENCE_ERROR</code> exception.
+                <code>INVALID_ACCESS_ERROR</code> exception.
               </p>
             </li>
 
@@ -423,7 +423,7 @@
               If the <var>target</var> parameter is a DOMString and there is no MIDIPort
               that matches the id, or if the <var>target</var> parameter is a 
               short outside the bounds of available MIDI inputs, throw a 
-              <code>REFERENCE_ERROR</code> exception.
+              <code>NOT_FOUND_ERROR</code> exception.
             </li>
 
             <li>
@@ -437,7 +437,7 @@
             <li>
               <p>
                 If <var>target</var> is not available for access, throw a
-                <code>REFERENCE_ERROR</code> exception.
+                <code>INVALID_ACCESS_ERROR</code> exception.
               </p>
             </li>
 
