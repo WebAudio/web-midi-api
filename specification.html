@@ -327,12 +327,30 @@
           class="idl">
         <dt>sequence&lt;MIDIPort&gt; getInputs()</dt>
         <dd>
-          Returns a list of the MIDI input ports available on the system.  This list is not a live list (i.e., if a device is added or removed after calling getInputs(), the list is not changed.)
+          <p>
+            Returns a list of the MIDI input ports available on the system.  This list is not a live list (i.e., if a device is added or removed after calling getInputs(), the list is not changed.)
+          </p>
+          <p>
+            If the method is called with on an object that is not a valid
+            <code><a>MIDIAccess</a></code> instance created by a <code><a
+            href="#widl-navigator-requestmidiaccess-void-successcallback-successcallback-errorcallback-errorcallback"
+            >requestMIDIAccess()</a></code> call, throw a
+            <code>NOT_SUPPORTED_ERROR</code>.
+          </p>
 <!-- TODO: Specify the steps the UA is required to take. -->
         </dd>
         <dt>sequence&lt;MIDIPort&gt; getOutputs()</dt>
         <dd>
-          Returns a list of the MIDI output ports available on the system.  This list is not a live list (i.e., if a device is added or removed after calling getOutputs(), the list is not changed.)
+          <p>
+            Returns a list of the MIDI output ports available on the system.  This list is not a live list (i.e., if a device is added or removed after calling getOutputs(), the list is not changed.)
+          </p>
+          <p>
+            If the method is called with on an object that is not a valid
+            <code><a>MIDIAccess</a></code> instance created by a <code><a
+            href="#widl-navigator-requestmidiaccess-void-successcallback-successcallback-errorcallback-errorcallback"
+            >requestMIDIAccess()</a></code> call, throw a
+            <code>NOT_SUPPORTED_ERROR</code>.
+          </p>
 <!-- TODO: Specify the steps the UA is required to take. -->
         </dd>
         <dt><a>MIDIInput</a> getInput(MIDIPort or DOMString or short target)</dt>
@@ -347,6 +365,16 @@
 
           <ol>
             <li>
+              <p>
+                If the method is called with on an object that is not a valid
+                <code><a>MIDIAccess</a></code> instance created by a <code><a
+                href="#widl-navigator-requestmidiaccess-void-successcallback-successcallback-errorcallback-errorcallback"
+                >requestMIDIAccess()</a></code> call, throw a
+                <code>NOT_SUPPORTED_ERROR</code>.
+              </p>
+            </li>
+
+            <li>
               <p>Let <var>target</var> be the
               <code><a>MIDIPort</a></code> argument.
               If the <var>target</var> is a DOMString,
@@ -358,7 +386,7 @@
               If the <var>target</var> parameter is a DOMString and there is no MIDIPort
               that matches the id, or if the <var>target</var> parameter is a 
               short outside the bounds of available MIDI inputs, throw a 
-              <code>NOT_FOUND_ERROR</code> exception.
+              <code>NOT_FOUND_ERROR</code> exception.</p>
             </li>
 
             <li>
@@ -409,6 +437,16 @@
 
           <ol>
             <li>
+              <p>
+                If the method is called with on an object that is not a valid
+                <code><a>MIDIAccess</a></code> instance created by a <code><a
+                href="#widl-navigator-requestmidiaccess-void-successcallback-successcallback-errorcallback-errorcallback"
+                >requestMIDIAccess()</a></code> call, throw a
+                <code>NOT_SUPPORTED_ERROR</code>.
+              </p>
+            </li>
+
+            <li>
               <p>Let <var>target</var> be the
               <code><a>MIDIPort</a></code> argument.
               If the <var>target</var> is a DOMString,
@@ -420,7 +458,7 @@
               If the <var>target</var> parameter is a DOMString and there is no MIDIPort
               that matches the id, or if the <var>target</var> parameter is a 
               short outside the bounds of available MIDI inputs, throw a 
-              <code>NOT_FOUND_ERROR</code> exception.
+              <code>NOT_FOUND_ERROR</code> exception.</p>
             </li>
 
             <li>
