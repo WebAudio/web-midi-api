@@ -95,7 +95,9 @@
           </li>
           <li>A <a href="#MIDIOutput">MIDIOutput</a> interface deriving from MIDIPort that additionally exposes methods to send MIDI messages to the output port.
           </li>
-          <li>A <a href="#MIDIEvent">MIDIEvent</a> interface, which represents the Event object passed to a MIDIInput's onmessage handler and contains a sequence of MIDI data bytes along with a timestamp.
+          <li>A <a href="#MIDIMessageEvent">MIDIMessageEvent</a> interface, which represents the Event object passed to a MIDIInput's onmessage handler and contains a sequence of MIDI data bytes along with a timestamp.
+          </li>
+          <li>A <a href="#MIDIConnectionEvent">MIDIConnectionEvent</a> interface, which represents the Event object passed to a MIDIAccess' onconnect or ondisconnect handler, or a MIDIPort's disconnect handler, and contains the port being connected or disconnected.
           </li>
         </ul>
       </section>
@@ -326,7 +328,7 @@
       <p>This interface provides the methods to list MIDI input and output
         devices, and obtain access to an individual device.</p>
 
-      <dl title="interface MIDIAccess"
+      <dl title="interface MIDIAccess : EventTarget"
           class="idl">
         <dt>sequence&lt;MIDIPort&gt; getInputs()</dt>
         <dd>
@@ -466,7 +468,85 @@
             </dd>
           </dl>
         </dd>
+        <dt>attribute EventHandler onconnect</dt>
+        <dd>
+          <p>The handler called when a new port is connected.</p>
+          <p>This <a>event handler</a>, of type <code><a href=
+            "#event-midiaccess-connect">MIDIConnectionEvent</a></code>,
+            MUST be supported by all objects implementing the
+            <code><a>MIDIAccess</a></code> interface.
+          </p>
+        </dd>
+        <dt>attribute EventHandler ondisconnect</dt>
+        <dd>
+          <p>The handler called when a previously-available port is disconnected.</p>
+          <p>This <a>event handler</a>, of type <code><a href=
+            "#event-midiacces-disconnect">MIDIConnectionEvent</a></code>,
+            MUST be supported by all objects implementing the
+            <code><a>MIDIAccess</a></code> interface.
+          </p>
+        </dd>
       </dl>
+      <p id="event-midiaccess-connect">
+          Whenever a previously unavailable MIDI port becomes available for use, the user agent SHOULD
+          run the following steps:
+        </p>
+
+        <ol>
+          <li>
+            <p>
+              Let <code>port</code> be the <code><a>MIDIPort</a></code> corresponding to the newly-available port.
+            </p>
+          </li>
+
+          <li>
+            <p>
+              Let <code>event</code> be a newly constructed
+              <code><a>MIDIConnectionEvent</a></code>, with the <code>port</code> 
+              attribute set to the port.
+            </p>
+          </li>
+
+          <li>
+            <p>
+              Fire an event named <code><a
+              href="#event-midiaccess-connect">connect</a></code>
+              at the <code>MIDIAccess</code>, using the <code>event</code> as the event object.
+            </p>
+          </li>
+        </ol>
+      </p>
+
+      <p id="event-midiaccess-disconnect">
+          Whenever a previously available MIDI port becomes unavailable for use, the user agent SHOULD
+          run the following steps:
+        </p>
+
+        <ol>
+          <li>
+            <p>
+              Let <code>port</code> be the <code><a>MIDIPort</a></code> corresponding to the newly-unavailable port.
+            </p>
+          </li>
+
+          <li>
+            <p>
+              Let <code>event</code> be a newly constructed
+              <code><a>MIDIConnectionEvent</a></code>, with the <code>port</code> 
+              attribute set to the port.
+            </p>
+          </li>
+
+          <li>
+            <p>
+              Fire an event named <code><a
+              href="#event-midiaccess-disconnect">disconnect</a></code>
+              at the <code>MIDIAccess</code>, using the <code>event</code> as the event object.
+            </p>
+          </li>
+        </ol>
+      </p>
+
     </section>
 
     <section>
@@ -485,7 +565,7 @@
         </dd>
       </dl>
 
-      <dl title="interface MIDIPort"
+      <dl title="interface MIDIPort : EventTarget"
           class="idl">
         <dt>readonly attribute DOMString id</dt>
         <dd>
@@ -532,13 +612,52 @@
         <dd>
           <p>The version of the port.</p>
         </dd>
+        <dt>attribute EventHandler ondisconnect</dt>
+        <dd>
+          <p>The handler called when a previously-available port is disconnected.</p>
+          <p>This <a>event handler</a>, of type <code><a href=
+            "#event-midiport-disconnect">disconnect</a></code>,
+            MUST be supported by all objects implementing
+            <code><a>MIDIPort</a></code> interface.
+          </p>
+        </dd>
       </dl>
+
+      <p id="event-midiport-disconnect">
+          Whenever the MIDI port corresponding to the
+          <code><a>MIDIPort</a></code> becomes unavailable for use, the user agent SHOULD
+          run the following steps:
+        </p>
+
+        <ol>
+          <li>
+            <p>
+              Let <code>port</code> be the <code><a>MIDIPort</a></code>.
+            </p>
+          </li>
+
+          <li>
+            <p>
+              Let <code>event</code> be a newly constructed
+              <code><a>MIDIConnectionEvent</a></code>, with the <code>port</code> 
+              attribute set to the port.
+            </p>
+          </li>
+
+          <li>
+            <p>
+              Fire an event named <code><a
+              href="#event-midiport-disconnect">disconnect</a></code>
+              at the <code>port</code>, using the <code>event</code> as the event object.
+            </p>
+          </li>
+        </ol>
+      </p>
+
 
       <section>
         <h3 id="MIDIInput"><a>MIDIInput</a> Interface</h3>
 		
-        <dl title="MIDIInput implements EventTarget" class='idl'></dl>
-        
         <dl title="interface MIDIInput : MIDIPort"
             class="idl">
           <dt>attribute <a>EventHandler</a> onmessage</dt>
@@ -568,7 +687,7 @@
           <li>
             <p>
               Let <code>event</code> be a newly constructed
-              <code><a>MIDIEvent</a></code>, with the <code>timestamp</code>
+              <code><a>MIDIMessageEvent</a></code>, with the <code>timestamp</code>
               attribute set to the time the message was received by the system, and
               with the <code>data</code> attribute set to a UInt8Array of MIDI data
               bytes representing a single MIDI message.
@@ -618,9 +737,9 @@
     </section>
 
     <section>
-      <h2 id="MIDIEvent"><a>MIDIEvent</a> Interface</h2>
+      <h2 id="MIDIMessageEvent"><a>MIDIMessageEvent</a> Interface</h2>
       <p>An event object implementing this interface is passed to a MIDIInput's onmessage handler when MIDI messages are received.</p>
-      <dl title="interface MIDIEvent : Event"
+      <dl title="interface MIDIMessageEvent : Event"
           class="idl">
         <dt>readonly attribute double receivedTime</dt>
         <dd>
@@ -630,6 +749,19 @@
         <dt>readonly attribute Uint8Array data</dt>
         <dd>
           <p>A Uint8Array containing the MIDI data bytes of a single MIDI message.</p>
+        </dd>
+      </dl>
+    </section>
+
+    <section>
+      <h2 id="MIDIConnectionEvent"><a>MIDIConnectionEvent</a> Interface</h2>
+      <p>An event object implementing this interface is passed to a MIDIAccess' ondisconnect handler, and (if present) to any MIDIPorts referencing the port when a previously-available port becomes unavailable (for example, when a MIDI interface is disconnected), and is also passed to a MIDIAccess' onconnect handler when a new port becomes available (for example, when a MIDI interface that has been disconnected is plugged in to the computer).</p>
+      <p>Connection events <b>are not required to be dispatched</b>, as some underlying systems do not support them as notification events; or, such systems may have long time delays as they poll for new devices infrequently.</p>
+      <dl title="interface MIDIConnectionEvent : Event"
+          class="idl">
+        <dt>readonly attribute MIDIPort port</dt>
+        <dd>
+          <p>The port that has been connected or disconnected.</p>
         </dd>
       </dl>
     </section>
