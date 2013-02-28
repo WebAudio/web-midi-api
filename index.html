@@ -148,21 +148,43 @@
         >DOMHighResTimeStamp</a></dfn> is defined in [[!HIGHRES-TIME]].
       </p>
       <p>
-        The terms <dfn>MIDI</dfn>, <dfn>MIDI device</dfn>, <dfn>MIDI input port</dfn>, <dfn>MIDI interface</dfn>, <dfn>MIDI message</dfn> and <dfn>MIDI output port</dfn> are defined in [[!MIDI]].
+        The terms <dfn>MIDI</dfn>, <dfn>MIDI device</dfn>, <dfn>MIDI input port</dfn>, <dfn>MIDI output port</dfn>, <dfn>MIDI interface</dfn>, <dfn>MIDI message</dfn> and <dfn>system exclusive</dfn> are defined in [[!MIDI]].
 <!-- FIXME: This list is not exhaustive. -->
     </section>
 
     <section>
-      <h2>Security and Privacy Considerations</h2>
+      <h2>Security and Privacy Considerations of MIDI</h2>
       <p>
         There are two primary security and privacy concerns with adding the Web MIDI API to the web platform:
       </p>
       <ol>
-        <li>Allowing the enumeration of the user's MIDI interfaces is a potential target for fingerprinting (that is, uniquely identifying a user by the specific MIDI interfaces they have connected).  Note that in this context, what can be enumerated is the MIDI <i>interfaces</i> - not, for example, an individual sampler or synthesizer plugged into a MIDI interface, as these would not be enumerated, unless those devices are connected to the host computer with USB (USB-MIDI devices typically have their own MIDI interface, and would be enumerated).  The interfaces that could be fingerprinted are equivalent to MIDI "ports".  This potential needs to be further investigated; the vast majority of systems have relatively few MIDI interfaces attached, so it is possible this is of little concern in practice.</li>
-        <li>Additionally, combined access to input and output ports on a given device (the ability to send <b>and</b> receive system exclusive messages, in particular) might allow sophisticated developers to query and test for particular MIDI-connected devices, such as samplers, and either using the presence of those devices for more precise fingerprinting, destroying data (erasing samples or patches on the devices), attempting to capture data from the devices (e.g. downloading samples from samplers, then uploading to the network), or simply initiating malicious action (e.g. sending MIDI commands to a lighting control system to turn lights on and off). </li>
+        <li>Allowing the enumeration of the user's MIDI interfaces is a potential target for fingerprinting (that is, uniquely identifying a user by the specific MIDI interfaces they have connected).  Note that in this context, what can be enumerated is the MIDI <i>interfaces</i> - not, for example, an individual sampler or synthesizer plugged into a MIDI interface, as these would not be enumerated, unless those devices are connected to the host computer with USB (USB-MIDI devices typically have their own MIDI interface, and would be enumerated).  The interfaces that could be fingerprinted are equivalent to MIDI "ports", and for each device the API will expose the name of the device, manufacturer, and opaque identifier of the MIDI interface (but not any attached devices).
+          <p>Few systems will have significant numbers of MIDI devices attached; those systems that do will typically use hardware MIDI interfaces, not fanning out a dozen USB-MIDI connections through USB hubs.  In this case, of course, enumerating the MIDI “devices” will only see the hardware MIDI interface(s), not the synthesizers, samplers, etc. plugged into it on the other side.  Given the few number of devices plugged in, the amount of information exposed here is fairly symmetric with the fingerprinting concern exposed by other APIs such as the Gamepad API.  The vast majority of systems have relatively few MIDI interfaces attached.</li>
+        <li>Separate from the fingerprinting concerns of identifying the available ports are concerns around sending and receiving MIDI messages.  Those issues are explored in more depth below.</li>
       </ol>
-      <p>
-        These issues will be further explored prior to this specification becoming a Recommendation.  In the meantime, the <a href="#requestMIDIAccess">suggested security model</a> explicitly allows user agents to require the user's approval before giving access to MIDI devices, although it is not currently required to prompt the user for this approval.  It is noted that some web systems (e.g. Java) give access to MIDI interfaces without prompting, although this may not be the security model that this specification eventually uses.
+      <p>In brief, the general categories of things you can do with MIDI ports are:
+        <ol>
+          <li>Sending short messages (all messages except SysEx)
+          <li>Receiving short messages (all messages except SysEx)
+          <li>Sending SysEx messages.  SysEx messages include both commonly recognized MIDI Time Code and MIDI Sample Dump Standard, as well as device-specific messages (like “patch control data for a Roland Jupiter-80 synthesizer”) that do not apply to other devices.
+          <li>Receiving SysEx messages.
+        </ol>
+      <p>The impact of each of these is:
+        <ol>
+          <li>Sending short messages: sending note-on/note-off/controller messages would let you cause sounds to be played by attached devices, including (on Mac and Windows) any default virtual synthesizers. This by itself does not cause any concerning exposure - you can already make sounds without interaction, through <audio>, Flash, or Web Audio.  Some attached devices might be professional lighting control systems, so it’s possible you could control stage lighting; however, this is extremely rare, and no known system has the ability to cause lasting damage or information leakage based solely on short messages; at worst, a malicious page could flash lights, and the user could close the page and reset their lighting controller.
+          <li>Receiving short messages: receiving note-on/note-off/controller messages would not cause any information exposure or security issues, as there is no identifying data being received, just a stream of controller messages - all of which must be initiated by the user on that MIDI device (except clock-type messages).  This is very analogous to receiving keyboard or mouse events.
+          <li>Sending and Receiving SysEx.  This is the biggest concern, because it would be possible to write code that looked for system-specific responses to sysex messages, which could identify the hardware available, and then use it to download data - e.g. samples stored in a sampler - or replace that data (erasing sample data or patches in the device), although both these scenarios would have to be coded for a particular device.  It is also possible that some samplers might enable a system exclusive message to start recording a sample - so if the sampler happened to have a dedicated microphone attached (uncommon in practice, but possible), it would be possible to write code specific to a particular device that could record a short sample of sound and then upload it to the network without further user intervention.  (You could not stream audio from the device, and most samplers have fairly limited memory, and MIDI Sample Dump sysex is a slow way to transfer data - it has to transcode into 7-bit - so it’s unlikely you could listen in for long periods.)  More explicit fingerprinting is a concern, as the patch information/stored samples/user configuration could uniquely identify the system (although again, this requires much device-specific code; there is not standardized “grab all patches and hash it” capability.)  This does suggest that system exclusive messages are in a security category of their own.
+        </ol>
+      <p>It's also useful to examine what scenarios are enabled by MIDI, mapped against these features:
+        <ol>
+          <li>Receiving short messages.  This is the most attractive scenario for Web MIDI, as it enables getting input from keyboards, drum pads, guitars, wind controllers, DJ/controllerist controllers, and more, and use those messages as input to control instruments and features in the Web Audio API as well as other control scenarios (MIDI is the protocol of choice for the multi-billion-dollar music production industry for getting physical controllers like knobs and buttons attached to your computer, both in pro/prosumer audio and media applications as well as consumer applications like Garageband.)
+          <li>Sending short messages - it’s tempting to say sending is significantly less interesting, as the scenario of attached output devices like hardware synthesizers is less common in today's market.  The major exception to this is that many of the MIDI controllers have external host control of their indicator lights, and this makes them dramatically more useful.  For example, the very popular Novation Launchpad controller uses MIDI note on/off messages sent to it to turn on/off and change colors of the buttons.  The same is true of nearly all DJ controllers.  
+          <li>Sending and receiving SysEx - obviously, for more advanced communication with high-end hardware devices, SysEx is required.  Unfortunately, some common MIDI commands are also sent as system exclusive messages (MIDI Machine Control, for example - generic start/stop/rew/ffw commands) - and many devices use system exclusive to program patches, send advanced controller messages, download firmware, etc., which are much-demanded scenarios for Web MIDI.  Some devices use sysex as a direct control protocol, as they can pack more data into a single “message”, and most devices use SysEx as way to save and restore patches and configuration information on less-expensive computer storage.  Several of the major music hardware producers have expressed strong interest in using Web MIDI to provide web-based configuration and programming interfaces to their hardware.  In short, disabling sysex altogether does not only disable high-end scenarios.
+        </ol>
+      <p>In short: the additional fingerprinting exposure of enumerating MIDI devices is directly analogous to the Gamepad API’s additional fingerprinting exposure through gamepad enumeration; typical users will only have at most a few devices connected, their configuration may change, and the information exposed is about the interface itself (i.e., no user-configured data).  
+      <p>The additional security concern for receiving short messages is also small - it’s analogous to listening to keyboard, mouse, mobile/laptop accelerometer, touch input or gamepad events; there is no additional information exposed, and all messages other than clock signals must be initiated by the user.  
+      <p>The additional concerns about sending short messages are analogous to any audio output - you cannot overwrite user information or expose use information, but you can make sounds happen, change patches, or (in rare configurations) toggle lights - but non-destructively, and not persistently. 
+      <p>System Exclusive, on the other hand, has a much less bounded potential, and it seems that distinguishing requests for SysEx separately in the API is a good idea, in order to more carefully provide user security hooks. The <a href="#requestMIDIAccess">suggested security model</a> explicitly allows user agents to require the user's approval before giving access to MIDI devices, although it is not currently required to prompt the user for this approval - but it also detailed that system exclusive support must be requested as part of that request.
       </p>
     </section>
 
@@ -175,7 +197,8 @@
           <dl class="idl"
               title="partial interface Navigator">
             <dt>void requestMIDIAccess(SuccessCallback successCallback,
-                                    optional ErrorCallback errorCallback)</dt>
+                                    optional ErrorCallback errorCallback,
+                                    optional boolean systemExclusiveSupportRequested = false )</dt>
             <dd>
               <p>
                 Obtains an interface to enumerate and request access to MIDI 
@@ -183,17 +206,20 @@
               </p>
 
               <p>
-                This call SHOULD prompt the user for access to MIDI devices. If 
-                the user gives express permission or the call is otherwise approved, 
-                <var>successCallback</var> is invoked, with a 
+                This call may prompt the user for access to MIDI devices,
+                particularly if system exclusive access is requested. If 
+                the user gives express permission or the call is otherwise approved, <var>successCallback</var> is invoked, with a 
                 <code><a>MIDIAccess</a></code> object as its argument.  The 
-                underlying system may choose to allow the user to select specific
-                MIDI interfaces to expose to this API (i.e. pick and choose interfaces
-                on an individual basis), although this is not required.
-                If the user declines or the call is denied, the 
+                underlying system may choose to allow the user to select 
+                specific MIDI interfaces to expose to this API (i.e. pick 
+                and choose interfaces on an individual basis), although 
+                this is not required.  The system may also choose to prompt
+                (or not) based on whether system exclusive support is
+                requested, as system exclusive has greater privacy and
+                security implications.</p>
+              <p>If the user declines or the call is denied, the 
                 <var>errorCallback</var> (if any) is invoked.
               </p>
-
               <p>
                 When the <dfn id="dom-navigator-requestmidiaccess">
                 <code>requestMIDIAccess</code></dfn> method is called, the user
@@ -232,7 +258,10 @@
                     Prompt the user in a user-agent-specific manner for
                     permission to provide the entry script's origin with a
                     <code><a>MIDIAccess</a></code> object representing
-                    control over user's MIDI devices.
+                    control over user's MIDI devices.  This prompt may 
+                    be contingent upon whether system exclusive support was
+                    requested, and may allow the user to enable or disable
+                    that access.
                   </p>
 
                   <p>
@@ -253,7 +282,8 @@
 
                 <li><p>
                   Queue a task to invoke <var>successCallback</var> with
-                  <var>access</var> as its argument, and return.
+                  <var>access</var> as its first argument and a <code>boolean</code>
+                  representing whether the access includes system exclusive support as its second argument, and return.
                 </p></li>
 
                 <li><p>
@@ -303,6 +333,12 @@
             machines) are plugged into hardware MIDI ports on the 
             adapter.
           </dd>
+          <dt>boolean systemExclusiveAllowed</dt>
+
+          <dd>
+            <p>This parameter informs the user whether system exclusive
+              messages are enabled on this <a>MIDIAccess</a> object.</p>
+          </dd>
         </dl>
       </section>
 
@@ -320,6 +356,15 @@
             why creating getting a <code><a>MIDIAccess</a></code> failed.
           </dd>
         </dl>
+      </section>
+
+      <section>
+        <h2>
+          boolean systemExclusiveSupportRequested
+        </h2>
+
+        <p>
+          This parameter declares to the underlying system if the developer expects to use system exclusive messages.  If this support is not requested, the system will throw exceptions if the user tries to send system exclusive messages, and will silently mask out any system exclusive messages received on the port.
       </section>
     </section>
 
@@ -673,7 +718,7 @@
         
       <p id="event-midiinput-message">
           Whenever the MIDI port corresponding to the
-          <code><a>MIDIInput</a></code> sends one or more MIDI messages, the user agent MUST
+          <code><a>MIDIInput</a></code> receives one or more MIDI messages, the user agent MUST
           run the following steps:
         </p>
 
@@ -681,6 +726,12 @@
           <li>
             <p>
               Let <code>port</code> be the <code><a>MIDIInput</a></code>.
+            </p>
+          </li>
+
+          <li>
+            <p>
+              If the <code><a>MIDIAccess</a></code> did not enable system exclusive access, and the message is a system exclusive message, abort this process.
             </p>
           </li>
 
@@ -721,6 +772,9 @@
             <p>
                 If <var>data</var> is not a valid sequence or does not contain a valid MIDI message, throw a <code>TYPE_ERROR</code> exception.
             </p>
+              <p>
+                If <var>data</var> is a system exclusive message, and the <code><a>MIDIAccess</a></code> did not enable system exclusive access, throw a <code>INVALID_ACCESS_ERROR</code> exception.
+              </p>
             <dl class='parameters'>
               <dt>sequence&lt;octet&gt; data</dt>
               <dd>
