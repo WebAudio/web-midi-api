@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html>
   <head>
@@ -206,9 +205,12 @@
               </p>
 
               <p>
-                This call may prompt the user for access to MIDI devices,
-                particularly if system exclusive access is requested. If 
-                the user gives express permission or the call is otherwise approved, <var>successCallback</var> is invoked, with a 
+                This call SHOULD prompt the user for access to MIDI devices,
+                particularly if system exclusive access is requested.  In some
+                scenarios, this permission may have already been implicitly or
+                explicitly granted, in which case this prompt may not appear. 
+                If the user gives express permission or the call is otherwise 
+                approved, <var>successCallback</var> is invoked, with a 
                 <code><a>MIDIAccess</a></code> object as its argument.  The 
                 underlying system may choose to allow the user to select 
                 specific MIDI interfaces to expose to this API (i.e. pick 
