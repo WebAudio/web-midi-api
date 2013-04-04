@@ -147,7 +147,7 @@
         >DOMHighResTimeStamp</a></dfn> is defined in [[!HIGHRES-TIME]].
       </p>
       <p>
-        The terms <dfn>MIDI</dfn>, <dfn>MIDI device</dfn>, <dfn>MIDI input port</dfn>, <dfn>MIDI output port</dfn>, <dfn>MIDI interface</dfn>, <dfn>MIDI message</dfn> and <dfn>system exclusive</dfn> are defined in [[!MIDI]].
+        The terms <dfn>MIDI</dfn>, <dfn>MIDI device</dfn>, <dfn>MIDI input port</dfn>, <dfn>MIDI output port</dfn>, <dfn>MIDI interface</dfn>, <dfn>MIDI message</dfn>, <dfn>MIDI System Real-Time message</dfn> and <dfn>system exclusive</dfn> are defined in [[!MIDI]].
 <!-- FIXME: This list is not exhaustive. -->
     </section>
 
@@ -720,7 +720,7 @@
         
       <p id="event-midiinput-message">
           Whenever the MIDI port corresponding to the
-          <code><a>MIDIInput</a></code> receives one or more MIDI messages, the user agent MUST
+          <code><a>MIDIInput</a></code> finishes receiving one or more MIDI messages, the user agent MUST
           run the following steps:
         </p>
 
@@ -755,6 +755,8 @@
             </p>
           </li>
         </ol>
+        <p>It is specifically noted that MIDI System Real-Time Messages may actually occur in the middle of system exclusive messages in the input stream; in this case, the System Real-Time messages will be dispatched as they occur, while the system exclusive message will be buffered until it is complete (and then dispatched).
+        </p>
 
       </section>
 
