@@ -94,7 +94,7 @@
           </li>
           <li>A <a href="#MIDIOutput">MIDIOutput</a> interface deriving from MIDIPort that additionally exposes methods to send MIDI messages to the output port.
           </li>
-          <li>A <a href="#MIDIMessageEvent">MIDIMessageEvent</a> interface, which represents the Event object passed to a MIDIInput's onmessage handler and contains a sequence of MIDI data bytes along with a timestamp.
+          <li>A <a href="#MIDIMessageEvent">MIDIMessageEvent</a> interface, which represents the Event object passed to a MIDIInput's onmidimessage handler and contains a sequence of MIDI data bytes along with a timestamp.
           </li>
           <li>A <a href="#MIDIConnectionEvent">MIDIConnectionEvent</a> interface, which represents the Event object passed to a MIDIAccess' onconnect or ondisconnect handler, or a MIDIPort's disconnect handler, and contains the port being connected or disconnected.
           </li>
@@ -195,8 +195,8 @@
 
           <dl class="idl"
               title="partial interface Navigator">
-            <dt>void requestMIDIAccess(SuccessCallback successCallback,
-                                    optional ErrorCallback errorCallback,
+            <dt>void requestMIDIAccess(MIDISuccessCallback successCallback,
+                                    optional MIDIErrorCallback errorCallback,
                                     optional boolean systemExclusiveSupportRequested = false )</dt>
             <dd>
               <p>
@@ -316,10 +316,10 @@
       </section>
 
       <section>
-        <h2>SuccessCallback</h2>
+        <h2>MIDISuccessCallback</h2>
 
         <dl class="idl"
-            title="callback SuccessCallback = void">
+            title="callback MIDISuccessCallback = void">
           <dt>MIDIAccess access</dt>
 
           <dd>
@@ -346,11 +346,11 @@
 
       <section>
         <h2>
-          ErrorCallback
+          MIDIErrorCallback
         </h2>
 
         <dl class="idl"
-            title="callback ErrorCallback = void">
+            title="callback MIDIErrorCallback = void">
           <dt>DOMError error</dt>
 
           <dd>
@@ -533,6 +533,28 @@
             <code><a>MIDIAccess</a></code> interface.
           </p>
         </dd>
+
+        <dt class="idl"><a>MIDIMessageEvent</a> createMessageEvent( optional Uint8Array data, optional double receivedTime )</dt>
+        <dd>
+          <p>This method creates a MIDIMessageEvent.  As MIDIMessageEvents are synthesized by the underlying system when MIDI data is received, the primary purpose of this method is to synthesize message events for testing purposes.
+          <dl>
+            <dt>Uint8Array data</dt>
+            <dd>A Uint8Array containing the MIDI data bytes of a single MIDI message.  If omitted, an empty message is created.</dd>
+            <dt>double receivedTime</dt>
+            <dd>A <code>DOMHighResTimeStamp</code> specifying when the event occurred.  If omitted, the current time is used.</dd>
+          </dl>
+        </dd>
+
+        <dt class="idl"><a>MIDIConnectionEvent</a> createConnectionEvent( MIDIPort port )</dt>
+        <dd>
+          <p>This method creates a MIDIConnectionEvent.  As MIDIConnectionEvents are synthesized by the underlying system when MIDI ports are connected or disconnected, the primary purpose of this method is to synthesize connection events for testing purposes.
+
+          <dl>
+            <dt>MIDIPort port</dt>
+            <dd>The MIDIPort that has been connected or disconnected.</dd>
+          </dl>
+        </dd>
+
       </dl>
       <p id="event-midiaccess-connect">
           Whenever a previously unavailable MIDI port becomes available for use, the user agent SHOULD
@@ -707,11 +729,11 @@
 		
         <dl title="interface MIDIInput : MIDIPort"
             class="idl">
-          <dt>attribute <a>EventHandler</a> onmessage</dt>
+          <dt>attribute <a>EventHandler</a> onmidimessage</dt>
           <dd>
             <p>
               This <a>event handler</a>, of type <code><a href=
-              "#event-midiinput-message">message</a></code>,
+              "#event-midiinput-message">MIDIMessage</a></code>,
               MUST be supported by all objects implementing
               <code><a>MIDIInput</a></code> interface.
             </p>
@@ -750,7 +772,7 @@
           <li>
             <p>
               Fire an event named <code><a
-              href="#event-midiinput-message">message</a></code>
+              href="#event-midiinput-message">midimessage</a></code>
               at the <code>port</code>, using the <code>event</code> as the event object.
             </p>
           </li>
@@ -796,7 +818,7 @@
 
     <section>
       <h2 id="MIDIMessageEvent"><a>MIDIMessageEvent</a> Interface</h2>
-      <p>An event object implementing this interface is passed to a MIDIInput's onmessage handler when MIDI messages are received.</p>
+      <p>An event object implementing this interface is passed to a MIDIInput's onmidimessage handler when MIDI messages are received.</p>
       <dl title="interface MIDIMessageEvent : Event"
           class="idl">
         <dt>readonly attribute double receivedTime</dt>
@@ -886,7 +908,7 @@ navigator.requestMIDIAccess( onMIDISuccess, onMIDIFailure );</pre>
 
 function startLoggingMIDIInput( midiAccess, indexOfPort ) {
   var input = midiAccess.getInput( indexOfPort );
-  input.onmessage = onMIDIMessage;
+  input.onmidimessage = onMIDIMessage;
 }</pre>
       </section>
 
@@ -918,7 +940,7 @@ function onMIDISuccess( midiAccess ) {
   console.log( "MIDI ready!" );
   try { 
     var input = midiAccess.getInput( 0 );
-    input.onmessage = echoMIDIMessage;
+    input.onmidimessage = echoMIDIMessage;
     output = midiAccess.getOutput( 0 );
   }
   catch (e) {
