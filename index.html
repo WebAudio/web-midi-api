@@ -497,28 +497,6 @@
             <code><a>MIDIAccess</a></code> interface.
           </p>
         </dd>
-
-        <dt class="idl"><a>MIDIMessageEvent</a> createMessageEvent( optional Uint8Array data, optional double receivedTime )</dt>
-        <dd>
-          <p>This method creates a MIDIMessageEvent.  As MIDIMessageEvents are synthesized by the underlying system when MIDI data is received, the primary purpose of this method is to synthesize message events for testing purposes.
-          <dl>
-            <dt>Uint8Array data</dt>
-            <dd>A Uint8Array containing the MIDI data bytes of a single MIDI message.  If omitted, an empty message is created.</dd>
-            <dt>double receivedTime</dt>
-            <dd>A <code>DOMHighResTimeStamp</code> specifying when the event occurred.  If omitted, the current time is used.</dd>
-          </dl>
-        </dd>
-
-        <dt class="idl"><a>MIDIConnectionEvent</a> createConnectionEvent( MIDIPort port )</dt>
-        <dd>
-          <p>This method creates a MIDIConnectionEvent.  As MIDIConnectionEvents are synthesized by the underlying system when MIDI ports are connected or disconnected, the primary purpose of this method is to synthesize connection events for testing purposes.
-
-          <dl>
-            <dt>MIDIPort port</dt>
-            <dd>The MIDIPort that has been connected or disconnected.</dd>
-          </dl>
-        </dd>
-
       </dl>
       <p id="event-midiaccess-connect">
           Whenever a previously unavailable MIDI port becomes available for use, the user agent SHOULD
@@ -783,7 +761,7 @@
     <section>
       <h2 id="MIDIMessageEvent"><a>MIDIMessageEvent</a> Interface</h2>
       <p>An event object implementing this interface is passed to a MIDIInput's onmidimessage handler when MIDI messages are received.</p>
-      <dl title="interface MIDIMessageEvent : Event"
+      <dl title="[Constructor(DOMString type, optional MIDIMessageEventInit eventInitDict)] interface MIDIMessageEvent : Event"
           class="idl">
         <dt>readonly attribute double receivedTime</dt>
         <dd>
@@ -795,19 +773,44 @@
           <p>A Uint8Array containing the MIDI data bytes of a single MIDI message.</p>
         </dd>
       </dl>
+      <section>
+        <h2 id="MIDIMessageEventInit"><a>MIDIMessageEventInit</a> Interface</h2>
+        <dl title="dictionary MIDIMessageEventInit"
+            class="idl">
+          <dt>double receivedTime</dt>
+          <dd>
+            <p>A <code>DOMHighResTimeStamp</code> specifying when the event occurred.</p>
+          </dd>
+          <dt>Uint8Array data</dt>
+          <dd>
+            <p>A Uint8Array containing the MIDI data bytes of a single MIDI message.</p>
+          </dd>
+        </dl>
+      </section>
     </section>
 
     <section>
       <h2 id="MIDIConnectionEvent"><a>MIDIConnectionEvent</a> Interface</h2>
       <p>An event object implementing this interface is passed to a MIDIAccess' ondisconnect handler, and (if present) to any MIDIPorts referencing the port when a previously-available port becomes unavailable (for example, when a MIDI interface is disconnected), and is also passed to a MIDIAccess' onconnect handler when a new port becomes available (for example, when a MIDI interface that has been disconnected is plugged in to the computer).</p>
       <p>Connection events <b>are not required to be dispatched</b>, as some underlying systems do not support them as notification events; or, such systems may have long time delays as they poll for new devices infrequently.</p>
-      <dl title="interface MIDIConnectionEvent : Event"
+      <dl title="[Constructor(DOMString type, optional MIDIConnectionEventInit eventInitDict)] interface MIDIConnectionEvent : Event"
           class="idl">
         <dt>readonly attribute MIDIPort port</dt>
         <dd>
           <p>The port that has been connected or disconnected.</p>
         </dd>
       </dl>
+
+      <section>
+        <h2 id="MIDIConnectionEventInit"><a>MIDIConnectionEventInit</a> Interface</h2>
+        <dl title="dictionary MIDIConnectionEventInit"
+            class="idl">
+          <dt>MIDIPort port</dt>
+          <dd>
+            <p>The port that has been connected or disconnected.</p>
+          </dd>
+        </dl>
+      </section>
     </section>
 
     <section class="informative">
