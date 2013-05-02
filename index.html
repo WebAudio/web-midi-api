@@ -148,6 +148,8 @@
       </p>
       <p>
         The terms <dfn>MIDI</dfn>, <dfn>MIDI device</dfn>, <dfn>MIDI input port</dfn>, <dfn>MIDI output port</dfn>, <dfn>MIDI interface</dfn>, <dfn>MIDI message</dfn>, <dfn>MIDI System Real-Time message</dfn> and <dfn>system exclusive</dfn> are defined in [[!MIDI]].
+      <p>
+        The <dfn><a href="http://dom.spec.whatwg.org/#dom-future-then">Future</a></dfn> concept is currently defined in <a href="http://dom.spec.whatwg.org/">The WHATWG DOM specification</a>.
 <!-- FIXME: This list is not exhaustive. -->
     </section>
 
@@ -159,23 +161,20 @@
 
           <dl class="idl"
               title="partial interface Navigator">
-            <dt>void requestMIDIAccess(MIDISuccessCallback successCallback,
-                                    optional MIDIErrorCallback errorCallback,
-                                    optional boolean systemExclusiveSupportRequested = false )</dt>
+            <dt>Future requestMIDIAccess(optional MIDIOptions options )</dt>
             <dd>
               <p>
-                Obtains an interface to enumerate and request access to MIDI 
-                devices on the user's system.
+                Obtains a Future interface representing a request for access to MIDI devices on the user's system.
               </p>
 
               <p>
-                This call SHOULD prompt the user for access to MIDI devices,
+                Requesting MIDI access SHOULD prompt the user for access to MIDI devices,
                 particularly if system exclusive access is requested.  In some
                 scenarios, this permission may have already been implicitly or
                 explicitly granted, in which case this prompt may not appear. 
                 If the user gives express permission or the call is otherwise 
-                approved, <var>successCallback</var> is invoked, with a 
-                <code><a>MIDIAccess</a></code> object as its argument.  The 
+                approved, the vended Future's <var>resolveCallback</var> is invoked, as a <code><a>MIDISuccessCallback</a></code> (i.e., with a 
+                <code><a>MIDIAccess</a></code> object and a <code><a>MIDIOptions</a></code> object as its arguments.  The 
                 underlying system may choose to allow the user to select 
                 specific MIDI interfaces to expose to this API (i.e. pick 
                 and choose interfaces on an individual basis), although 
@@ -183,8 +182,8 @@
                 (or not) based on whether system exclusive support is
                 requested, as system exclusive has greater privacy and
                 security implications.</p>
-              <p>If the user declines or the call is denied, the 
-                <var>errorCallback</var> (if any) is invoked.
+              <p>If the user declines or the call is denied for any other reason, the Future's 
+                <var>rejectCallback</var> (if any) is invoked as a <code><a>MIDIErrorCallback</a></code>.
               </p>
               <p>
                 When the <dfn id="dom-navigator-requestmidiaccess">
@@ -194,17 +193,15 @@
 
               <ol>
                 <li><p>
-                  Return, and run the following steps asynchronously.
+                  Create a Future object that will run the following steps asynchronously, and return that Future prior to beginning these steps.
                 </p></li>
 
                 <li><p>
-                  Let <var>successCallback</var> be the callback indicated by
-                  the method's first argument.
+                  Let <var>successCallback</var> be the Future's resolveCallback.
                 </p></li>
 
                 <li><p>
-                  Let <var>errorCallback</var> be the callback indicated by
-                  the method's second argument, if any.
+                  Let <var>errorCallback</var> be the Future's rejectCallback, if any.
                 </p></li>
 
                 <li><p>
@@ -238,8 +235,7 @@
                 </li>
 
                 <li><p>
-                  <em>success</em>: Let <var>access</var> be the <code><a
-                  >MIDIAccess</a></code> object for which access has been 
+                  <em>success</em>: Let <var>access</var> be the <code><a>MIDIAccess</a></code> object for which access has been 
                   granted.  It is possible to call requestMIDIAccess() 
                   multiple times; this may prompt the user multiple times,
                   so it may not be best practice, and the same instance of
@@ -260,8 +256,8 @@
                 <li><p>
                   Let <var>error</var> be a new <code><a>DOMError</a></code>.
                   This should be of type <code>"SecurityError"</code> if the
-                  user denied the application from creating a MIDIAccess
-                  instance, or otherwise <code>"NotSupportedError"</code>.
+                  user or their security settings denied the application from creating a MIDIAccess
+                  instance with the requested options, or otherwise <code>"NotSupportedError"</code>.
                 </p></li>
 
                 <li><p>
@@ -278,6 +274,25 @@
             </dd>
           </dl>
       </section>
+
+      <section>
+        <h2 id="MIDIOptions"><a>MIDIOptions</a> interface</h2>
+        <p>This dictionary contains optional settings that may be provided to the requestMIDIAccess request.</p>
+
+        <dl class="idl"
+            title="dictionary MIDIOptions">
+          <dt>boolean sysexAccessEnabled</dt>
+
+          <dd>
+            <p>This member informs the system whether the ability to send and receive system exclusive messages is requested or allowed on a given <a>MIDIAccess</a> object.  On the option passed to <code><a>requestMIDIAccess</a></code>, if this member is set to true, but system exclusive support is denied (either by policy or by user action), the access request will fail with a <code>"SecurityError"</code> error.  If this support is not requested (and allowed), the system will throw exceptions if the user tries to send system exclusive messages, and will silently mask out any system exclusive messages received on the port.</p>
+            <p>In the <code>options</code> parameter passed to the resolveCallback, this member indicates whether system exclusive is allowed on the MIDIAccess.</p>
+          </dd>
+        </dl>
+      </section>
+
+    </section>
+
+
 
       <section>
         <h2>MIDISuccessCallback</h2>
@@ -299,11 +314,10 @@
             machines) are plugged into hardware MIDI ports on the 
             adapter.
           </dd>
-          <dt>boolean systemExclusiveAllowed</dt>
+          <dt>MIDIOptions options</dt>
 
           <dd>
-            <p>This parameter informs the user whether system exclusive
-              messages are enabled on this <a>MIDIAccess</a> object.</p>
+            <p>This parameter describes the options enabled on this <a>MIDIAccess</a> object.</p>
           </dd>
         </dl>
       </section>
@@ -324,14 +338,6 @@
         </dl>
       </section>
 
-      <section>
-        <h2>
-          boolean systemExclusiveSupportRequested
-        </h2>
-
-        <p>
-          This parameter declares to the underlying system if the developer expects to use system exclusive messages.  If this support is not requested, the system will throw exceptions if the user tries to send system exclusive messages, and will silently mask out any system exclusive messages received on the port.
-      </section>
     </section>
 
     <section>
@@ -831,7 +837,7 @@ function onMIDIFailure(msg) {
   console.log( "Failed to get MIDI access - " + msg );
 }
 
-navigator.requestMIDIAccess( onMIDISuccess, onMIDIFailure );</pre>
+navigator.requestMIDIAccess().done( onMIDISuccess, onMIDIFailure );</pre>
       </section>
 
       <section>
@@ -919,7 +925,7 @@ function onMIDIFailure(msg) {
   console.log( "Failed to get MIDI access - " + msg );
 }
 
-navigator.requestMIDIAccess( onMIDISuccess, onMIDIFailure );</pre>
+navigator.requestMIDIAccess().done( onMIDISuccess, onMIDIFailure );</pre>
       </section>
 
     </section>
