@@ -44,8 +44,8 @@
   <body>
     <section id="abstract">
       <p>
-        Some user agents have connected music devices, such as synthesizers, 
-        keyboard and other controllers, and drum machines.  The widely adopted 
+        Some user agents have music devices, such as synthesizers, 
+        keyboard and other controllers, and drum machines connected to their host computer or device.  The widely adopted 
         Musical Instrument Digital Interface (MIDI) protocol enables 
         electronic musical instruments, controllers and computers to 
         communicate and synchronize with each other. MIDI does not transmit 
@@ -57,13 +57,13 @@
         such as show control, lighting and special effects control.
       </p>
       <p>
-        This specification defines an API supporting the MIDI protocol, enabling web applications to enumerate and select MIDI input and output devices on the client system and send and receive MIDI messages. It is intended to enable non-music MIDI applications as well as music ones, by providing low-level access to the MIDI devices available on the users' systems.  At the same time, the Web MIDI API is not intended to become a semantic controller platform; it is designed to expose the mechanics of MIDI input and output interfaces, and the practical aspects of sending and receiving MIDI messages, without identifying what those actions might mean semantically.
+        This specification defines an API supporting the MIDI protocol, enabling web applications to enumerate and select MIDI input and output devices on the client system and send and receive MIDI messages. It is intended to enable non-music MIDI applications as well as music ones, by providing low-level access to the MIDI devices available on the users' systems.  The Web MIDI API is not intended to describe music or controller inputs semantically; it is designed to expose the mechanics of MIDI input and output interfaces, and the practical aspects of sending and receiving MIDI messages, without identifying what those actions might mean semantically (e.g., in terms of "modulate the vibrato by 20Hz" or "play a G#7 chord", other than in terms of changing a controller value or sending a set of note-on messages that happen to represent a G#7 chord).
       </p>
       <p>
         To some users, "MIDI" has become synonymous with Standard MIDI Files and General MIDI.  That is not the intent of this API; the use case of simply playing back a .SMF file is not within the purview of this specification (it could be considered a different format to be supported by the HTML5 <code>&lt;audio&gt;</code> element, for example).  The Web MIDI API is intended to enable direct access to devices that respond to MIDI - external synthesizers or lighting systems, for example, or even the software synthesizers that are built in to many common operating systems.  The Web MIDI API is also explicitly designed to enable a new class of applications on the web that can respond to MIDI controller inputs - using external hardware controllers with physical buttons, knobs and sliders (as well as musical controllers like keyboard, guitar or wind instrument controllers) to control web applications.
       </p>
       <p>
-        The Web MIDI API is also expected to be used in conjunction with other APIs and elements of the web platform, notably the Web Audio API and High-Resolution Time.  This API is also intended to be familiar to users of MIDI APIs on other systems, such as Apple's CoreMIDI and Microsoft's Windows MIDI API.
+        The Web MIDI API is also expected to be used in conjunction with other APIs and elements of the web platform, notably the Web Audio API.  This API is also intended to be familiar to users of MIDI APIs on other systems, such as Apple's CoreMIDI and Microsoft's Windows MIDI API.
       </p>
     </section>
     <section class="informative">
@@ -72,34 +72,14 @@
         The Web MIDI API specification defines a means for web developers to
         enumerate, manipulate and access MIDI devices - for example interfaces that may provide hardware MIDI ports with other devices plugged in to them and USB devices that support the USB-MIDI specification. Having a Web API for MIDI enables web applications that use existing software and
         hardware synthesizers, hardware music controllers and light systems and other mechanical
-        apparatus controlled by MIDI.
+        apparatus controlled by MIDI.  This API has been defined with this wide variety of use cases in mind.  
       </p>
       <p>
-        This API has been defined with a wide variety of use cases in mind.  The approaches taken by this API are similar to those taken in Apple's CoreMIDI API and Microsoft's Windows MIDI API; that is, the API is designed to represent the low-level software protocol of MIDI, in order to enable developers to build powerful MIDI software on top.  The API enables the developer to enumerate input and output interfaces, and send and receive MIDI messages, but (similar to the aforementioned APIs) it does not attempt to semantically define or interpret MIDI messages beyond what is necessary to robustly support current devices.
+        The approaches taken by this API are similar to those taken in Apple's CoreMIDI API and Microsoft's Windows MIDI API; that is, the API is designed to represent the low-level software protocol of MIDI, in order to enable developers to build powerful MIDI software on top.  The API enables the developer to enumerate input and output interfaces, and send and receive MIDI messages, but (similar to the aforementioned APIs) it does not attempt to semantically define or interpret MIDI messages beyond what is necessary to robustly support current devices.
       </p>
       <p>
         The Web MIDI API is not intended to directly implement high-level concepts such as sequencing; it does not directly support Standard MIDI Files, for example, although a Standard MIDI File player can be built on top of the Web MIDI API.  It is also not intended to semantically capture patches or controller assignments, as General MIDI does; such interpretation is outside the scope of the Web MIDI API (though again, General MIDI can easily be utilized through the Web MIDI API).
       </p>
-      <section>
-        <h3>API Overview</h3>
-        <p>The Web MIDI API consists of the following set of interfaces and objects, as well as some supporting interfaces:</p>
-        <ul>
-          <li>A <a href="#requestMIDIAccess">requestMIDIAccess</a> method, which is supported on the window.navigator object in user agents.  This method enables a developer to request access to MIDI on the system.
-          </li>
-          <li>A <a href="#MIDIAccess">MIDIAccess</a> object, which enables enumeration of and access to the MIDI devices available to the user agent.
-          </li>
-          <li>A <a href="#MIDIPort">MIDIPort</a> interface, which represents a MIDI input or output port and exposes information about the interface - its name, manufacturer, type and unique identifier.
-          </li>
-          <li>A <a href="#MIDIInput">MIDIInput</a> interface deriving from MIDIPort that enables MIDI message handlers to be attached to the device.
-          </li>
-          <li>A <a href="#MIDIOutput">MIDIOutput</a> interface deriving from MIDIPort that additionally exposes methods to send MIDI messages to the output port.
-          </li>
-          <li>A <a href="#MIDIMessageEvent">MIDIMessageEvent</a> interface, which represents the Event object passed to a MIDIInput's onmidimessage handler and contains a sequence of MIDI data bytes along with a timestamp.
-          </li>
-          <li>A <a href="#MIDIConnectionEvent">MIDIConnectionEvent</a> interface, which represents the Event object passed to a MIDIAccess' onconnect or ondisconnect handler, or a MIDIPort's disconnect handler, and contains the port being connected or disconnected.
-          </li>
-        </ul>
-      </section>
     </section>
 
     <section id="conformance">
@@ -161,10 +141,10 @@
 
           <dl class="idl"
               title="partial interface Navigator">
-            <dt>Future requestMIDIAccess(optional MIDIOptions options )</dt>
+            <dt>Promise requestMIDIAccess(optional MIDIOptions options )</dt>
             <dd>
               <p>
-                Obtains a Future interface representing a request for access to MIDI devices on the user's system.
+                When invoked, returns a Promise object representing a request for access to MIDI devices on the user's system.
               </p>
 
               <p>
@@ -173,7 +153,7 @@
                 scenarios, this permission may have already been implicitly or
                 explicitly granted, in which case this prompt may not appear. 
                 If the user gives express permission or the call is otherwise 
-                approved, the vended Future's <var>resolveCallback</var> is invoked, as a <code><a>MIDISuccessCallback</a></code> (i.e., with a 
+                approved, the vended Promise's <var>resolveCallback</var> is invoked, as a <code><a>MIDISuccessCallback</a></code> (i.e., with a 
                 <code><a>MIDIAccess</a></code> object and a <code><a>MIDIOptions</a></code> object as its arguments.  The 
                 underlying system may choose to allow the user to select 
                 specific MIDI interfaces to expose to this API (i.e. pick 
@@ -182,7 +162,7 @@
                 (or not) based on whether system exclusive support is
                 requested, as system exclusive has greater privacy and
                 security implications.</p>
-              <p>If the user declines or the call is denied for any other reason, the Future's 
+              <p>If the user declines or the call is denied for any other reason, the Promise's 
                 <var>rejectCallback</var> (if any) is invoked as a <code><a>MIDIErrorCallback</a></code>.
               </p>
               <p>
@@ -192,17 +172,8 @@
               </p>
 
               <ol>
-                <li><p>
-                  Create a Future object that will run the following steps asynchronously, and return that Future prior to beginning these steps.
-                </p></li>
-
-                <li><p>
-                  Let <var>successCallback</var> be the Future's resolveCallback.
-                </p></li>
-
-                <li><p>
-                  Let <var>errorCallback</var> be the Future's rejectCallback, if any.
-                </p></li>
+                <li><p>Let <var>promise</var> be a new Promise object and <var>resolver</var> be its associated resolver.</p></li>
+                <li><p>Return <var>promise</var> and run the following steps asynchronously.</p></li>
 
                 <li><p>
                   Optionally, e.g. based on a previously-established user
@@ -230,47 +201,23 @@
                   <p>
                     If permission is denied, jump to the step labeled
                     <em>failure</em> below. If the user never responds, this
-                    algorithm will never progress beyond this step.
+                    algorithm will never progress beyond this step.  If
+                    permission is granted, continue the following steps.
                   </p>
                 </li>
 
-                <li><p>
-                  <em>success</em>: Let <var>access</var> be the <code><a>MIDIAccess</a></code> object for which access has been 
-                  granted.  It is possible to call requestMIDIAccess() 
-                  multiple times; this may prompt the user multiple times,
-                  so it may not be best practice, and the same instance of
-                  MIDIAccess may not be returned each time.
-                </p></li>
+                <li><p><em><b>success</b></em>: Let <var>access</var> be a new <code><a>MIDIAccess</a></code> object.  (It is possible to call requestMIDIAccess() multiple times; this may prompt the user multiple times, so it may not be best practice, and the same instance of MIDIAccess will not be returned each time.)</p></li>
 
-                <li><p>
-                  Queue a task to invoke <var>successCallback</var> with
-                  <var>access</var> as its first argument and a <code>boolean</code>
-                  representing whether the access includes system exclusive support as its second argument, and return.
-                </p></li>
+                <li><p>Call <var>resolver</var>'s <code>accept(value)</code> method with <var>access</var> as value argument.</p></li>
+                <li><p>Terminate these steps.</p></li>
 
-                <li><p>
-                  <em>failure</em>: If <var>errorCallback</var> is not
-                  callable, abort these steps.
-                </p></li>
-
-                <li><p>
-                  Let <var>error</var> be a new <code><a>DOMError</a></code>.
+                <li><p><em><b>failure</b></em>: Let <var>error</var> be a new <code><a>DOMError</a></code>.
                   This should be of type <code>"SecurityError"</code> if the
                   user or their security settings denied the application from creating a MIDIAccess
-                  instance with the requested options, or otherwise <code>"NotSupportedError"</code>.
-                </p></li>
-
-                <li><p>
-                  Queue a task to invoke <var>errorCallback</var> with
-                  <var>error</var> as its argument.
-                </p></li>
+                  instance with the requested options, or otherwise it should be of type <code>"NotSupportedError"</code>.</p></li>
+                <li><p>Call <var>resolver</var>'s <code>reject(value)</code> method with <var>error</var> as value argument.</p></li>
               </ol>
 
-              <p>
-                The task source for these <span
-                title="concept-task">tasks</span> is the user interaction
-                task source.
-              </p>
             </dd>
           </dl>
       </section>
@@ -564,6 +511,9 @@
         </ol>
       </p>
 
+<!--   FIXME: Need a <code>boolean</code>
+                  representing whether the access includes system exclusive support.
+-->
     </section>
 
     <section>
@@ -840,7 +790,7 @@ function onMIDIFailure(msg) {
   console.log( "Failed to get MIDI access - " + msg );
 }
 
-navigator.requestMIDIAccess().done( onMIDISuccess, onMIDIFailure );</pre>
+navigator.requestMIDIAccess().then( onMIDISuccess, onMIDIFailure );</pre>
       </section>
 
       <section>
@@ -857,7 +807,7 @@ function onMIDIFailure(msg) {
   console.log( "Failed to get MIDI access - " + msg );
 }
 
-navigator.requestMIDIAccess( { sysexEnabled: true } ).done( onMIDISuccess, onMIDIFailure );</pre>
+navigator.requestMIDIAccess( { sysexEnabled: true } ).then( onMIDISuccess, onMIDIFailure );</pre>
       </section>
 
       <section>
@@ -945,7 +895,7 @@ function onMIDIFailure(msg) {
   console.log( "Failed to get MIDI access - " + msg );
 }
 
-navigator.requestMIDIAccess().done( onMIDISuccess, onMIDIFailure );</pre>
+navigator.requestMIDIAccess().then( onMIDISuccess, onMIDIFailure );</pre>
       </section>
 
     </section>
