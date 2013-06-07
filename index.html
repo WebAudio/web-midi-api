@@ -128,33 +128,33 @@
         The terms <dfn><a href="http://dev.w3.org/html5/spec/webappapis.html#event-handlers">
         event handlers</a></dfn> and
         <dfn><a href="http://dev.w3.org/html5/spec/webappapis.html#event-handler-event-type">
-      event handler event types</a></dfn> and corresponding <a href="http://www.w3.org/html/wg/drafts/html/master/single-page.html#eventhandler"><code>EventHandler</code></a> Web IDL specification are defined in [[!HTML5]]. </p>
+      event handler event types</a></dfn> and corresponding <a href="http://www.w3.org/html/wg/drafts/html/master/single-page.html#eventhandler"><code>EventHandler</code></a> interface are defined in [[!HTML5]]. </p>
       <p>
-        The term <dfn><a href="http://www.khronos.org/registry/typedarray/specs/latest/#TYPEDARRAYS">Uint8Array</a></dfn>
+        The <dfn><a href="http://www.khronos.org/registry/typedarray/specs/latest/#TYPEDARRAYS">Uint8Array</a></dfn> interface
         is defined in [[!TYPED-ARRAYS]].
       </p>
       <p>
         The term <dfn id="OctetDfn"><a href="http://www.w3.org/TR/WebIDL/#idl-octet">octet</a></dfn> is defined in [[!WEBIDL]].
       </p>
       <p>
-        The term <a href="http://dvcs.w3.org/hg/domcore/raw-file/tip/Overview.html/#interface-event"><dfn title=
-        "Event">Event</dfn></a>
+        The <a href="http://dvcs.w3.org/hg/domcore/raw-file/tip/Overview.html/#interface-event"><dfn title=
+        "Event">Event</dfn></a> interface
         is defined in [[!DOM4]].
       </p>
       <p>
-        The term <dfn id="DomHighResTimeStampDfn"><a href=
+        The <dfn id="DomHighResTimeStampDfn"><a href=
         "http://dvcs.w3.org/hg/webperf/raw-file/tip/specs/HighResolutionTime/Overview.html#sec-DOMHighResTimeStamp"
-        >DOMHighResTimeStamp</a></dfn> is defined in [[!HIGHRES-TIME]].
+        >DOMHighResTimeStamp</a></dfn> interface is defined in [[!HIGHRES-TIME]].
       </p>
       <p>
         The terms <dfn>MIDI</dfn>, <dfn>MIDI device</dfn>, <dfn>MIDI input port</dfn>, <dfn>MIDI output port</dfn>, <dfn>MIDI interface</dfn>, <dfn>MIDI message</dfn>, <dfn>MIDI System Real-Time message</dfn> and <dfn>system exclusive</dfn> are defined in [[!MIDI]].
       <p>
-        The <dfn><a href="http://dom.spec.whatwg.org/#dom-future-then">Future</a></dfn> concept is currently defined in <a href="http://dom.spec.whatwg.org/">The WHATWG DOM specification</a>.
+        The <dfn><a href="http://dom.spec.whatwg.org/#promises">Promise</a></dfn> interface is currently defined in <a href="http://dom.spec.whatwg.org/">the WHATWG DOM specification</a>.
 <!-- FIXME: This list is not exhaustive. -->
     </section>
 
     <section>
-      <h2>Obtaining Access to MIDI Interfaces Available to the User Agent</h2>
+      <h2>Obtaining Access to MIDI Devices</h2>
 
       <section>
           <h2 id="requestMIDIAccess">requestMIDIAccess()</h2>
@@ -230,7 +230,7 @@
                   <p>
                     If permission is denied, jump to the step labeled
                     <em>failure</em> below. If the user never responds, this
-                    algorithm stalls on this step.
+                    algorithm will never progress beyond this step.
                   </p>
                 </li>
 
@@ -276,7 +276,7 @@
       </section>
 
       <section>
-        <h2 id="MIDIOptions"><a>MIDIOptions</a> interface</h2>
+        <h2 id="MIDIOptions"><a>MIDIOptions</a> dictionary</h2>
         <p>This dictionary contains optional settings that may be provided to the requestMIDIAccess request.</p>
 
         <dl class="idl"
