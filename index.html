@@ -384,21 +384,21 @@
               If the <var>target</var> parameter is a DOMString and there is no MIDIPort
               that matches the id, or if the <var>target</var> parameter is a 
               short outside the bounds of available MIDI inputs, throw a 
-              <code>NOT_FOUND_ERROR</code> exception.</p>
+              <code>NotFoundError</code> exception.</p>
             </li>
 
             <li>
               <p>
                 If <var>target</var> is not a <code><a>MIDIPort</a></code>
                 instance, or if the MIDIPort is not a valid MIDI input
-                port, throw a <code>NOT_SUPPORTED_ERROR</code> exception.
+                port, throw a <code>NotSupportedError</code> exception.
               </p>
             </li>
 
             <li>
               <p>
                 If <var>target</var> is not available for access, throw a
-                <code>INVALID_ACCESS_ERROR</code> exception.
+                <code>InvalidAccessError</code> exception.
               </p>
             </li>
 
@@ -446,21 +446,21 @@
               If the <var>target</var> parameter is a DOMString and there is no MIDIPort
               that matches the id, or if the <var>target</var> parameter is a 
               short outside the bounds of available MIDI inputs, throw a 
-              <code>NOT_FOUND_ERROR</code> exception.</p>
+              <code>NotFoundError</code> exception.</p>
             </li>
 
             <li>
               <p>
                 If <var>target</var> is not a <code><a>MIDIPort</a></code>
                 instance, or if the MIDIPort is not a valid MIDI output
-                port, throw a <code>TYPE_ERROR</code> exception.
+                port, throw a <code>TypeError</code> exception.
               </p>
             </li>
 
             <li>
               <p>
                 If <var>target</var> is not available for access, throw a
-                <code>INVALID_ACCESS_ERROR</code> exception.
+                <code>InvalidAccessError</code> exception.
               </p>
             </li>
 
@@ -744,10 +744,10 @@
               The data contains one or more valid, complete MIDI messages.  Running status is not allowed in the data, as underlying systems may not support it.
             </p>
             <p>
-                If <var>data</var> is not a valid sequence or does not contain a valid MIDI message, throw a <code>TYPE_ERROR</code> exception.
+                If <var>data</var> is not a valid sequence or does not contain a valid MIDI message, throw a <code>TypeError</code> exception.
             </p>
               <p>
-                If <var>data</var> is a system exclusive message, and the <code><a>MIDIAccess</a></code> did not enable system exclusive access, throw a <code>INVALID_ACCESS_ERROR</code> exception.
+                If <var>data</var> is a system exclusive message, and the <code><a>MIDIAccess</a></code> did not enable system exclusive access, throw an <code>InvalidAccessError</code> exception.
               </p>
             <dl class='parameters'>
               <dt>sequence&lt;octet&gt; data</dt>
