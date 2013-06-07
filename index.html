@@ -141,10 +141,10 @@
 
           <dl class="idl"
               title="partial interface Navigator">
-            <dt>Future requestMIDIAccess(optional MIDIOptions options )</dt>
+            <dt>Promise requestMIDIAccess(optional MIDIOptions options )</dt>
             <dd>
               <p>
-                Obtains a Future interface representing a request for access to MIDI devices on the user's system.
+                Creates a Promise interface representing a request for access to MIDI devices on the user's system.
               </p>
 
               <p>
@@ -153,7 +153,7 @@
                 scenarios, this permission may have already been implicitly or
                 explicitly granted, in which case this prompt may not appear. 
                 If the user gives express permission or the call is otherwise 
-                approved, the vended Future's <var>resolveCallback</var> is invoked, as a <code><a>MIDISuccessCallback</a></code> (i.e., with a 
+                approved, the vended Promise's <var>resolveCallback</var> is invoked, as a <code><a>MIDISuccessCallback</a></code> (i.e., with a 
                 <code><a>MIDIAccess</a></code> object and a <code><a>MIDIOptions</a></code> object as its arguments.  The 
                 underlying system may choose to allow the user to select 
                 specific MIDI interfaces to expose to this API (i.e. pick 
@@ -162,7 +162,7 @@
                 (or not) based on whether system exclusive support is
                 requested, as system exclusive has greater privacy and
                 security implications.</p>
-              <p>If the user declines or the call is denied for any other reason, the Future's 
+              <p>If the user declines or the call is denied for any other reason, the Promise's 
                 <var>rejectCallback</var> (if any) is invoked as a <code><a>MIDIErrorCallback</a></code>.
               </p>
               <p>
@@ -172,17 +172,8 @@
               </p>
 
               <ol>
-                <li><p>
-                  Create a Future object that will run the following steps asynchronously, and return that Future prior to beginning these steps.
-                </p></li>
-
-                <li><p>
-                  Let <var>successCallback</var> be the Future's resolveCallback.
-                </p></li>
-
-                <li><p>
-                  Let <var>errorCallback</var> be the Future's rejectCallback, if any.
-                </p></li>
+                <li><p>Let <var>promise</var> be a new Promise object and <var>resolver</var> be its associated resolver.</p></li>
+                <li><p>Return <var>promise</var> and run the following steps asynchronously.</p></li>
 
                 <li><p>
                   Optionally, e.g. based on a previously-established user
@@ -210,47 +201,23 @@
                   <p>
                     If permission is denied, jump to the step labeled
                     <em>failure</em> below. If the user never responds, this
-                    algorithm will never progress beyond this step.
+                    algorithm will never progress beyond this step.  If
+                    permission is granted, continue the following steps.
                   </p>
                 </li>
 
-                <li><p>
-                  <em>success</em>: Let <var>access</var> be the <code><a>MIDIAccess</a></code> object for which access has been 
-                  granted.  It is possible to call requestMIDIAccess() 
-                  multiple times; this may prompt the user multiple times,
-                  so it may not be best practice, and the same instance of
-                  MIDIAccess may not be returned each time.
-                </p></li>
+                <li><p><em><b>success</b></em>: Let <var>access</var> be a new <code><a>MIDIAccess</a></code> object.  (It is possible to call requestMIDIAccess() multiple times; this may prompt the user multiple times, so it may not be best practice, and the same instance of MIDIAccess will not be returned each time.)</p></li>
 
-                <li><p>
-                  Queue a task to invoke <var>successCallback</var> with
-                  <var>access</var> as its first argument and a <code>boolean</code>
-                  representing whether the access includes system exclusive support as its second argument, and return.
-                </p></li>
+                <li><p>Call <var>resolver</var>'s <code>accept(value)</code> method with <var>access</var> as value argument.</p></li>
+                <li><p>Terminate these steps.</p></li>
 
-                <li><p>
-                  <em>failure</em>: If <var>errorCallback</var> is not
-                  callable, abort these steps.
-                </p></li>
-
-                <li><p>
-                  Let <var>error</var> be a new <code><a>DOMError</a></code>.
+                <li><p><em><b>failure</b></em>: Let <var>error</var> be a new <code><a>DOMError</a></code>.
                   This should be of type <code>"SecurityError"</code> if the
                   user or their security settings denied the application from creating a MIDIAccess
-                  instance with the requested options, or otherwise <code>"NotSupportedError"</code>.
-                </p></li>
-
-                <li><p>
-                  Queue a task to invoke <var>errorCallback</var> with
-                  <var>error</var> as its argument.
-                </p></li>
+                  instance with the requested options, or otherwise <code>"NotSupportedError"</code>.</p></li>
+                <li><p>Call <var>resolver</var>'s <code>reject(value)</code> method with <var>error</var> as value argument.</p></li>
               </ol>
 
-              <p>
-                The task source for these <span
-                title="concept-task">tasks</span> is the user interaction
-                task source.
-              </p>
             </dd>
           </dl>
       </section>
@@ -544,6 +511,9 @@
         </ol>
       </p>
 
+<!--   FIXME: Need a <code>boolean</code>
+                  representing whether the access includes system exclusive support.
+-->
     </section>
 
     <section>
@@ -820,7 +790,7 @@ function onMIDIFailure(msg) {
   console.log( "Failed to get MIDI access - " + msg );
 }
 
-navigator.requestMIDIAccess().done( onMIDISuccess, onMIDIFailure );</pre>
+navigator.requestMIDIAccess().then( onMIDISuccess, onMIDIFailure );</pre>
       </section>
 
       <section>
@@ -837,7 +807,7 @@ function onMIDIFailure(msg) {
   console.log( "Failed to get MIDI access - " + msg );
 }
 
-navigator.requestMIDIAccess( { sysexEnabled: true } ).done( onMIDISuccess, onMIDIFailure );</pre>
+navigator.requestMIDIAccess( { sysexEnabled: true } ).then( onMIDISuccess, onMIDIFailure );</pre>
       </section>
 
       <section>
@@ -925,7 +895,7 @@ function onMIDIFailure(msg) {
   console.log( "Failed to get MIDI access - " + msg );
 }
 
-navigator.requestMIDIAccess().done( onMIDISuccess, onMIDIFailure );</pre>
+navigator.requestMIDIAccess().then( onMIDISuccess, onMIDIFailure );</pre>
       </section>
 
     </section>
