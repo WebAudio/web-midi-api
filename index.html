@@ -144,7 +144,7 @@
             <dt>Promise requestMIDIAccess(optional MIDIOptions options )</dt>
             <dd>
               <p>
-                Creates a Promise interface representing a request for access to MIDI devices on the user's system.
+                When invoked, returns a Promise object representing a request for access to MIDI devices on the user's system.
               </p>
 
               <p>
@@ -214,7 +214,7 @@
                 <li><p><em><b>failure</b></em>: Let <var>error</var> be a new <code><a>DOMError</a></code>.
                   This should be of type <code>"SecurityError"</code> if the
                   user or their security settings denied the application from creating a MIDIAccess
-                  instance with the requested options, or otherwise <code>"NotSupportedError"</code>.</p></li>
+                  instance with the requested options, or otherwise it should be of type <code>"NotSupportedError"</code>.</p></li>
                 <li><p>Call <var>resolver</var>'s <code>reject(value)</code> method with <var>error</var> as value argument.</p></li>
               </ol>
 
