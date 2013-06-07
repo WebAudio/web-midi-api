@@ -80,26 +80,6 @@
       <p>
         The Web MIDI API is not intended to directly implement high-level concepts such as sequencing; it does not directly support Standard MIDI Files, for example, although a Standard MIDI File player can be built on top of the Web MIDI API.  It is also not intended to semantically capture patches or controller assignments, as General MIDI does; such interpretation is outside the scope of the Web MIDI API (though again, General MIDI can easily be utilized through the Web MIDI API).
       </p>
-      <section>
-        <h3>API Overview</h3>
-        <p>The Web MIDI API consists of the following set of interfaces and objects, as well as some supporting interfaces:</p>
-        <ul>
-          <li>A <a href="#requestMIDIAccess">requestMIDIAccess</a> method, which is supported on the window.navigator object in user agents.  This method enables a developer to request access to MIDI on the system.
-          </li>
-          <li>A <a href="#MIDIAccess">MIDIAccess</a> object, which enables enumeration of and access to the MIDI devices available to the user agent.
-          </li>
-          <li>A <a href="#MIDIPort">MIDIPort</a> interface, which represents a MIDI input or output port and exposes information about the interface - its name, manufacturer, type and unique identifier.
-          </li>
-          <li>A <a href="#MIDIInput">MIDIInput</a> interface deriving from MIDIPort that enables MIDI message handlers to be attached to the device.
-          </li>
-          <li>A <a href="#MIDIOutput">MIDIOutput</a> interface deriving from MIDIPort that additionally exposes methods to send MIDI messages to the output port.
-          </li>
-          <li>A <a href="#MIDIMessageEvent">MIDIMessageEvent</a> interface, which represents the Event object passed to a MIDIInput's onmidimessage handler and contains a sequence of MIDI data bytes along with a timestamp.
-          </li>
-          <li>A <a href="#MIDIConnectionEvent">MIDIConnectionEvent</a> interface, which represents the Event object passed to a MIDIAccess' onconnect or ondisconnect handler, or a MIDIPort's disconnect handler, and contains the port being connected or disconnected.
-          </li>
-        </ul>
-      </section>
     </section>
 
     <section id="conformance">
