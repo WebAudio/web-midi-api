@@ -228,7 +228,7 @@
 
         <dl class="idl"
             title="dictionary MIDIOptions">
-          <dt>boolean sysexEnabled</dt>
+          <dt>boolean sysex</dt>
 
           <dd>
             <p>This member informs the system whether the ability to send and receive system exclusive messages is requested or allowed on a given <a>MIDIAccess</a> object.  On the option passed to <code><a>requestMIDIAccess</a></code>, if this member is set to true, but system exclusive support is denied (either by policy or by user action), the access request will fail with a <code>"SecurityError"</code> error.  If this support is not requested (and allowed), the system will throw exceptions if the user tries to send system exclusive messages, and will silently mask out any system exclusive messages received on the port.</p>
@@ -807,7 +807,7 @@ function onMIDIFailure(msg) {
   console.log( "Failed to get MIDI access - " + msg );
 }
 
-navigator.requestMIDIAccess( { sysexEnabled: true } ).then( onMIDISuccess, onMIDIFailure );</pre>
+navigator.requestMIDIAccess( { sysex: true } ).then( onMIDISuccess, onMIDIFailure );</pre>
       </section>
 
       <section>
