@@ -257,7 +257,8 @@
                   Let <var>error</var> be a new <code><a>DOMError</a></code>.
                   This should be of type <code>"SecurityError"</code> if the
                   user or their security settings denied the application from creating a MIDIAccess
-                  instance with the requested options, or otherwise <code>"NotSupportedError"</code>.
+                  instance with the requested options, <code>"InvalidStateError"</code>
+                  if underlying systems raise any error, or otherwise <code>"NotSupportedError"</code>.
                 </p></li>
 
                 <li><p>
