@@ -239,6 +239,40 @@
 
     </section>
 
+      <section>
+        This interface is not yet used.
+
+        <h3 id="MIDIInputMap"><a>MIDIInputMap</a> Interface</h3>
+
+        <dl title="interface [MapClass(DOMString, MIDIPort)] MIDIInputMap"
+            class="idl">
+          <dt>attribute readonly int size</dt>
+          <dd>The number of available MIDI ports at the current time.</dd>
+          <dt>function keys( void function ( DOMString ) )</dt>
+          <dd>iterator for keys</dd>
+          <dt>function entries( void function ( Array ) )</dt>
+          <dd>iterator for map entries; the passed arrays would contain [ MIDIKeyType, MIDIInput ]</dd>
+          <dt>function values( void function ( MIDIInput ) )</dt>
+          <dd>Iterator for values</dd>
+          <dt>MIDIInput get( DOMString key )</dt>
+          <dd>Getter for a particular input</dd>  
+          <dt>boolean has( DOMString key )</dt>
+          <dd>Returns true if the keyed port currently exists and is available.</dd>
+        </dl>
+
+        <p>This type is used to represent all the currently available MIDI input ports as a Maplike interface.  This enables 
+          <xmp>// to tell how many entries there are:
+var numberOfMIDIInputts = inputs.size;
+
+// add each of the ports to a <select> box
+inputs.values( function( port ) {
+  var opt = document.createElement("option");
+  opt.text = port.name;
+  document.getElementById("inputportselector").add(opt);
+});
+
+</xmp>
+      </section>
 
 
       <section>
