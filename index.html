@@ -213,8 +213,7 @@
 
                 <li><p><em><b>failure</b></em>: Let <var>error</var> be a new <code><a>DOMError</a></code>.
                   This should be of type <code>"SecurityError"</code> if the
-                  user or their security settings denied the application from creating a MIDIAccess
-                  instance with the requested options, or otherwise it should be of type <code>"NotSupportedError"</code>.</p></li>
+                  user or their security settings denied the application from creating a MIDIAccess instance with the requested options, <code>"InvalidStateError"</code> if the underlying systems raise any errors, or otherwise it should be of type <code>"NotSupportedError"</code>.</p></li>
                 <li><p>Call <var>resolver</var>'s <code>reject(value)</code> method with <var>error</var> as value argument.</p></li>
               </ol>
 
@@ -239,6 +238,82 @@
 
     </section>
 
+      <section>
+        <h3 id="MIDIInputMap"><a>MIDIInputMap</a> Interface</h3>
+
+        <dl title="interface [MapClass(DOMString, MIDIPort)] MIDIInputMap"
+            class="idl">
+          <dt>attribute readonly int size</dt>
+          <dd>The number of available MIDI input ports at the current time.</dd>
+          <dt>function keys( void function ( DOMString ) )</dt>
+          <dd>iterator for keys</dd>
+          <dt>function entries( void function ( Array ) )</dt>
+          <dd>iterator for map entries; the passed arrays would contain [ MIDIKeyType, MIDIInput ]</dd>
+          <dt>function values( void function ( MIDIInput ) )</dt>
+          <dd>Iterator for values</dd>
+          <dt>MIDIInput get( DOMString key )</dt>
+          <dd>Getter for a particular input</dd>  
+          <dt>boolean has( DOMString key )</dt>
+          <dd>Returns true if the keyed port currently exists and is available.</dd>
+        </dl>
+
+        <p>This type is used to represent all the currently available MIDI input ports as a MapClass-like interface.  This enables 
+          <xmp>   // to tell how many entries there are:
+    var numberOfMIDIInputs = inputs.size;
+
+    // add each of the ports to a &lt;select&gt; box
+    inputs.values( function( port ) {
+      var opt = document.createElement("option");
+      opt.text = port.name;
+      document.getElementById("inputportselector").add(opt);
+    });
+
+    // or you could express as:
+    for (input in inputs) {
+      var opt = document.createElement("option");
+      opt.text = input.name;
+      document.getElementById("inputportselector").add(opt);
+    }</xmp>
+      </section>
+
+
+      <section>
+        <h3 id="MIDIOutputMap"><a>MIDIOutputMap</a> Interface</h3>
+
+        <dl title="interface [MapClass(DOMString, MIDIPort)] MIDIOutputMap"
+            class="idl">
+          <dt>attribute readonly int size</dt>
+          <dd>The number of available MIDI output ports at the current time.</dd>
+          <dt>function keys( void function ( DOMString ) )</dt>
+          <dd>iterator for keys</dd>
+          <dt>function entries( void function ( Array ) )</dt>
+          <dd>iterator for map entries; the passed arrays would contain [ MIDIKeyType, MIDIOutput ]</dd>
+          <dt>function values( void function ( MIDIOutput ) )</dt>
+          <dd>Iterator for values</dd>
+          <dt>MIDIInput get( DOMString key )</dt>
+          <dd>Getter for a particular input</dd>  
+          <dt>boolean has( DOMString key )</dt>
+          <dd>Returns true if the keyed port currently exists and is available.</dd>
+        </dl>
+
+        <p>This type is used to represent all the currently available MIDI output ports as a MapClass-like interface.  This enables 
+          <xmp>   // to tell how many entries there are:
+    var numberOfMIDIOutputs = inputs.size;
+
+    // add each of the ports to a &lt;select&gt; box
+    outputs.values( function( port ) {
+      var opt = document.createElement("option");
+      opt.text = port.name;
+      document.getElementById("outputportselector").add(opt);
+    });
+
+    // or you could express as:
+    for (output in outputs) {
+      var opt = document.createElement("option");
+      opt.text = input.name;
+      document.getElementById("inputportselector").add(opt);
+    }</xmp>
+      </section>
 
 
       <section>
@@ -294,144 +369,12 @@
 
       <dl title="interface MIDIAccess : EventTarget"
           class="idl">
-        <dt>sequence&lt;MIDIPort&gt; getInputs()</dt>
-        <dd>
-          <p>
-            Returns a list of the MIDI input ports available on the system.  This list is not a live list (i.e., if a device is added or removed after calling getInputs(), the list is not changed.)
-          </p>
-<!-- TODO: Specify the steps the UA is required to take. -->
-        </dd>
-        <dt>sequence&lt;MIDIPort&gt; getOutputs()</dt>
-        <dd>
-          <p>
-            Returns a list of the MIDI output ports available on the system.  This list is not a live list (i.e., if a device is added or removed after calling getOutputs(), the list is not changed.)
-          </p>
-<!-- TODO: Specify the steps the UA is required to take. -->
-        </dd>
-        <dt><a>MIDIInput</a> getInput(MIDIPort or DOMString or short target)</dt>
-        <dd>
-          Acquires access to the input <code><a>MIDIPort</a></code> requested
-          as a <code><a>MIDIInput</a></code> instance. 
+        <dt>attribute MIDIInputMap inputs</dt>
+        <dd>The MIDI input ports available to the system.</dd>
 
-          <p>
-            When the
-            <dfn id="midiaccess-get-input"><code>getInput()</code></dfn>
-          is invoked, the user agent MUST run the <dfn>algorithm to get an input port</dfn>: </p>
+        <dt>attribute MIDIOutputMap outputs</dt>
+        <dd>The MIDI output ports available to the system.</dd>
 
-          <ol>
-            <li>
-              <p>Let <var>target</var> be the
-              <code><a>MIDIPort</a></code> argument.
-              If the <var>target</var> is a DOMString,
-              <var>target</var> will be a <code><a>MIDIPort</a></code>
-              whose <code>id</code> matches the supplied
-              DOMString.  If <var>target</var> is a short, <var>target</var>
-              will be a <code><a>MIDIPort</a></code> that matches the supplied
-              index in the sequence returned by <code><a>getInputs()</a></code>.
-              If the <var>target</var> parameter is a DOMString and there is no MIDIPort
-              that matches the id, or if the <var>target</var> parameter is a 
-              short outside the bounds of available MIDI inputs, throw a 
-              <code>NotFoundError</code> exception.</p>
-            </li>
-
-            <li>
-              <p>
-                If <var>target</var> is not a <code><a>MIDIPort</a></code>
-                instance, or if the MIDIPort is not a valid MIDI input
-                port, throw a <code>NotSupportedError</code> exception.
-              </p>
-            </li>
-
-            <li>
-              <p>
-                If <var>target</var> is not available for access, throw a
-                <code>InvalidAccessError</code> exception.
-              </p>
-            </li>
-
-            <li>
-              <p>
-                If made necessary by the underlying system APIs, reserve
-                the corresponding port for use within the current process.
-              </p>
-            </li>
-
-            <li>
-              <p>
-                Return a <code>MIDIInput</code> object corresponding to the
-                <var>target</var> argument.
-              </p>
-            </li>
-          </ol>
-          <dl class='parameters'>
-            <dt>MIDIPort or DOMString or short target</dt>
-            <dd>
-              The input port to be requested.
-            </dd>
-          </dl>
-        </dd>
-        <dt><a>MIDIOutput</a> getOutput(MIDIPort or DOMString or short target)</dt>
-        <dd>
-          Acquires access to the output <code><a>MIDIPort</a></code> requested
-          as a <code><a>MIDIOutput</a></code> instance. 
-
-          <p>
-            When the
-            <dfn id="midiaccess-get-output"><code>getOutput()</code></dfn>
-          is invoked, the user agent MUST run the <dfn>algorithm to get an output port</dfn>: </p>
-
-          <ol>
-            <li>
-              <p>Let <var>target</var> be the
-              <code><a>MIDIPort</a></code> argument.
-              If the <var>target</var> is a DOMString,
-              <var>target</var> will be a <code><a>MIDIPort</a></code>
-              whose <code>id</code> matches the supplied
-              DOMString. If <var>target</var> is a short, <var>target</var>
-              will be a <code><a>MIDIPort</a></code> that matches the supplied
-              index in the sequence returned by <code><a>getOutputs()</a></code>.
-              If the <var>target</var> parameter is a DOMString and there is no MIDIPort
-              that matches the id, or if the <var>target</var> parameter is a 
-              short outside the bounds of available MIDI inputs, throw a 
-              <code>NotFoundError</code> exception.</p>
-            </li>
-
-            <li>
-              <p>
-                If <var>target</var> is not a <code><a>MIDIPort</a></code>
-                instance, or if the MIDIPort is not a valid MIDI output
-                port, throw a <code>TypeError</code> exception.
-              </p>
-            </li>
-
-            <li>
-              <p>
-                If <var>target</var> is not available for access, throw a
-                <code>InvalidAccessError</code> exception.
-              </p>
-            </li>
-
-            <li>
-              <p>
-                If made necessary by the underlying system APIs, reserve
-                the corresponding port for use within the current process.
-              </p>
-            </li>
-
-            <li>
-              <p>
-                Return a <code>MIDIOutput</code> object corresponding to the
-                <var>target</var> argument.
-              </p>
-            </li>
-          </ol>
-          <dl class='parameters'>
-            <dt>MIDIPort or DOMString or short target</dt>
-            <dd>
-              The output port to be requested.
-            </dd>
-          </dl>
-        </dd>
         <dt>attribute EventHandler onconnect</dt>
         <dd>
           <p>The handler called when a new port is connected.</p>
@@ -440,80 +383,34 @@
             MUST be supported by all objects implementing the
             <code><a>MIDIAccess</a></code> interface.
           </p>
+          <p id="event-midiaccess-connect">
+              Whenever a previously unavailable MIDI port becomes available for use, the user agent SHOULD run the following steps:</p>
+          <ol>
+            <li>Let <code>port</code> be the <code><a>MIDIPort</a></code> corresponding to the newly-available port.</li>
+            <li>Let <code>event</code> be a newly constructed <code><a>MIDIConnectionEvent</a></code>, with the <code>port</code> attribute set to the port.</li>
+            <li>Fire an event named <code><a href="#event-midiaccess-connect">connect</a></code>at the <code>MIDIAccess</code>, using the <code>event</code> as the event object.</li>
+          </ol>
         </dd>
+
         <dt>attribute EventHandler ondisconnect</dt>
         <dd>
           <p>The handler called when a previously-available port is disconnected.</p>
           <p>This <a>event handler</a>, of type <code><a href=
             "#event-midiacces-disconnect">MIDIConnectionEvent</a></code>,
             MUST be supported by all objects implementing the
-            <code><a>MIDIAccess</a></code> interface.
-          </p>
+            <code><a>MIDIAccess</a></code> interface.</p>
+          <p id="event-midiaccess-disconnect">
+              Whenever a previously available MIDI port becomes unavailable for use, the user agent SHOULD run the following steps:</p>
+          <ol>
+            <li>Let <code>port</code> be the <code><a>MIDIPort</a></code> corresponding to the newly-available port.</li>
+            <li>Let <code>event</code> be a newly constructed <code><a>MIDIConnectionEvent</a></code>, with the <code>port</code> attribute set to the port.</li>
+            <li>Fire an event named <code><a href="#event-midiaccess-disconnect">disconnect</a></code>at the <code>MIDIAccess</code>, using the <code>event</code> as the event object.</li>
+          </ol>
         </dd>
+
+        <dt>readonly attribute boolean sysexEnabled</dt>
+        <dd>This attribute informs the user whether system exclusive support is enabled on this MIDIAccess.</dd>
       </dl>
-      <p id="event-midiaccess-connect">
-          Whenever a previously unavailable MIDI port becomes available for use, the user agent SHOULD
-          run the following steps:
-        </p>
-
-        <ol>
-          <li>
-            <p>
-              Let <code>port</code> be the <code><a>MIDIPort</a></code> corresponding to the newly-available port.
-            </p>
-          </li>
-
-          <li>
-            <p>
-              Let <code>event</code> be a newly constructed
-              <code><a>MIDIConnectionEvent</a></code>, with the <code>port</code> 
-              attribute set to the port.
-            </p>
-          </li>
-
-          <li>
-            <p>
-              Fire an event named <code><a
-              href="#event-midiaccess-connect">connect</a></code>
-              at the <code>MIDIAccess</code>, using the <code>event</code> as the event object.
-            </p>
-          </li>
-        </ol>
-      </p>
-
-      <p id="event-midiaccess-disconnect">
-          Whenever a previously available MIDI port becomes unavailable for use, the user agent SHOULD
-          run the following steps:
-        </p>
-
-        <ol>
-          <li>
-            <p>
-              Let <code>port</code> be the <code><a>MIDIPort</a></code> corresponding to the newly-unavailable port.
-            </p>
-          </li>
-
-          <li>
-            <p>
-              Let <code>event</code> be a newly constructed
-              <code><a>MIDIConnectionEvent</a></code>, with the <code>port</code> 
-              attribute set to the port.
-            </p>
-          </li>
-
-          <li>
-            <p>
-              Fire an event named <code><a
-              href="#event-midiaccess-disconnect">disconnect</a></code>
-              at the <code>MIDIAccess</code>, using the <code>event</code> as the event object.
-            </p>
-          </li>
-        </ol>
-      </p>
-
-<!--   FIXME: Need a <code>boolean</code>
-                  representing whether the access includes system exclusive support.
--->
     </section>
 
     <section>
@@ -814,33 +711,23 @@ navigator.requestMIDIAccess( { sysex: true } ).then( onMIDISuccess, onMIDIFailur
         <h3>Listing Inputs and Outputs</h3>
         <p>This example gets the list of the input and output ports and prints their information to the console log.
           <pre class="code es-code">function listInputsAndOutputs( midiAccess ) {
-  var inputs = midiAccess.getInputs();
-  var outputs = midiAccess.getOutputs();
-  var i;
-
-  for (i=0; i&lt;inputs.length; i++) {
-    console.log( "Input port #" + i + 
-      ": type:'" + inputs[i].type +
-      "' id:'" + inputs[i].id +
-      "' manufacturer:'" + inputs[i].manufacturer +
-      "' name:'" + inputs[i].name +
-      "' version:'" + inputs[i].version + "'" );
+  for (var input in midiAccess.inputs) {
+    console.log( "Input port [type:'" + input.type + "'] id:'" + input.id +
+      "' manufacturer:'" + input.manufacturer + "' name:'" + input.name +
+      "' version:'" + input.version + "'" );
   }
 
-  for (i=0; i&lt;outputs.length; i++) {
-    console.log( "Output port #" + i + 
-      ": type:'" + outputs[i].type +
-      "' id:'" + outputs[i].id +
-      "' manufacturer:'" + outputs[i].manufacturer +
-      "' name:'" + outputs[i].name +
-      "' version:'" + outputs[i].version + "'" );
+  for (var output in midiAccess.outputs) {
+    console.log( "Output port [type:'" + output.type + "'] id:'" + output.id +
+      "' manufacturer:'" + output.manufacturer + "' name:'" + output.name +
+      "' version:'" + output.version + "'" );
   }
 }</pre>
       </section>
 
       <section>
         <h3>Handling MIDI Input</h3>
-        <p>This example prints incoming MIDI messages on a supplied input port to the console log.</p>
+        <p>This example prints incoming MIDI messages on a single arbitrary input port to the console log.</p>
         <pre class="code es-code">function onMIDIMessage( event ) {
   var str = "MIDI message received at timestamp " + event.timestamp + "[" + event.data.length + " bytes]: ";
   for (var i=0; i&lt;event.data.length; i++) {
@@ -850,8 +737,7 @@ navigator.requestMIDIAccess( { sysex: true } ).then( onMIDISuccess, onMIDIFailur
 }
 
 function startLoggingMIDIInput( midiAccess, indexOfPort ) {
-  var input = midiAccess.getInput( indexOfPort );
-  input.onmidimessage = onMIDIMessage;
+  midiAccess.inputs.entries[indexOfPort].onmidimessage = onMIDIMessage;
 }</pre>
       </section>
 
@@ -860,7 +746,7 @@ function startLoggingMIDIInput( midiAccess, indexOfPort ) {
         <p>This example sends a middle C note on message immediately on MIDI channel 1 (MIDI channels are 0-indexed, but generally referred to as channels 1-16), and queues a corresponding note off message for 1 second later.</p>
         <pre class="code es-code">function sendMiddleC( midiAccess, indexOfPort ) {
   var noteOnMessage = [0x90, 60, 0x7f];    // note on, middle C, full velocity
-  var output = midiAccess.getOutput( indexOfPort );
+  var output = midiAccess.outputs.entries[indexOfPort];
   output.send( noteOnMessage );  //omitting the timestamp means send immediately.
   output.send( [0x80, 60, 0x40], window.performance.now() + 1000.0 ); // Inlined array creation- note off, middle C,  
                                                                       // release velocity = 64, timestamp = now + 1000ms.
@@ -882,9 +768,9 @@ function echoMIDIMessage( event ) {
 function onMIDISuccess( midiAccess ) {
   console.log( "MIDI ready!" );
   try { 
-    var input = midiAccess.getInput( 0 );
+    var input = midiAccess.inputs.entries[indexOfPort];
     input.onmidimessage = echoMIDIMessage;
-    output = midiAccess.getOutput( 0 );
+    output = midiAccess.outputs.entries[indexOfPort];
   }
   catch (e) {
     console.error("Exception! Couldn't get i/o ports." + e );
@@ -896,6 +782,95 @@ function onMIDIFailure(msg) {
 }
 
 navigator.requestMIDIAccess().then( onMIDISuccess, onMIDIFailure );</pre>
+      </section>
+
+      <section>
+        <h3>A Simple Monophonic Sine Wave MIDI Synthesizer</h3>
+        <p>This example listens to all input messages from all available input ports, and uses note messages to drive the envelope and frequency on a monophonic sine wave oscillator, creating a very simple synthesizer.  Note on and note off messages are supported, but sustain pedal, velocity and pitch bend are not.  This sample is also hosted on <a href="http://webaudiodemos.appspot.com/monosynth/index.html">webaudiodemos.appspot.com</a>.</p>
+        <pre class="code es-code">var context=null;   // the Web Audio "context" object
+    var midiAccess=null;  // the MIDIAccess object.
+    var oscillator=null;  // the single oscillator
+    var envelope=null;    // the envelope for the single oscillator
+    var attack=0.05;      // attack speed
+    var release=0.05;   // release speed
+    var portamento=0.05;  // portamento/glide speed
+    var activeNotes = []; // the stack of actively-pressed keys
+
+    window.addEventListener('load', function() {
+      // patch up prefixes
+      window.AudioContext=window.AudioContext||window.webkitAudioContext;
+
+      context = new AudioContext();
+      if (navigator.requestMIDIAccess)
+        navigator.requestMIDIAccess().then( onMIDIInit, onMIDIReject );
+      else
+        alert("No MIDI support present in your browser.  You're gonna have a bad time.")
+
+      // set up the basic oscillator chain, muted to begin with.
+      oscillator = context.createOscillator();
+      oscillator.frequency.setValueAtTime(110, 0);
+      envelope = context.createGain();
+      oscillator.connect(envelope);
+      envelope.connect(context.destination);
+      envelope.gain.value = 0.0;  // Mute the sound
+      oscillator.start(0);  // Go ahead and start up the oscillator
+    } );
+
+    function onMIDIInit(midi) {
+      midiAccess = midi;
+
+      if (midiAccess.inputs.length === 0)
+        alert("No MIDI input devices present.  You're gonna have a bad time.")
+      else { // Hook the message handler for all MIDI inputs
+        for (var input in inputs)
+          input.onmidimessage = MIDIMessageEventHandler;
+      }
+    }
+
+    function onMIDIReject(err) {
+      alert("The MIDI system failed to start.  You're gonna have a bad time.");
+    }
+
+    function MIDIMessageEventHandler(event) {
+      // Mask off the lower nibble (MIDI channel, which we don't care about)
+      switch (event.data[0] & 0xf0) {
+        case 0x90:
+          if (event.data[2]!=0) {  // if velocity != 0, this is a note-on message
+            noteOn(event.data[1]);
+            return;
+          }
+          // if velocity == 0, fall thru: it's a note-off.  MIDI's weird, y'all.
+        case 0x80:
+          noteOff(event.data[1]);
+          return;
+      }
+    }
+
+    function frequencyFromNoteNumber( note ) {
+      return 440 * Math.pow(2,(note-69)/12);
+    }
+
+    function noteOn(noteNumber) {
+      activeNotes.push( noteNumber );
+      oscillator.frequency.cancelScheduledValues(0);
+      oscillator.frequency.setTargetAtTime( frequencyFromNoteNumber(noteNumber), 0, portamento );
+      envelope.gain.cancelScheduledValues(0);
+      envelope.gain.setTargetAtTime(1.0, 0, attack);
+    }
+
+    function noteOff(noteNumber) {
+      var position = activeNotes.indexOf(noteNumber);
+      if (position!=-1) {
+        activeNotes.splice(position,1);
+      }
+      if (activeNotes.length==0) {  // shut off the envelope
+        envelope.gain.cancelScheduledValues(0);
+        envelope.gain.setTargetAtTime(0.0, 0, release );
+      } else {
+        oscillator.frequency.cancelScheduledValues(0);
+        oscillator.frequency.setTargetAtTime( frequencyFromNoteNumber(activeNotes[activeNotes.length-1]), 0, portamento );
+      }
+    }</pre>
       </section>
 
     </section>
@@ -918,7 +893,7 @@ navigator.requestMIDIAccess().then( onMIDISuccess, onMIDIFailure );</pre>
         </ol>
       <p>The impact of each of these is:
         <ol>
-          <li>Sending short messages: sending note-on/note-off/controller messages would let you cause sounds to be played by attached devices, including (on Mac and Windows) any default virtual synthesizers. This by itself does not cause any concerning exposure - you can already make sounds without interaction, through <audio>, Flash, or Web Audio.  Some attached devices might be professional lighting control systems, so it’s possible you could control stage lighting; however, this is extremely rare, and no known system has the ability to cause lasting damage or information leakage based solely on short messages; at worst, a malicious page could flash lights, and the user could close the page and reset their lighting controller.
+          <li>Sending short messages: sending note-on/note-off/controller messages would let you cause sounds to be played by attached devices, including (on Mac and Windows) any default virtual synthesizers. This by itself does not cause any concerning exposure - you can already make sounds without interaction, through &lt;audio&rt;, Flash, or Web Audio.  Some attached devices might be professional lighting control systems, so it’s possible you could control stage lighting; however, this is extremely rare, and no known system has the ability to cause lasting damage or information leakage based solely on short messages; at worst, a malicious page could flash lights, and the user could close the page and reset their lighting controller.
           <li>Receiving short messages: receiving note-on/note-off/controller messages would not cause any information exposure or security issues, as there is no identifying data being received, just a stream of controller messages - all of which must be initiated by the user on that MIDI device (except clock-type messages).  This is very analogous to receiving keyboard or mouse events.
           <li>Sending and Receiving SysEx.  This is the biggest concern, because it would be possible to write code that looked for system-specific responses to sysex messages, which could identify the hardware available, and then use it to download data - e.g. samples stored in a sampler - or replace that data (erasing sample data or patches in the device), although both these scenarios would have to be coded for a particular device.  It is also possible that some samplers might enable a system exclusive message to start recording a sample - so if the sampler happened to have a dedicated microphone attached (uncommon in practice, but possible), it would be possible to write code specific to a particular device that could record a short sample of sound and then upload it to the network without further user intervention.  (You could not stream audio from the device, and most samplers have fairly limited memory, and MIDI Sample Dump sysex is a slow way to transfer data - it has to transcode into 7-bit - so it’s unlikely you could listen in for long periods.)  More explicit fingerprinting is a concern, as the patch information/stored samples/user configuration could uniquely identify the system (although again, this requires much device-specific code; there is not standardized “grab all patches and hash it” capability.)  This does suggest that system exclusive messages are in a security category of their own.
         </ol>
