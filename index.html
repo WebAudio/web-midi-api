@@ -125,10 +125,14 @@
         The term <dfn id="OctetDfn"><a href="http://www.w3.org/TR/WebIDL/#idl-octet">octet</a></dfn> is defined in [[!WEBIDL]].
       </p>
       <p>
+        The <dfn id="WebAudio">Web Audio API</dfn> and its associated interfaces and concepts are defined in [[!webaudio]].
+      </p>
+      <p>
         The <a href="http://dvcs.w3.org/hg/domcore/raw-file/tip/Overview.html/#interface-event"><dfn title=
         "Event">Event</dfn></a> interface
         is defined in [[!DOM4]].
       </p>
+      <p>The <a href="http://www.w3.org/TR/DOM-Level-3-Core/core.html#ERROR-Interfaces-DOMError"><dfn title="DOMError">DOMError</dfn></a> interface is defined in [[!DOM-LEVEL-3-CORE]].
       <p>
         The <dfn id="DomHighResTimeStampDfn"><a href=
         "http://dvcs.w3.org/hg/webperf/raw-file/tip/specs/HighResolutionTime/Overview.html#sec-DOMHighResTimeStamp"
@@ -247,7 +251,7 @@
     </section>
 
       <section>
-        <h3 id="MIDIInputMap"><a>MIDIInputMap</a> Interface</h3>
+        <h3 id="MIDIInputMap"><dfn>MIDIInputMap</dfn> Interface</h3>
 
         <dl title="interface [MapClass(DOMString, MIDIPort)] MIDIInputMap"
             class="idl">
@@ -286,7 +290,7 @@
 
 
       <section>
-        <h3 id="MIDIOutputMap"><a>MIDIOutputMap</a> Interface</h3>
+        <h3 id="MIDIOutputMap"><dfn>MIDIOutputMap</dfn> Interface</h3>
 
         <dl title="interface [MapClass(DOMString, MIDIPort)] MIDIOutputMap"
             class="idl">
@@ -794,7 +798,7 @@ navigator.requestMIDIAccess().then( onMIDISuccess, onMIDIFailure );</pre>
 
       <section>
         <h3>A Simple Monophonic Sine Wave MIDI Synthesizer</h3>
-        <p>This example listens to all input messages from all available input ports, and uses note messages to drive the envelope and frequency on a monophonic sine wave oscillator, creating a very simple synthesizer.  Note on and note off messages are supported, but sustain pedal, velocity and pitch bend are not.  This sample is also hosted on <a href="http://webaudiodemos.appspot.com/monosynth/index.html">webaudiodemos.appspot.com</a>.</p>
+        <p>This example listens to all input messages from all available input ports, and uses note messages to drive the envelope and frequency on a monophonic sine wave oscillator, creating a very simple synthesizer, using the <a>Web Audio API</a>.  Note on and note off messages are supported, but sustain pedal, velocity and pitch bend are not.  This sample is also hosted on <a href="http://webaudiodemos.appspot.com/monosynth/index.html">webaudiodemos.appspot.com</a>.</p>
         <pre class="code es-code">var context=null;   // the Web Audio "context" object
     var midiAccess=null;  // the MIDIAccess object.
     var oscillator=null;  // the single oscillator
