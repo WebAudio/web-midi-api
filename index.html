@@ -250,21 +250,31 @@
 
       <section>
         <h3 id="MIDIInputMap"><dfn>MIDIInputMap</dfn> Interface</h3>
+        
+        <dl class="idl"
+            title="callback ForEachCallback = void">
+          <dt>DOMString id</dt>
+          <dd>The same value with port.id.</dd>
+          <dt>MIDIInput port</dt>
+          <dd>MIDIInput object which id is same with the id.</dd>
+        </dl>
 
         <dl title="interface [MapClass(DOMString, MIDIPort)] MIDIInputMap"
             class="idl">
           <dt>readonly attribute unsigned long size</dt>
           <dd>The number of available MIDI input ports at the current time.</dd>
-          <dt>function keys( void function ( DOMString ) )</dt>
-          <dd>iterator for keys</dd>
-          <dt>function entries( void function ( Array ) )</dt>
-          <dd>iterator for map entries; the passed arrays would contain [ MIDIKeyType, MIDIInput ]</dd>
-          <dt>function values( void function ( MIDIInput ) )</dt>
-          <dd>Iterator for values</dd>
-          <dt>MIDIInput get( DOMString key )</dt>
+          <dt>MIDIKeyIterator keys()</dt>
+          <dd>Returns an iterator which returns id of the MIDIInputMap object for each iteration.</dd>
+          <dt>MIDIEntryIterator entries()</dt>
+          <dd>Returns an iterator which returns an array of [<a>DOMString</a>, <a>MIDIInput</a>] of the MIDIInputMap object for each iteration.</dd>
+          <dt>MIDIValueIterator values()</dt>
+          <dd>Returns an iterator which returns port of the MIDIInputMap object for each iteration.</dd>
+          <dt>MIDIInput get( DOMString id )</dt>
           <dd>Getter for a particular input</dd>  
           <dt>boolean has( DOMString key )</dt>
           <dd>Returns true if the keyed port currently exists and is available.</dd>
+          <dt>void forEach( ForEachCallback callback )</dt>
+          <dd>Calls callback once for each key-value pair present in the MIDIInputMap.</dd>
         </dl>
 
         <p>This type is used to represent all the currently available MIDI input ports as a MapClass-like interface.  This enables 
@@ -272,14 +282,14 @@
     var numberOfMIDIInputs = inputs.size;
 
     // add each of the ports to a &lt;select&gt; box
-    inputs.values( function( port ) {
+    inputs.forEach( function( key, port ) {
       var opt = document.createElement("option");
       opt.text = port.name;
       document.getElementById("inputportselector").add(opt);
     });
 
-    // or you could express as:
-    for (input in inputs) {
+    // or you could express in ECMAScript 6 as:
+    for (let input of inputs.values()) {
       var opt = document.createElement("option");
       opt.text = input.name;
       document.getElementById("inputportselector").add(opt);
@@ -290,20 +300,30 @@
       <section>
         <h3 id="MIDIOutputMap"><dfn>MIDIOutputMap</dfn> Interface</h3>
 
+        <dl class="idl"
+            title="callback ForEachCallback = void">
+          <dt>DOMString id</dt>
+          <dd>The same value with port.id.</dd>
+          <dt>MIDIOutput port</dt>
+          <dd>MIDIOutput object which id is same with the id.</dd>
+        </dl>
+
         <dl title="interface [MapClass(DOMString, MIDIPort)] MIDIOutputMap"
             class="idl">
           <dt>readonly attribute unsigned long size</dt>
-          <dd>The number of available MIDI output ports at the current time.</dd>
-          <dt>function keys( void function ( DOMString ) )</dt>
-          <dd>iterator for keys</dd>
-          <dt>function entries( void function ( Array ) )</dt>
-          <dd>iterator for map entries; the passed arrays would contain [ MIDIKeyType, MIDIOutput ]</dd>
-          <dt>function values( void function ( MIDIOutput ) )</dt>
-          <dd>Iterator for values</dd>
-          <dt>MIDIOutput get( DOMString key )</dt>
+          <dd>The number of available MIDI input ports at the current time.</dd>
+          <dt>MIDIKeyIterator keys()</dt>
+          <dd>Returns an iterator which returns id of the MIDIOutputMap object for each iteration.</dd>
+          <dt>MIDIEntryIterator entries()</dt>
+          <dd>Returns an iterator which returns an array of [<a>DOMString</a>, <a>MIDIOutput</a>] of the MIDIOutputMap object for each iteration.</dd>
+          <dt>MIDIValueIterator values()</dt>
+          <dd>Returns an iterator which returns port of the MIDIOutputMap object for each iteration.</dd>
+          <dt>MIDIOutput get( DOMString id )</dt>
           <dd>Getter for a particular input</dd>  
           <dt>boolean has( DOMString key )</dt>
           <dd>Returns true if the keyed port currently exists and is available.</dd>
+          <dt>void forEach( ForEachCallback callback )</dt>
+          <dd>Calls callback once for each key-value pair present in the MIDIOutputMap.</dd>
         </dl>
 
         <p>This type is used to represent all the currently available MIDI output ports as a MapClass-like interface.  This enables 
@@ -311,14 +331,14 @@
     var numberOfMIDIOutputs = outputs.size;
 
     // add each of the ports to a &lt;select&gt; box
-    outputs.values( function( port ) {
+    outputs.forEach( function( key, port ) {
       var opt = document.createElement("option");
       opt.text = port.name;
       document.getElementById("outputportselector").add(opt);
     });
 
-    // or you could express as:
-    for (output in outputs) {
+    // or you could express in ECMAScript 6 as:
+    for (let output of outputs.values()) {
       var opt = document.createElement("option");
       opt.text = input.name;
       document.getElementById("inputportselector").add(opt);
