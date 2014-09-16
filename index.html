@@ -45,7 +45,7 @@
           wg: "Audio Working Group",
           wgURI: "http://www.w3.org/2011/audio/",
           wgPublicList: "public-audio",
-          wgPatentURI: "http://www.w3.org/2004/01/pp-impl/46884/status",
+          wgPatentURI: "http://www.w3.org/2004/01/pp-impl/46884/status"
       };
     </script>    
   </head>
@@ -88,6 +88,9 @@
       <p>
         The Web MIDI API is not intended to directly implement high-level concepts such as sequencing; it does not directly support Standard MIDI Files, for example, although a Standard MIDI File player can be built on top of the Web MIDI API.  It is also not intended to semantically capture patches or controller assignments, as General MIDI does; such interpretation is outside the scope of the Web MIDI API (though again, General MIDI can easily be utilized through the Web MIDI API).
       </p>
+    </section>
+
+    <section id="sotd">
     </section>
 
     <section id="conformance">
@@ -259,7 +262,7 @@
           <dd>MIDIInput object which id is same with the id.</dd>
         </dl>
 
-        <dl title="interface [MapClass(DOMString, MIDIPort)] MIDIInputMap"
+        <dl title="interface MIDIInputMap [MapClass(DOMString, MIDIPort)]"
             class="idl">
           <dt>readonly attribute unsigned long size</dt>
           <dd>The number of available MIDI input ports at the current time.</dd>
@@ -308,7 +311,7 @@
           <dd>MIDIOutput object which id is same with the id.</dd>
         </dl>
 
-        <dl title="interface [MapClass(DOMString, MIDIPort)] MIDIOutputMap"
+        <dl title="interface MIDIOutputMap [MapClass(DOMString, MIDIPort)]"
             class="idl">
           <dt>readonly attribute unsigned long size</dt>
           <dd>The number of available MIDI input ports at the current time.</dd>
@@ -338,7 +341,7 @@
     });
 
     // or you could express in ECMAScript 6 as:
-    for (let output of outputs.values()) {
+    for (output of outputs.values()) {
       var opt = document.createElement("option");
       opt.text = input.name;
       document.getElementById("inputportselector").add(opt);
@@ -738,7 +741,7 @@ navigator.requestMIDIAccess( { sysex: true } ).then( onMIDISuccess, onMIDIFailur
 
       <section>
         <h3>Listing Inputs and Outputs</h3>
-        <p>This example gets the list of the input and output ports and prints their information to the console log.
+        <p>This example gets the list of the input and output ports and prints their information to the console log, using ES6 for...of notation.
           <pre class="code es-code">function listInputsAndOutputs( midiAccess ) {
   for (var input in midiAccess.inputs) {
     console.log( "Input port [type:'" + input.type + "'] id:'" + input.id +
@@ -766,16 +769,16 @@ navigator.requestMIDIAccess( { sysex: true } ).then( onMIDISuccess, onMIDIFailur
 }
 
 function startLoggingMIDIInput( midiAccess, indexOfPort ) {
-  midiAccess.inputs.entries[indexOfPort].onmidimessage = onMIDIMessage;
+  midiAccess.inputs.forEach( function(entry) {entry.value.onmidimessage = onMIDIMessage;});
 }</pre>
       </section>
 
       <section>
         <h3>Sending MIDI Messages to an Output Device</h3>
         <p>This example sends a middle C note on message immediately on MIDI channel 1 (MIDI channels are 0-indexed, but generally referred to as channels 1-16), and queues a corresponding note off message for 1 second later.</p>
-        <pre class="code es-code">function sendMiddleC( midiAccess, indexOfPort ) {
+        <pre class="code es-code">function sendMiddleC( midiAccess, portID ) {
   var noteOnMessage = [0x90, 60, 0x7f];    // note on, middle C, full velocity
-  var output = midiAccess.outputs.entries[indexOfPort];
+  var output = midiAccess.outputs.get(portID);
   output.send( noteOnMessage );  //omitting the timestamp means send immediately.
   output.send( [0x80, 60, 0x40], window.performance.now() + 1000.0 ); // Inlined array creation- note off, middle C,  
                                                                       // release velocity = 64, timestamp = now + 1000ms.
@@ -796,14 +799,12 @@ function echoMIDIMessage( event ) {
 
 function onMIDISuccess( midiAccess ) {
   console.log( "MIDI ready!" );
-  try { 
-    var input = midiAccess.inputs.entries[indexOfPort];
+  var input = midiAccess.inputs.entries.next();
+  if (input)
     input.onmidimessage = echoMIDIMessage;
-    output = midiAccess.outputs.entries[indexOfPort];
-  }
-  catch (e) {
-    console.error("Exception! Couldn't get i/o ports." + e );
-  }
+  output = midiAccess.outputs.values().next().value;
+  if (!input || !output)
+    console.log("Uh oh! Couldn't get i/o ports.");
 }
 
 function onMIDIFailure(msg) {
@@ -848,12 +849,14 @@ navigator.requestMIDIAccess().then( onMIDISuccess, onMIDIFailure );</pre>
     function onMIDIInit(midi) {
       midiAccess = midi;
 
-      if (midiAccess.inputs.length === 0)
-        alert("No MIDI input devices present.  You're gonna have a bad time.")
-      else { // Hook the message handler for all MIDI inputs
-        for (var input in inputs)
-          input.onmidimessage = MIDIMessageEventHandler;
+      var haveAtLeastOneDevice=false;
+      var inputs=midiAccess.inputs.values();
+      for ( var input = inputs.next(); input &amp;&amp; !input.done; input = inputs.next()) {
+        input.value.onmidimessage = MIDIMessageEventHandler;
+        haveAtLeastOneDevice = true;
       }
+      if (!haveAtLeastOneDevice)
+        alert("No MIDI input devices present.  You're gonna have a bad time.");
     }
 
     function onMIDIReject(err) {
@@ -862,7 +865,7 @@ navigator.requestMIDIAccess().then( onMIDISuccess, onMIDIFailure );</pre>
 
     function MIDIMessageEventHandler(event) {
       // Mask off the lower nibble (MIDI channel, which we don't care about)
-      switch (event.data[0] & 0xf0) {
+      switch (event.data[0] &amp; 0xf0) {
         case 0x90:
           if (event.data[2]!=0) {  // if velocity != 0, this is a note-on message
             noteOn(event.data[1]);
