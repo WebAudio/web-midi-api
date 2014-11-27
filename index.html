@@ -435,7 +435,7 @@
           <p id="event-midiaccess-disconnect">
               Whenever a previously available MIDI port becomes unavailable for use, the user agent SHOULD run the following steps:</p>
           <ol>
-            <li>Let <code>port</code> be the <code><a>MIDIPort</a></code> corresponding to the newly-available port.</li>
+            <li>Let <code>port</code> be the <code><a>MIDIPort</a></code> corresponding to the previously-available port.</li>
             <li>Let <code>event</code> be a newly constructed <code><a>MIDIConnectionEvent</a></code>, with the <code>port</code> attribute set to the port.</li>
             <li>Fire an event named <code><a href="#event-midiaccess-disconnect">disconnect</a></code>at the <code>MIDIAccess</code>, using the <code>event</code> as the event object.</li>
           </ol>
