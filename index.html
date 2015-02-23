@@ -8,7 +8,7 @@
       table {border-collapse: collapse; border: 1px solid #000; font: normal 80%/140% arial, helvetica, sans-serif; color: #555; background: #fff;}
       td, th {border: 1px dotted #bbb; padding:.5em 1em; font-size: x-small; width: 10em; }
       caption {padding: 0 0 .5em 0; text-align: left; font-size: 100%; font-weight: 500; text-align: center; color: #666; background: transparent;}
-      table a {padding: 1px; text-decoration: none; font-weight: bold; background: transparent;}
+      table a {padding: 1px; text-decoration: none; font-wewight: bold; background: transparent;}
       table a:link {border-bottom: 1px dashed #ddd; color: #000;}
       table a:visited {border-bottom: 1px dashed #ccc; text-decoration: line-through; color: #808080;}
       table a:hover {border-bottom: 1px dashed #bbb; color: #666;}
@@ -269,9 +269,9 @@
         <dl class="idl"
             title="callback ForEachCallback = void">
           <dt>DOMString id</dt>
-          <dd>The same value with port.id.</dd>
+          <dd>The identifier of this port.  (This is the same value as port.id.)</dd>
           <dt>MIDIInput port</dt>
-          <dd>MIDIInput object which id is same with the id.</dd>
+          <dd>The MIDIInput object matching this port.</dd>
         </dl>
 
         <dl title="interface MIDIInputMap [MapClass(DOMString, MIDIPort)]"
@@ -318,9 +318,9 @@
         <dl class="idl"
             title="callback ForEachCallback = void">
           <dt>DOMString id</dt>
-          <dd>The same value with port.id.</dd>
-          <dt>MIDIOutput port</dt>
-          <dd>MIDIOutput object which id is same with the id.</dd>
+          <dd>The identifier of this port.  (This is the same value as port.id.)</dd>
+          <dt>MIDIInput port</dt>
+          <dd>The MIDIOutput object matching this port.</dd>
         </dl>
 
         <dl title="interface MIDIOutputMap [MapClass(DOMString, MIDIPort)]"
