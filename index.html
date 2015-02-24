@@ -529,6 +529,33 @@
             <code><a>MIDIPort</a></code> interface.
           </p>
         </dd>
+        <dt>void open()</dt>
+        <dd>
+          <p>
+            Makes the connected device corresponding to the MIDIPort available.  The underlying implementation may do nothing.
+          </p>
+          <p>
+            If the state attribute is <code>"opened"</code>, do nothing.
+          </p>
+          <p>
+            If the state attribute is <code>"disconnected"</code>, throw an <code>InvalidStateError</code> exception.
+          </p>
+          <p>
+            Otherwise, try to make the connected device available.  If the device gets to be available, the state attribute is changed to <code>"opened"</code>, and <code><a>MIDIConnectionEvent</a></code> is delivered to <code><a href="#event-midiaccess-statechange">statechange</a></code> handler of <code><a>MIDIAccess</a></code> and <code><a href="#event-midiport-statechange">statechange</a></code> handler of the corresponding <code><a>MIDIPort</a></code>.  If the port can not be opened, <code><a>MIDIConnectionEvent</a></code> is delivered without changing the state attribute.
+          </p>
+        </dd>
+        <dt>void close()</dt>
+        <dd>
+          <p>
+            Makes the opened device corresponding to the MIDIPort unavailable, but connected.  The underlying implementation may do nithing.
+          </p>
+          <p>
+            If the state attribute is not <code>"opened"</code>, throw an <code>InvalidStateError</code> exception.
+          </p>
+          <p>
+            Otherwise, make the opened device unavailable, but connected.  If the device gets to be closed successfully, the state attribute is changed to <code>"connected"</code>, and <code><a>MIDIConnectionEvent</a></code> is delivered to <code><a href="#event-midiaccess-statechange">statechange</a></code> handler of <code><a>MIDIAccess</a></code> and <code><a href="#event-midiport-statechange">statechange</a></code> handler of the corresponding <code><a>MIDIPort</a></code>.
+          </p>
+        </dd>
       </dl>
 
       <p id="event-midiport-statechange">
@@ -556,7 +583,7 @@
             <p>
               Fire an event named <code><a
               href="#event-midiport-statechange">statechange</a></code>
-              at the <code>port</code>, using the <code>event</code> as the event object.
+              at the <code>port</code>, and <code><a href="#event-midiaccess-statechange">statechange</a></code> at the <code>MIDIAccess</code>, using the <code>event</code> as the event object.
             </p>
           </li>
         </ol>
@@ -574,6 +601,7 @@
               MUST be supported by all objects implementing
               <code><a>MIDIInput</a></code> interface.
             </p>
+            <p>If the handler is set and the state attribute is not <code>"opened"</code>, underlying implementation tries to make the port available, and change the state attribute to <code>"opened"</code>.  If succeeded, <code><a>MIDIConnectionEvent</a></code> is delived to the corresponding <code>MIDIPort</code> and <code>MIDIAccess</code>.
           </dd>
         </dl>
         
@@ -633,8 +661,10 @@
               The data contains one or more valid, complete MIDI messages.  Running status is not allowed in the data, as underlying systems may not support it.
             </p>
             <p>
-                If the port is disconnected, throw an <code>InvalidStateError</code> exception.
+                If the port is <code>"disconnected"</code>, throw an <code>InvalidStateError</code> exception.
             </p>
+            <p>
+                If the port is <code>"connected"</code>, try to open the port.  If the port can not be opened, <var>data</var> will be disposed, and <code><a>MIDIConnectionEvent</a></code> is delivered to <code><a href="#event-midiaccess-statechange">statechange</a></code> handler of <code><a>MIDIAccess</a></code> and <code><a href="#event-midiport-statechange">statechange</a></code> handler of the corresponding <code><a>MIDIPort</a></code> without changing the state attribute. Otherwise, <code><a>MIDIConnectionEvent</a></code> is delivered with the state attribute being "opened".
             <p>
                 If <var>data</var> is not a valid sequence or does not contain a valid MIDI message, throw a <code>TypeError</code> exception.
             </p>
