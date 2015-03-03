@@ -16,7 +16,53 @@
       tfoot td {border: 2px solid #000;}
       tbody th {color: #060606; }
       tbody th, tbody td {vertical-align: middle; text-align: center; }
+
+      /* FIXME: Remove these styles when ReSpec supports maplike. */
+      #MIDIInputMapMaplike { display: none; }
+      #MIDIOutputMapMaplike { display: none; }
     </style>
+    <script>
+      // This is a script to insert "readonly maplike<DOMString, MIDIInput>;" in the IDL when ReSpec adds the IDL "pre" element.
+      // FIXME: Remove this script when ReSpec supports maplike.
+      (function() {
+      if (!window.MutationObserver) {
+        return;
+      }
+
+      function observe(parent, maplike, interfaceSelector) {
+        var observer = new MutationObserver(function(mutations) {
+          if (!parent.querySelector('pre.idl') || parent.contains(maplike)) {
+            return;
+          }
+          var iface = parent.querySelector(interfaceSelector);
+          for (var j = 0; j < iface.childNodes.length; ++j) {
+              var child = iface.childNodes[j];
+              if (child.constructor === Text && child.data === ' {\n};') {
+                // Replacing ' {\n};' with ' {\n    <maplike>\n};'.
+
+                iface.insertBefore(new Text(' {\n    '), child);
+                iface.insertBefore(maplike, child);
+                iface.insertBefore(new Text('\n};'), child);
+                iface.removeChild(child);
+
+                // Make the initially invisible maplike element visible.
+                maplike.style['display'] = 'inline';
+                break;
+              }
+           }
+           observer.disconnect();
+        });
+        observer.observe(parent, { childList: true });
+      }
+
+      document.addEventListener('DOMContentLoaded', function() {
+        var $ = document.querySelector.bind(document);
+        observe($('#MIDIInputMapIdlParent'), $('#MIDIInputMapMaplike'), '#idl-def-MIDIInputMap');
+        observe($('#MIDIOutputMapIdlParent'), $('#MIDIOutputMapMaplike'), '#idl-def-MIDIOutputMap');
+      });
+
+      })();
+    </script>
     <!-- 
       === NOTA BENE ===
       For the three scripts below, if your spec resides on dev.w3 you can check them
@@ -265,34 +311,14 @@
 
       <section>
         <h3 id="MIDIInputMap"><a>MIDIInputMap</a> Interface</h3>
-        
-        <dl class="idl"
-            title="callback ForEachCallback = void">
-          <dt>DOMString id</dt>
-          <dd>The identifier of this port.  (This is the same value as port.id.)</dd>
-          <dt>MIDIInput port</dt>
-          <dd>The MIDIInput object matching this port.</dd>
-        </dl>
 
-        <dl title="interface MIDIInputMap [MapClass(DOMString, MIDIPort)]"
-            class="idl">
-          <dt>readonly attribute unsigned long size</dt>
-          <dd>The number of available MIDI input ports at the current time.</dd>
-          <dt>MIDIKeyIterator keys()</dt>
-          <dd>Returns an iterator which returns id of the MIDIInputMap object for each iteration.</dd>
-          <dt>MIDIEntryIterator entries()</dt>
-          <dd>Returns an iterator which returns an array of [<a>DOMString</a>, <a>MIDIInput</a>] of the MIDIInputMap object for each iteration.</dd>
-          <dt>MIDIValueIterator values()</dt>
-          <dd>Returns an iterator which returns port of the MIDIInputMap object for each iteration.</dd>
-          <dt>MIDIInput get( DOMString id )</dt>
-          <dd>Getter for a particular input</dd>  
-          <dt>boolean has( DOMString key )</dt>
-          <dd>Returns true if the keyed port currently exists and is available.</dd>
-          <dt>void forEach( ForEachCallback callback )</dt>
-          <dd>Calls callback once for each key-value pair present in the MIDIInputMap.</dd>
-        </dl>
+        <!-- FIXME: This is a workaround for maplike interface that is not currently supported by ReSpec. Use ReSpec once it supports maplike. -->
+        <div id = "MIDIInputMapIdlParent">
+        <dl title="interface MIDIInputMap" class="idl"></dl>
+        </div>
+        <span id="MIDIInputMapMaplike" class="idlMember">readonly maplike&lt;<span class="idlMemberType">DOMString</span>, <a href="#idl-def-MIDIInput"><code>MIDIInput</code></a>&gt;;</span>
 
-        <p>This type is used to represent all the currently available MIDI input ports as a MapClass-like interface.  This enables 
+        <p>This type is used to represent all the currently available MIDI input ports as a maplike interface <code>readonly maplike&lt;DOMString, <a href="#idl-def-MIDIInput"><code>MIDIInput</code></a>&gt;</code> whose key is ID of each port.  This enables 
           <pre>    // to tell how many entries there are:
     var numberOfMIDIInputs = inputs.size;
 
@@ -315,33 +341,13 @@
       <section>
         <h3 id="MIDIOutputMap"><a>MIDIOutputMap</a> Interface</h3>
 
-        <dl class="idl"
-            title="callback ForEachCallback = void">
-          <dt>DOMString id</dt>
-          <dd>The identifier of this port.  (This is the same value as port.id.)</dd>
-          <dt>MIDIOutput port</dt>
-          <dd>The MIDIOutput object matching this port.</dd>
-        </dl>
+        <!-- FIXME: This is a workaround for maplike interface that is not currently supported by ReSpec. Use ReSpec once it supports maplike. -->
+        <div id = "MIDIOutputMapIdlParent">
+        <dl title="interface MIDIOutputMap" class="idl"></dl>
+        </div>
+        <span id="MIDIOutputMapMaplike" class="idlMember">readonly maplike&lt;<span class="idlMemberType">DOMString</span>, <a href="#idl-def-MIDIOutput"><code>MIDIOutput</code></a>&gt;;</span>
 
-        <dl title="interface MIDIOutputMap [MapClass(DOMString, MIDIPort)]"
-            class="idl">
-          <dt>readonly attribute unsigned long size</dt>
-          <dd>The number of available MIDI input ports at the current time.</dd>
-          <dt>MIDIKeyIterator keys()</dt>
-          <dd>Returns an iterator which returns id of the MIDIOutputMap object for each iteration.</dd>
-          <dt>MIDIEntryIterator entries()</dt>
-          <dd>Returns an iterator which returns an array of [<a>DOMString</a>, <a>MIDIOutput</a>] of the MIDIOutputMap object for each iteration.</dd>
-          <dt>MIDIValueIterator values()</dt>
-          <dd>Returns an iterator which returns port of the MIDIOutputMap object for each iteration.</dd>
-          <dt>MIDIOutput get( DOMString id )</dt>
-          <dd>Getter for a particular input</dd>  
-          <dt>boolean has( DOMString key )</dt>
-          <dd>Returns true if the keyed port currently exists and is available.</dd>
-          <dt>void forEach( ForEachCallback callback )</dt>
-          <dd>Calls callback once for each key-value pair present in the MIDIOutputMap.</dd>
-        </dl>
-
-        <p>This type is used to represent all the currently available MIDI output ports as a MapClass-like interface.  This enables 
+        <p>This type is used to represent all the currently available MIDI output ports as a maplike interface <code>readonly maplike&lt;DOMString, <a href="#idl-def-MIDIOutput"><code>MIDIOutput</code></a>&gt;</code> whose key is ID of each port.  This enables 
           <pre>    // to tell how many entries there are:
     var numberOfMIDIOutputs = outputs.size;
 
