@@ -190,7 +190,7 @@
                 requested, as system exclusive has greater privacy and
                 security implications.</p>
               <p>If the user declines or the call is denied for any other reason, the Promise's 
-                <var>rejectCallback</var> (if any) is invoked as a <code><a>MIDIErrorCallback</a></code>.
+                <var>rejectCallback</var> (if any) is invoked with a <code><a>DOMException</a></code> parameter.
               </p>
               <p>
                 When the <dfn id="dom-navigator-requestmidiaccess">
@@ -238,9 +238,9 @@
                 <li><p>Call <var>resolver</var>'s <code>accept(value)</code> method with <var>access</var> as value argument.</p></li>
                 <li><p>Terminate these steps.</p></li>
 
-                <li><p><em><b>failure</b></em>: Let <var>error</var> be a new <code><a>DOMError</a></code>.
-                  This should be of type <code>"SecurityError"</code> if the
-                  user or their security settings denied the application from creating a MIDIAccess instance with the requested options, <code>"AbortError"</code> if the page is going to be closed for a user navigation, <code>"InvalidStateError"</code> if the underlying systems raise any errors, or otherwise it should be of type <code>"NotSupportedError"</code>.</p></li>
+                <li><p><em><b>failure</b></em>: Let <var>error</var> be a new <code><a>DOMException</a></code>.
+                  This exception's .name should be <code>"SecurityError"</code> if the
+                  user or their security settings denied the application from creating a MIDIAccess instance with the requested options, <code>"AbortError"</code> if the page is going to be closed for a user navigation, <code>"InvalidStateError"</code> if the underlying systems raise any errors, or otherwise it should be <code>"NotSupportedError"</code>.</p></li>
                 <li><p>Call <var>resolver</var>'s <code>reject(value)</code> method with <var>error</var> as value argument.</p></li>
               </ol>
 
@@ -342,20 +342,6 @@
 
           <dd>
             <p>This parameter describes the options enabled on this <a>MIDIAccess</a> object.</p>
-          </dd>
-        </dl>
-      </section>
-
-      <section>
-        <h2><a>MIDIErrorCallback</a></h2>
-
-        <dl class="idl"
-            title="callback MIDIErrorCallback = void">
-          <dt>DOMError error</dt>
-
-          <dd>
-            A <code><a>DOMError</a></code> object representing the reason
-            why creating getting a <code><a>MIDIAccess</a></code> failed.
           </dd>
         </dl>
       </section>
