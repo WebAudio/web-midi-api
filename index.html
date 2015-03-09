@@ -736,6 +736,10 @@
               </dd>
             </dl>
           </dd>
+          <dt>void clear()</dt>
+          <dd>
+            <p>Clears any pending send data that has not yet been sent from the <code>MIDIOutput</code>'s queue.  The implementation will need to ensure the MIDI stream is left in a good state, so if the output port is in the middle of a sysex message, a sysex termination byte (0xf7) should be sent.</p>
+          </dd>
         </dl>
       </section>
     </section>
