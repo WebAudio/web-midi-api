@@ -448,9 +448,10 @@
             from the system.  (This might throw off the index of the 
             requested port.)  It is expected that the system will do the 
             best it can to match a port across instances of the MIDI API: 
-            for example, storing the port interface manufacturer, name and 
-            index in the id, and attempting to find any ports with 
-            that name to consider as a match. Applications may use the 
+            for example, an implementation may opaquely use some form of 
+            hash of the port interface manufacturer, name and 
+            index as the id, so that a reference to that port id is likely
+            to match the port when plugged in. Applications may use the 
             comparison of id of MIDIPorts to test for equality.</p>
         </dd>
         <dt>readonly attribute DOMString? manufacturer</dt>
