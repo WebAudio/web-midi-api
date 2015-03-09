@@ -694,7 +694,7 @@
             </p>
           </li>
         </ol>
-        <p>It is specifically noted that MIDI System Real-Time Messages may actually occur in the middle of system exclusive messages in the input stream; in this case, the System Real-Time messages will be dispatched as they occur, while the system exclusive message will be buffered until it is complete (and then dispatched).
+        <p>It is specifically noted that MIDI System Real-Time Messages may actually occur in the middle of other messages in the input stream; in this case, the System Real-Time messages will be dispatched as they occur, while the normal messages will be buffered until they are complete (and then dispatched).
         </p>
 
       </section>
