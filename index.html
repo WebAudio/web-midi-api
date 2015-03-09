@@ -6,7 +6,8 @@
 
     <style type="text/css" media="all">
       table {border-collapse: collapse; border: 1px solid #000; font: normal 80%/140% arial, helvetica, sans-serif; color: #555; background: #fff;}
-      td, th {border: 1px dotted #bbb; padding:.5em 1em; font-size: x-small; width: 10em; }
+/*      td, th {border: 1px dotted #bbb; padding:.5em 1em; font-size: x-small; width: 10em; }
+*/
       caption {padding: 0 0 .5em 0; text-align: left; font-size: 100%; font-weight: 500; text-align: center; color: #666; background: transparent;}
       table a {padding: 1px; text-decoration: none; font-wewight: bold; background: transparent;}
       table a:link {border-bottom: 1px dashed #ddd; color: #000;}
@@ -400,18 +401,25 @@
         </dd>
       </dl>
 
-      <dl class="idl" title="enum MIDIPortState">
+      <dl class="idl" title="enum MIDIPortDeviceState">
         <dt>disconnected</dt>
         <dd>
-          If a device that MIDIPort represents is disconnected, the state member MUST be this value.
+          The device that MIDIPort represents is disconnected from the system.  When a device is disconnected from the system, it should not appear in the relevant map of input and output ports.
         </dd>
         <dt>connected</dt>
         <dd>
-          If a device that MIDIPort represents is connected, and is not opened, the state member MUST be this value.
+          The device that MIDIPort represents is connected, and should appear in the map of input and output ports.
         </dd>
-        <dt>opened</dt>
+      </dl>
+
+      <dl class="idl" title="enum MIDIPortConnectionState">
+        <dt>open</dt>
         <dd>
-          If a device that MIDIPort represents is connected and opened, the state member MUST be this value.
+          The device that MIDIPort represents has been opened (either <a href="#widl-MIDIPort-open-Promise-MIDIPort">implicitly or explicitly</a>) and is available for use.
+        </dd>
+        <dt>closed</dt>
+        <dd>
+          The device that MIDIPort represents has not been opened, or has been explicitly closed.  Until a MIDIPort has been opened either explicitly (through <code><a href="#widl-MIDIPort-open-Promise-MIDIPort">open()</a></code>) or implicitly (by adding a <a href="#widl-MIDIInput-onmidimessage">midimessage</a> event handler on an input port, or calling <a href="#widl-MIDIOutput-send-void-sequence-octet--data-double-timestamp">send()</a> on an output port, this should be the default state of the device.
         </dd>
       </dl>
 
@@ -463,10 +471,13 @@
         <dd>
           <p>The version of the port.</p>
         </dd>
-        <dt>readonly attribute MIDIPortState state</dt>
+        <dt>readonly attribute MIDIPortDeviceState state</dt>
+        <dd>The state of the device.</dd>
+        <dt>readonly attribute MIDIPortConnectionState connection</dt>
+        <dd>The state of the connection to the device.</dd>
         <dt>attribute EventHandler onstatechange</dt>
         <dd>
-          <p>The handler called when an existing port changes the state attribute.</p>
+          <p>The handler called when an existing port changes its state or connection attributes.</p>
           <p>This <a>event handler</a>, of type <code><a href=
             "#event-midiport-statechange">statechange</a></code>,
             MUST be supported by all objects implementing
@@ -520,7 +531,7 @@
 
             <li><p>Attempt to obtain access to the given MIDI device in the 
                 system.  If the device is unavailable (e.g. is already in use by another
-                process and cannot be opened), jump to the step labeled
+                process and cannot be opened, or is disconnected), jump to the step labeled
                 <em>failure</em> below.  If the device available and access is
                 obtained, continue the following steps.</p></li>
 
@@ -577,20 +588,18 @@
 
             <li><p>Let <var>port</var> be the given <code><a>MIDIPort</a></code> object.</p></li>
 
-            <li><p>If the device is already closed (the state is already 
-                "connected" - e.g. the port has not yet been implicitly or explictly
-                opened, or close() has already been called on this MIDIPort), 
+            <li><p>If the device is already closed (the <code><a href="#widl-MIDIPort-connection">.connection</a></code> is already 
+                <code><a href="#idl-def-MIDIPortConnectionState.closed">"closed"</a></code> - e.g. the port has not yet been implicitly or explictly
+                opened, or <code><a href="#widl-MIDIPort-close-Promise-MIDIPort">close()</a></code> has already been called on this MIDIPort), 
                 jump to the step labeled <em>closed</em> below. </p></li>
 
-            <li><p>If the device is in the "disconnected" state, jump to the step labeled
-                <em>failure</em> below.  If the device available and access is
-                obtained, continue the following steps.</p></li>
+            <li><p>If the port is an input port, skip to the next step.  If the output port's <code><a href="#widl-MIDIPort-state">.state</a></code> is <code><a href="#idl-def-MIDIPortDeviceState.disconnected">"disconnected"</a></code>, clear all pending send data and skip to the next step.  Clear any pending send data in the system with timestamps in the future, then finish sending any send messages with no timestamp or with a timestamp in the past or present.</p></li>
 
             <li><p>Close access to the port in the underlying system, and
               release any blocking resources to the underlying system.</p></li>
 
-            <li><p><em><b>success</b></em>: Change the <code>state</code> attribute of the MIDIPort to 
-              <code>"connected"</code>, and enqueue a new <code><a>MIDIConnectionEvent</a></code> 
+            <li><p><em><b>success</b></em>: Change the <code>connection</code> attribute of the MIDIPort to 
+              <code>"closed"</code>, and enqueue a new <code><a>MIDIConnectionEvent</a></code> 
               to the <code><a href="#event-midiaccess-statechange">statechange</a></code> 
               handler of the <code><a>MIDIAccess</a></code> and to the 
               <code><a href="#event-midiport-statechange">statechange</a></code> 
