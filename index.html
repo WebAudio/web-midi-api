@@ -548,9 +548,9 @@
             <li><p>Terminate these steps.</p></li>
 
             <li><p><em><b>failure</b></em>: Let <var>error</var> be a new 
-              <code><a>DOMError</a></code>. This should be of type 
+              <code><a>DOMException</a></code>. This exception's .name should be
               <code>"InvalidAccessError"</code> if the port is unavailable, 
-              or <code>InvalidStateError</code> if the port is disconnected.</p></li>
+              or <code>"InvalidStateError"</code> if the port is disconnected.</p></li>
 
             <li><p>Call <var>resolver</var>'s <code>reject(value)</code> method 
               with <var>error</var> as value argument.</p></li>
@@ -610,9 +610,9 @@
 
             <li><p>Terminate these steps.</p></li>
 
-            <li><p><em><b>failure</b></em>: Let <var>error</var> be a new 
-              <code><a>DOMError</a></code>. This should be of type 
-              <code>InvalidStateError</code> if the port is disconnected.</p></li>
+             <li><p><em><b>failure</b></em>: Let <var>error</var> be a new 
+              <code><a>DOMException</a></code>. This exception's .name should be 
+              <code>"InvalidStateError"</code> if the port is disconnected.</p></li>
             <li><p>Call <var>resolver</var>'s <code>reject(value)</code> method 
               with <var>error</var> as value argument.</p></li>
           </ol>
