@@ -4,20 +4,7 @@
     <title>Web MIDI API</title>
     <meta charset="utf-8" />
 
-    <style type="text/css" media="all">
-      table {border-collapse: collapse; border: 1px solid #000; font: normal 80%/140% arial, helvetica, sans-serif; color: #555; background: #fff;}
-/*      td, th {border: 1px dotted #bbb; padding:.5em 1em; font-size: x-small; width: 10em; }
-*/
-      caption {padding: 0 0 .5em 0; text-align: left; font-size: 100%; font-weight: 500; text-align: center; color: #666; background: transparent;}
-      table a {padding: 1px; text-decoration: none; font-wewight: bold; background: transparent;}
-      table a:link {border-bottom: 1px dashed #ddd; color: #000;}
-      table a:visited {border-bottom: 1px dashed #ccc; text-decoration: line-through; color: #808080;}
-      table a:hover {border-bottom: 1px dashed #bbb; color: #666;}
-      thead th, tfoot th {white-space: nowrap; border: 1px solid #000; text-align: center; color: black; background: #ddd;}
-      tfoot td {border: 2px solid #000;}
-      tbody th {color: #060606; }
-      tbody th, tbody td {vertical-align: middle; text-align: center; }
-    </style>
+
     <!-- 
       === NOTA BENE ===
       For the three scripts below, if your spec resides on dev.w3 you can check them
@@ -31,15 +18,15 @@
           copyrightStart: "2015",
           edDraftURI: "http://webaudio.github.io/web-midi-api/",
           editors: [
-            { name: "Jussi Kalliokoski", 
-              url: "http://juss.in",   
-              w3cid: "45545" 
-            },
             { name: "Chris Wilson", 
               url: "mailto:cwilso@google.com",   
               w3cid: "3742",
               company: "Google", 
               companyURL: "http://google.com"
+            },
+            { name: "Jussi Kalliokoski", 
+              url: "http://juss.in",   
+              w3cid: "45545" 
             },
           ],
           otherLinks: [{
@@ -421,6 +408,10 @@
         <dd>
           The device that MIDIPort represents has not been opened, or has been explicitly closed.  Until a MIDIPort has been opened either explicitly (through <code><a href="#widl-MIDIPort-open-Promise-MIDIPort">open()</a></code>) or implicitly (by adding a <a href="#widl-MIDIInput-onmidimessage">midimessage</a> event handler on an input port, or calling <a href="#widl-MIDIOutput-send-void-sequence-octet--data-double-timestamp">send()</a> on an output port, this should be the default state of the device.
         </dd>
+        <dt>pending</dt>
+        <dd>
+          The device that MIDIPort represents has been opened (either <a href="#widl-MIDIPort-open-Promise-MIDIPort">implicitly or explicitly</a>), but the device has subsequently been disconnected and is unavailable for use.  If the device is reconnected, prior to sending a <code><a href="#widl-MIDIPort-onstatechange">statechange</a></code> event, the system should attempt to reopen the device (following the <a href="#dfn-algorithm-to-open-a-midiport">algorithm to open a MIDIPort</a>); this will result in either the connection state transitioning to "open" or to "closed".
+        </dd>
       </dl>
 
       <dl title="interface MIDIPort : EventTarget"
@@ -501,16 +492,22 @@
             When invoked, this method returns a Promise object representing a 
             request for access to the given MIDI port on the user's system.
           </p>
-
-          <p>
-            When access to the port has been obtained (and the port is ready for
+          <p>If the port device has a state of 
+            <code><a href="#idl-def-MIDIPortDeviceState.connected">"connected"</a></code>, 
+            when access to the port has been obtained (and the port is ready for
             input or output), the vended Promise's <var>resolveCallback</var> is 
             invoked with a <code><a>MIDIPort</a></code> object as its argument.  
           </p>
-          <p>If access to the port is not available (for example, the port is 
+          <p>If access to a connected port is not available (for example, the port is 
             already in use in an exclusive-access-only platform), the Promise's 
             <var>rejectCallback</var> (if any) is invoked.
           </p>
+          <p>If <code>open()</code> is called on a port that is 
+            <code><a href="#idl-def-MIDIPortDeviceState.disconnected">"disconnected"</a></code>,
+            the port's <code><a href="">.connection</a></code> will transition to 
+            <code><a href="#idl-def-MIDIPortConnectionState.pending">"pending"</a></code>,
+            until the port becomes <code><a href="#idl-def-MIDIPortDeviceState.connected">"connected"</a></code> or all references to it are dropped.
+
           <p id="midiport-open-algorithm">
             When this method is called, the user
             agent MUST run the <dfn>algorithm to open a MIDIPort</dfn>:
@@ -523,27 +520,55 @@
             <li><p>Return <var>promise</var> and run the following steps 
               asynchronously.</p></li>
 
-            <li><p>Let <var>port</var> be the given <code><a>MIDIPort</a></code> object.</p></li>
+            <li><p>Let <var>port</var> be the given 
+              <code><a href="#idl-def-MIDIPort">MIDIPort</a></code> 
+              object.</p></li>
 
-            <li><p>If the device is already open (e.g. open() has already been
-                called on this MIDIPort, or the port has been implicitly 
-                opened), jump to the step labeled <em>opened</em> below.</p></li>
+            <li><p>If the device's state is already <code><a 
+              href="#idl-def-MIDIPortConnectionState.open">"open"</a></code> 
+              (e.g. open() has already been called on this MIDIPort, or the 
+              port has been implicitly opened), jump to the step labeled 
+              <em>opened</em> below.</p></li>
+
+            <li><p>If the device's state is <code><a 
+              href="#idl-def-MIDIPortConnectionState.pending">"pending"</a></code> 
+              (i.e. the connection had been opened and the device was 
+              subsequently disconnected), jump to the step labeled 
+              <em>opened</em> below.</p></li>
+
+            <li><p>If the device's state is <code><a 
+              href="#idl-def-MIDIPortDeviceState.disconnected">"disconnected"</a></code>, 
+              change the <code><a href="">state</a></code> attribute of the 
+              <code><a href="#idl-def-MIDIPort">MIDIPort</a></code> to 
+              <code><a href="#idl-def-MIDIPortConnectionState.pending">"pending"</a></code>, 
+              and enqueue a new <code><a 
+              href="#idl-def-MIDIConnectionEvent">MIDIConnectionEvent</a></code> 
+              to the <code><a href="#event-midiaccess-statechange">statechange</a></code> 
+              handler of the <code><a>MIDIAccess</a></code> and to the 
+              <code><a href="#event-midiport-statechange">statechange</a></code> 
+              handler of the <code><a href="#idl-def-MIDIPort">MIDIPort</a></code> 
+              and jump to the step labeled <em>opened</em> below.</p></li>
 
             <li><p>Attempt to obtain access to the given MIDI device in the 
-                system.  If the device is unavailable (e.g. is already in use by another
-                process and cannot be opened, or is disconnected), jump to the step labeled
-                <em>failure</em> below.  If the device available and access is
-                obtained, continue the following steps.</p></li>
+              system.  If the device is unavailable (e.g. is already in use by another
+              process and cannot be opened, or is disconnected), jump to the step labeled
+              <em>failure</em> below.  If the device available and access is
+              obtained, continue the following steps.</p></li>
 
             <li><p><em><b>success</b></em>: Change the <code>state</code> attribute of the MIDIPort to 
               <code>"opened"</code>, and enqueue a new <code><a>MIDIConnectionEvent</a></code> 
               to the <code><a href="#event-midiaccess-statechange">statechange</a></code> 
               handler of the <code><a>MIDIAccess</a></code> and to the 
               <code><a href="#event-midiport-statechange">statechange</a></code> 
-              handler of the <code><a>MIDIPort</a></code>.</p>
+              handler of the <code><a href="#idl-def-MIDIPort">MIDIPort</a></code>.</p></li>
 
-            <li><p><em><b>opened</b></em>: Call <var>resolver</var>'s <code>accept(value)</code> method with 
-              <var>port</var> as value argument.</p></li>
+            <li><p>If this port is an output port and has any pending data 
+              that is waiting to be sent, asynchronously begin sending that 
+              data.</p></li>
+
+            <li><p><em><b>opened</b></em>: Call <var>resolver</var>'s 
+              <code>accept(value)</code> method with <var>port</var> as 
+              value argument.</p></li>
 
             <li><p>Terminate these steps.</p></li>
 
@@ -559,7 +584,8 @@
         <dt>Promise&lt;MIDIPort&gt; close()</dt>
         <dd>
           <p>
-            Makes the MIDI device corresponding to the <a>MIDIPort</a> explicitly 
+            Makes the MIDI device corresponding to the 
+            <code><a href="#idl-def-MIDIPort">MIDIPort</a></code> explicitly 
             unavailable (subsequently changing the state from "open" to "connected").
             Note that successful invocation of this method will result in MIDI 
             messages no longer being delivered to MIDIMessageEvent handlers on a 
@@ -586,33 +612,48 @@
             <li><p>Return <var>promise</var> and run the following steps 
               asynchronously.</p></li>
 
-            <li><p>Let <var>port</var> be the given <code><a>MIDIPort</a></code> object.</p></li>
+            <li><p>Let <var>port</var> be the given 
+              <code><a href="#idl-def-MIDIPort">MIDIPort</a></code> object.</p></li>
 
-            <li><p>If the device is already closed (the <code><a href="#widl-MIDIPort-connection">.connection</a></code> is already 
-                <code><a href="#idl-def-MIDIPortConnectionState.closed">"closed"</a></code> - e.g. the port has not yet been implicitly or explictly
-                opened, or <code><a href="#widl-MIDIPort-close-Promise-MIDIPort">close()</a></code> has already been called on this MIDIPort), 
-                jump to the step labeled <em>closed</em> below. </p></li>
+            <li><p>If the port is already closed (its <code><a 
+              href="#widl-MIDIPort-connection">.connection</a></code> is <code><a 
+              href="#idl-def-MIDIPortConnectionState.closed">"closed"</a></code> 
+              - e.g. the port has not yet been implicitly or explictly opened, 
+              or <code><a href="#widl-MIDIPort-close-Promise-MIDIPort">close()</a></code> 
+              has already been called on this <code><a 
+              href="#idl-def-MIDIPort">MIDIPort</a></code>), jump to the step 
+              labeled <em><b>closed</b></em> below. </p></li>
 
-            <li><p>If the port is an input port, skip to the next step.  If the output port's <code><a href="#widl-MIDIPort-state">.state</a></code> is <code><a href="#idl-def-MIDIPortDeviceState.disconnected">"disconnected"</a></code>, clear all pending send data and skip to the next step.  Clear any pending send data in the system with timestamps in the future, then finish sending any send messages with no timestamp or with a timestamp in the past or present.</p></li>
+            <li><p>If the port is an input port, skip to the next step.  If 
+              the output port's <code><a href="#widl-MIDIPort-state">.state</a></code> 
+              is not <code><a href="#idl-def-MIDIPortDeviceState.connected">"connected"</a></code>, 
+              clear all pending send data and skip to the next step.  Clear 
+              any pending send data in the system with timestamps in the 
+              future, then finish sending any send messages with no timestamp 
+              or with a timestamp in the past or present, prior to proceeding 
+              to the next step.</p></li>
 
-            <li><p>Close access to the port in the underlying system, and
-              release any blocking resources to the underlying system.</p></li>
+            <li><p>Close access to the port in the underlying system if open, 
+              and release any blocking resources in the underlying system.</p></li>
 
-            <li><p><em><b>success</b></em>: Change the <code>connection</code> attribute of the MIDIPort to 
-              <code>"closed"</code>, and enqueue a new <code><a>MIDIConnectionEvent</a></code> 
-              to the <code><a href="#event-midiaccess-statechange">statechange</a></code> 
+            <li><p><em><b>success</b></em>: Change the <code>connection</code> 
+              attribute of the MIDIPort to <code>"closed"</code>, and enqueue 
+              a new <code><a>MIDIConnectionEvent</a></code> to the <code><a 
+              href="#event-midiaccess-statechange">statechange</a></code> 
               handler of the <code><a>MIDIAccess</a></code> and to the 
               <code><a href="#event-midiport-statechange">statechange</a></code> 
               handler of the <code><a>MIDIPort</a></code>.</p>
 
-            <li><p><em><b>closed</b></em>: Call <var>resolver</var>'s <code>accept(value)</code> method with 
+            <li><p><em><b>closed</b></em>: Call <var>resolver</var>'s 
+              <code>accept(value)</code> method with 
               <var>port</var> as value argument.</p></li>
 
             <li><p>Terminate these steps.</p></li>
 
-             <li><p><em><b>failure</b></em>: Let <var>error</var> be a new 
+            <li><p><em><b>failure</b></em>: Let <var>error</var> be a new 
               <code><a>DOMException</a></code>. This exception's .name should be 
               <code>"InvalidStateError"</code> if the port is disconnected.</p></li>
+
             <li><p>Call <var>resolver</var>'s <code>reject(value)</code> method 
               with <var>error</var> as value argument.</p></li>
           </ol>
@@ -728,11 +769,16 @@
               If <var>data</var> is a system exclusive message, and the <code><a>MIDIAccess</a></code> did not enable system exclusive access, throw an <code>InvalidAccessError</code> exception.
             </p>
             <p>
-                If the port is <code>"disconnected"</code>, throw an <code>InvalidStateError</code> exception.
+                If the port is <code><a 
+                href="#idl-def-MIDIPortDeviceState.disconnected">"disconnected"</a></code>, 
+                throw an <code>InvalidStateError</code> exception.
             </p>
             <p>
-                If the port is <code>"connected"</code> (i.e. the port has not yet been opened), try to <a href="#midiport-open-algorithm">open the port</a>.  
-                If the port can not be opened, <var>data</var> will be disposed of.
+                If the port is <code><a 
+                href="#idl-def-MIDIPortDeviceState.connected">"connected"</a></code> 
+                but the connection is <code><a 
+                href="#idl-def-MIDIPortConnectionState.closed">"closed"</a></code>, 
+                asynchronously try to <a href="#midiport-open-algorithm">open the port</a>.  
             </p>
             <dl class='parameters'>
               <dt>sequence&lt;octet&gt; data</dt>
@@ -786,8 +832,33 @@
 
     <section>
       <h2 id="MIDIConnectionEvent"><a>MIDIConnectionEvent</a> Interface</h2>
-      <p>An event object implementing this interface is passed to a MIDIAccess' ondisconnect handler, and (if present) to any MIDIPorts referencing the port when a previously-available port becomes unavailable (for example, when a MIDI interface is disconnected), and is also passed to a MIDIAccess' onconnect handler when a new port becomes available (for example, when a MIDI interface that has been disconnected is plugged in to the computer).</p>
-      <p>Connection events <b>are not required to be dispatched</b>, as some underlying systems do not support them as notification events; or, such systems may have long time delays as they poll for new devices infrequently.</p>
+      <p>An event object implementing this interface is passed to a 
+        MIDIAccess' onstatechange handler when a new port becomes available 
+        (for example, when a MIDI device is first plugged in to the computer), 
+        when a previously-available port becomes unavailable, or becomes 
+        available again (for example, when a MIDI interface is disconnected, 
+        then reconnected) and (if present) is also passed to the onstatechange 
+        handlers for any <code><a href="#idl-def-MIDIPort">MIDIPort</a></code>s 
+        referencing the port.</p>
+      <p>When a <code><a href="#idl-def-MIDIPort">MIDIPort</a></code> is in 
+        the <code><a 
+        href="#idl-def-MIDIPortConnectionState.pending">"pending"</a></code> 
+        state and the device is reconnected to the host system, prior to 
+        firing a <code><a href="#event-midiaccess-statechange">statechange</a></code> 
+        event the <a href="midiport-open-algorithm">MIDIPort open 
+        algorithm</a> is run on it to attempt to reopen the port. If this 
+        transition fails (e.g. the Port is reserved by something else in the 
+        underlying system, and therefore unavailable for use), the connection 
+        state moves to "closed", else it transitions back to "open". This is 
+        done prior to the <code><a 
+        href="#event-midiaccess-statechange">statechange</a></code> event for 
+        the device state change so that the event will reflect the final 
+        connection state as well as the device state.</p>
+      <p>Some underlying systems may not provide notification events for device
+        connection status; such systems may have long time delays as they poll 
+        for new devices infrequently.  As such, it is suggested that heavy 
+        reliance on connection events not be used.</p>
+
       <dl title="[Constructor(DOMString type, optional MIDIConnectionEventInit eventInitDict)] interface MIDIConnectionEvent : Event"
           class="idl">
         <dt>readonly attribute MIDIPort port</dt>
