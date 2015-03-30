@@ -635,7 +635,7 @@
             <li><p>Close access to the port in the underlying system if open, 
               and release any blocking resources in the underlying system.</p></li>
 
-            <li><p><em><b>success</b></em>: Change the <code>connection</code> 
+            <li><p>Change the <code>connection</code> 
               attribute of the MIDIPort to <code>"closed"</code>, and enqueue 
               a new <code><a>MIDIConnectionEvent</a></code> to the <code><a 
               href="#event-midiaccess-statechange">statechange</a></code> 
@@ -648,13 +648,6 @@
               <var>port</var> as value argument.</p></li>
 
             <li><p>Terminate these steps.</p></li>
-
-            <li><p><em><b>failure</b></em>: Let <var>error</var> be a new 
-              <code><a>DOMException</a></code>. This exception's .name should be 
-              <code>"InvalidStateError"</code> if the port is disconnected.</p></li>
-
-            <li><p>Call <var>resolver</var>'s <code>reject(value)</code> method 
-              with <var>error</var> as value argument.</p></li>
           </ol>
         </dd>
       </dl>
