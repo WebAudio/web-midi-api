@@ -528,13 +528,13 @@
               href="#idl-def-MIDIPortConnectionState.open">"open"</a></code> 
               (e.g. open() has already been called on this MIDIPort, or the 
               port has been implicitly opened), jump to the step labeled 
-              <em>opened</em> below.</p></li>
+              <em>success</em> below.</p></li>
 
             <li><p>If the device's state is <code><a 
               href="#idl-def-MIDIPortConnectionState.pending">"pending"</a></code> 
               (i.e. the connection had been opened and the device was 
               subsequently disconnected), jump to the step labeled 
-              <em>opened</em> below.</p></li>
+              <em>success</em> below.</p></li>
 
             <li><p>If the device's state is <code><a 
               href="#idl-def-MIDIPortDeviceState.disconnected">"disconnected"</a></code>, 
@@ -547,15 +547,15 @@
               handler of the <code><a>MIDIAccess</a></code> and to the 
               <code><a href="#event-midiport-statechange">statechange</a></code> 
               handler of the <code><a href="#idl-def-MIDIPort">MIDIPort</a></code> 
-              and jump to the step labeled <em>opened</em> below.</p></li>
+              and jump to the step labeled <em>success</em> below.</p></li>
 
             <li><p>Attempt to obtain access to the given MIDI device in the 
               system.  If the device is unavailable (e.g. is already in use by another
               process and cannot be opened, or is disconnected), jump to the step labeled
-              <em>failure</em> below.  If the device available and access is
+              <em>failure</em> below.  If the device is available and access is
               obtained, continue the following steps.</p></li>
 
-            <li><p><em><b>success</b></em>: Change the <code>state</code> attribute of the MIDIPort to 
+            <li><p>Change the <code>state</code> attribute of the MIDIPort to 
               <code>"opened"</code>, and enqueue a new <code><a>MIDIConnectionEvent</a></code> 
               to the <code><a href="#event-midiaccess-statechange">statechange</a></code> 
               handler of the <code><a>MIDIAccess</a></code> and to the 
@@ -566,7 +566,7 @@
               that is waiting to be sent, asynchronously begin sending that 
               data.</p></li>
 
-            <li><p><em><b>opened</b></em>: Call <var>resolver</var>'s 
+            <li><p><em><b>success</b></em>: Call <var>resolver</var>'s 
               <code>accept(value)</code> method with <var>port</var> as 
               value argument.</p></li>
 
@@ -574,8 +574,7 @@
 
             <li><p><em><b>failure</b></em>: Let <var>error</var> be a new 
               <code><a>DOMException</a></code>. This exception's .name should be
-              <code>"InvalidAccessError"</code> if the port is unavailable, 
-              or <code>"InvalidStateError"</code> if the port is disconnected.</p></li>
+              <code>"InvalidAccessError"</code> if the port is unavailable.</p></li>
 
             <li><p>Call <var>resolver</var>'s <code>reject(value)</code> method 
               with <var>error</var> as value argument.</p></li>
