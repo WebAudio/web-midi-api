@@ -524,13 +524,13 @@
               <code><a href="#idl-def-MIDIPort">MIDIPort</a></code> 
               object.</p></li>
 
-            <li><p>If the device's state is already <code><a 
+            <li><p>If the device's connection is already <code><a 
               href="#idl-def-MIDIPortConnectionState.open">"open"</a></code> 
               (e.g. open() has already been called on this MIDIPort, or the 
               port has been implicitly opened), jump to the step labeled 
               <em>success</em> below.</p></li>
 
-            <li><p>If the device's state is <code><a 
+            <li><p>If the device's connection is <code><a 
               href="#idl-def-MIDIPortConnectionState.pending">"pending"</a></code> 
               (i.e. the connection had been opened and the device was 
               subsequently disconnected), jump to the step labeled 
@@ -538,7 +538,7 @@
 
             <li><p>If the device's state is <code><a 
               href="#idl-def-MIDIPortDeviceState.disconnected">"disconnected"</a></code>, 
-              change the <code><a href="">state</a></code> attribute of the 
+              change the <code><a href="">connection</a></code> attribute of the 
               <code><a href="#idl-def-MIDIPort">MIDIPort</a></code> to 
               <code><a href="#idl-def-MIDIPortConnectionState.pending">"pending"</a></code>, 
               and enqueue a new <code><a 
@@ -555,8 +555,8 @@
               <em>failure</em> below.  If the device is available and access is
               obtained, continue the following steps.</p></li>
 
-            <li><p>Change the <code>state</code> attribute of the MIDIPort to 
-              <code>"opened"</code>, and enqueue a new <code><a>MIDIConnectionEvent</a></code> 
+            <li><p>Change the <code>connection</code> attribute of the MIDIPort to 
+              <code>"open"</code>, and enqueue a new <code><a>MIDIConnectionEvent</a></code> 
               to the <code><a href="#event-midiaccess-statechange">statechange</a></code> 
               handler of the <code><a>MIDIAccess</a></code> and to the 
               <code><a href="#event-midiport-statechange">statechange</a></code> 
