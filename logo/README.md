@@ -5,6 +5,16 @@ web-midi-api logo.  For more information, see this thread:
 
 - https://lists.w3.org/Archives/Public/public-audio/2015AprJun/0018.html
 
+## Legal Notice
+
+The MIDI logo cannot be used without the permission of the [MMA](http://www.midi.org/).
+The [HTML5 Logo](http://www.w3.org/html/logo/) and any other properties in this folder
+cannot be used without the permission of the copyright / trademark holders.
+
+This is purely a working folder for sharing ideas and the assets contained within should
+not be used until finalized.
+
+
 ## Quick Thoughts
 
 - Incorporate MIDI logo
@@ -44,11 +54,6 @@ web-midi-api logo.  For more information, see this thread:
 
 - SVG-edit - http://svg-edit.googlecode.com/
 - potrace 1.12, written by Peter Selinger 2001-2015
-
-
-## License
-
-- w3c: http://www.w3.org/Consortium/Legal/2002/copyright-software-20021231
-- midi logo: www.midi.org
+- midi logo: www.midi.org (cannot be used without their permission)
 - "web" text/font: http://www.google.com/fonts (Source Sans Pro)
 
