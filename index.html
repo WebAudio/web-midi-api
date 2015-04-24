@@ -935,7 +935,7 @@ navigator.requestMIDIAccess( { sysex: true } ).then( onMIDISuccess, onMIDIFailur
 }
 
 function startLoggingMIDIInput( midiAccess, indexOfPort ) {
-  midiAccess.inputs.forEach( function(entry) {entry.value.onmidimessage = onMIDIMessage;});
+  midiAccess.inputs.forEach( function(entry) {entry.onmidimessage = onMIDIMessage;});
 }</pre>
       </section>
 
