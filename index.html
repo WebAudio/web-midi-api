@@ -909,13 +909,15 @@ navigator.requestMIDIAccess( { sysex: true } ).then( onMIDISuccess, onMIDIFailur
         <h3>Listing Inputs and Outputs</h3>
         <p>This example gets the list of the input and output ports and prints their information to the console log, using ES6 for...of notation.
           <pre class="code es-code">function listInputsAndOutputs( midiAccess ) {
-  for (var input in midiAccess.inputs) {
+  for (var entry of midiAccess.inputs) {
+    var input = entry[1];
     console.log( "Input port [type:'" + input.type + "'] id:'" + input.id +
       "' manufacturer:'" + input.manufacturer + "' name:'" + input.name +
       "' version:'" + input.version + "'" );
   }
 
-  for (var output in midiAccess.outputs) {
+  for (var entry of midiAccess.outputs) {
+    var output = entry[1];
     console.log( "Output port [type:'" + output.type + "'] id:'" + output.id +
       "' manufacturer:'" + output.manufacturer + "' name:'" + output.name +
       "' version:'" + output.version + "'" );
