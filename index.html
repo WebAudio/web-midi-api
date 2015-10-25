@@ -164,8 +164,7 @@
                 scenarios, this permission may have already been implicitly or
                 explicitly granted, in which case this prompt may not appear. 
                 If the user gives express permission or the call is otherwise 
-                approved, the vended Promise's <var>resolveCallback</var> is invoked, as a <code><a>MIDISuccessCallback</a></code> (i.e., with a 
-                <code><a>MIDIAccess</a></code> object and a <code><a>MIDIOptions</a></code> object as its arguments.  The 
+                approved, the vended Promise is rejected.  The 
                 underlying system may choose to allow the user to select 
                 specific MIDI interfaces to expose to this API (i.e. pick 
                 and choose interfaces on an individual basis), although 
@@ -173,8 +172,7 @@
                 (or not) based on whether system exclusive support is
                 requested, as system exclusive has greater privacy and
                 security implications.</p>
-              <p>If the user declines or the call is denied for any other reason, the Promise's 
-                <var>rejectCallback</var> (if any) is invoked with a <code><a>DOMException</a></code> parameter.
+              <p>If the user declines or the call is denied for any other reason, the Promise is rejected with a <code><a>DOMException</a></code> parameter.
               </p>
               <p>
                 When the <dfn id="dom-navigator-requestmidiaccess">
@@ -242,7 +240,6 @@
 
           <dd>
             <p>This member informs the system whether the ability to send and receive system exclusive messages is requested or allowed on a given <a>MIDIAccess</a> object.  On the option passed to <code><a>requestMIDIAccess</a></code>, if this member is set to true, but system exclusive support is denied (either by policy or by user action), the access request will fail with a <code>"SecurityError"</code> error.  If this support is not requested (and allowed), the system will throw exceptions if the user tries to send system exclusive messages, and will silently mask out any system exclusive messages received on the port.</p>
-            <p>In the <code>options</code> parameter passed to the resolveCallback, this member indicates whether system exclusive is allowed on the MIDIAccess.</p>
           </dd>
         </dl>
       </section>
@@ -300,37 +297,6 @@
       document.getElementById("outputportselector").add(opt);
     }</pre>
       </section>
-
-
-      <section>
-        <h2><a>MIDISuccessCallback</a></h2>
-
-        <dl class="idl"
-            title="callback MIDISuccessCallback = void">
-          <dt>MIDIAccess access</dt>
-
-          <dd>
-            <p>
-              A <code><a>MIDIAccess</a></code> object created to provide
-            script access to the user's MIDI devices.  This object is used
-            to enumerate and obtain access to individual MIDI devices.
-            <p><em>Note</em>: The term "MIDI device" in this specification 
-            refers to a MIDI interface available to the host system; for 
-            example, if a hardware MIDI adapter is connected to the host
-            system, it will be enumerated as a single device, even if 
-            several MIDI-supporting devices (such as synthesizers or drum
-            machines) are plugged into hardware MIDI ports on the 
-            adapter.
-          </dd>
-          <dt>MIDIOptions options</dt>
-
-          <dd>
-            <p>This parameter describes the options enabled on this <a>MIDIAccess</a> object.</p>
-          </dd>
-        </dl>
-      </section>
-
-    </section>
 
     <section>
       <h2 id="MIDIAccess"><a>MIDIAccess</a> Interface</h2>
@@ -491,12 +457,10 @@
           <p>If the port device has a state of 
             <code><a href="#idl-def-MIDIPortDeviceState.connected">"connected"</a></code>, 
             when access to the port has been obtained (and the port is ready for
-            input or output), the vended Promise's <var>resolveCallback</var> is 
-            invoked with a <code><a>MIDIPort</a></code> object as its argument.  
+            input or output), the vended Promise is resolved.  
           </p>
           <p>If access to a connected port is not available (for example, the port is 
-            already in use in an exclusive-access-only platform), the Promise's 
-            <var>rejectCallback</var> (if any) is invoked.
+            already in use in an exclusive-access-only platform), the Promise is rejected (if any) is invoked.
           </p>
           <p>If <code>open()</code> is called on a port that is 
             <code><a href="#idl-def-MIDIPortDeviceState.disconnected">"disconnected"</a></code>,
@@ -595,9 +559,8 @@
             request for access to the given MIDI port on the user's system.
             When the port has been closed (and therefore, in exclusive access
             systems, the port is available to other applications), the vended 
-            Promise's <var>resolveCallback</var> is invoked with the 
-            <code><a>MIDIPort</a></code> object as its argument.  If the port is 
-            disconnected, the Promise's <var>rejectCallback</var> (if any) is invoked.</p>
+            Promise is resolved.  If the port is 
+            disconnected, the Promise is rejected.</p>
           <p>When the <code>close()</code> method is called, the user
             agent MUST run the <dfn>algorithm to close a MIDIPort</dfn>:</p>
 
