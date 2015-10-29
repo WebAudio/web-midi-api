@@ -256,7 +256,7 @@
     var numberOfMIDIInputs = inputs.size;
 
     // add each of the ports to a &lt;select&gt; box
-    inputs.forEach( function( key, port ) {
+    inputs.forEach( function( port, key ) {
       var opt = document.createElement("option");
       opt.text = port.name;
       document.getElementById("inputportselector").add(opt);
