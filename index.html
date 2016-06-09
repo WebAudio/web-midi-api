@@ -325,6 +325,7 @@
             MUST be supported by all objects implementing the
             <code><a>MIDIAccess</a></code> interface.
           </p>
+          <p class="note">It is important to understand that leaving an <a>EventHandler</a> attached to this object will prevent it from being garbage-collected; when finished using the <a>MIDIAccess</a>, you should remove any <a>onstatechange<a> listeners.</p>
           <p id="event-midiaccess-statechange">
               Whenever a previously unavailable MIDI port becomes available for use, or an existing port changes the state attribute,
               the user agent SHOULD run the following steps:</p>
@@ -442,6 +443,7 @@
             MUST be supported by all objects implementing
             <code><a>MIDIPort</a></code> interface.
           </p>
+          <p class="note">It is important to understand that leaving an <a>EventHandler</a> attached to this object will prevent it from being garbage-collected; when finished using the <a>MIDIPort</a>, you should remove any <a>onstatechange<a> listeners.</p>
         </dd>
         <dt>Promise&lt;MIDIPort&gt; open()</dt>
         <dd>
