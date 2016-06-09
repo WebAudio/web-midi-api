@@ -753,14 +753,9 @@
 
     <section>
       <h2 id="MIDIMessageEvent"><a>MIDIMessageEvent</a> Interface</h2>
-      <p>An event object implementing this interface is passed to a MIDIInput's onmidimessage handler when MIDI messages are received.</p>
+      <p>An event object implementing this interface is passed to a MIDIInput's onmidimessage handler when MIDI messages are received.  Note that the DOM <code><a>Event</a></code> <code><a>timeStamp</a></code> property is defined as a <code><a>DOMHighResTimeStamp</a></code>, and represents the high-resolution time of when the event was received or is to be sent.</p>
       <dl title="[Constructor(DOMString type, optional MIDIMessageEventInit eventInitDict)] interface MIDIMessageEvent : Event"
           class="idl">
-        <dt>readonly attribute DOMHighResTimeStamp receivedTime</dt>
-        <dd>
-          <p>A <code>DOMHighResTimeStamp</code> specifying when the event occurred.</p>
-          <p class="note">The DOM4 <a class="externalDFN">Event</a> object has a timeStamp member in the event object that will be filled out with the current time, but that it is lower precision (DOMTimeStamp is defined as an integer number of milliseconds), has a different zero reference (DOMTimeSTamp is the number of milliseconds that has passed since 00:00:00 UTC on 1 January 1970), and therefore is less suitable for MIDI applications.</p>
-        </dd>
         <dt>readonly attribute Uint8Array data</dt>
         <dd>
           <p>A Uint8Array containing the MIDI data bytes of a single MIDI message.</p>
@@ -770,9 +765,6 @@
         <h2 id="MIDIMessageEventInit"><a>MIDIMessageEventInit</a> Interface</h2>
         <dl title="dictionary MIDIMessageEventInit : EventInit"
             class="idl">
-          <dt>DOMHighResTimeStamp receivedTime</dt>
-          <dd>
-            <p>A <code>DOMHighResTimeStamp</code> specifying when the event occurred.</p>
           </dd>
           <dt>Uint8Array data</dt>
           <dd>
