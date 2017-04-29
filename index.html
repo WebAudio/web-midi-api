@@ -79,7 +79,7 @@
       <h2>Introduction</h2>
       <p>
         The Web MIDI API specification defines a means for web developers to
-        enumerate, manipulate and access MIDI devices - for example interfaces that may provide hardware MIDI ports with other devices plugged in to them and USB devices that support the USB-MIDI specification. Having a Web API for MIDI enables web applications that use existing software and
+        enumerate, manipulate and access MIDI devices - for example, interfaces that may provide hardware MIDI ports with other devices plugged in to them and USB devices that support the USB-MIDI specification. Having a Web API for MIDI enables web applications that use existing software and
         hardware synthesizers, hardware music controllers and light systems and other mechanical
         apparatus controlled by MIDI.  This API has been defined with this wide variety of use cases in mind.  
       </p>
@@ -169,7 +169,7 @@
                 and choose interfaces on an individual basis), although 
                 this is not required.  The system may also choose to prompt
                 (or not) based on whether system exclusive support is
-                requested, as system exclusive has greater privacy and
+                requested, as system exclusive access has greater privacy and
                 security implications.</p>
               <p>If the user declines or the call is denied for any other reason, the Promise is rejected with a <a>DOMException</a> parameter.
               </p>
@@ -289,20 +289,20 @@
             readonly maplike &lt;DOMString, MIDIOutput>;
           };
         </pre>
-        <p><a>MIDIOutputMap</a> is a maplike interface whose value is a MIDIOutput instance and key is its ID.</p>
+        <p>The <a>MIDIOutputMap</a> is a maplike interface whose value is a <a>MIDIOutput</a> instance and key is its ID.</p>
         <p>This type is used to represent all the currently available MIDI output ports.  This enables: 
           <pre class="example">    // to tell how many entries there are:
     var numberOfMIDIOutputs = outputs.size;
 
     // add each of the ports to a &lt;select&gt; box
-    outputs.forEach( function( key, port ) {
+    outputs.forEach( function( port, key ) {
       var opt = document.createElement("option");
       opt.text = port.name;
       document.getElementById("outputportselector").add(opt);
     });
 
     // or you could express in ECMAScript 6 as:
-    for (output of outputs.values()) {
+    for (let output of outputs.values()) {
       var opt = document.createElement("option");
       opt.text = output.name;
       document.getElementById("outputportselector").add(opt);
@@ -566,7 +566,7 @@
             <li><p>If the port is already closed (its <a 
               data-lt="MIDIPort.connection">.connection</a> is <a 
               data-lt="MIDIPortConnectionState.closed">"closed"</a> 
-              - e.g. the port has not yet been implicitly or explictly opened, 
+              - e.g. the port has not yet been implicitly or explicitly opened, 
               or <a data-lt="MIDIPort.close">close()</a> 
               has already been called on this <a 
              >MIDIPort</a>), jump to the step 
@@ -644,7 +644,7 @@
               MUST be supported by all objects implementing
               <a>MIDIInput</a> interface.
             </p>
-            <p>If the handler is set and the state attribute is not <code>"opened"</code>, underlying implementation tries to make the port available, and change the state attribute to <code>"opened"</code>.  If succeeded, <a>MIDIConnectionEvent</a> is delived to the corresponding <code>MIDIPort</code> and <code>MIDIAccess</code>.
+            <p>If the handler is set and the state attribute is not <code>"opened"</code>, underlying implementation tries to make the port available, and change the state attribute to <code>"opened"</code>.  If succeeded, <a>MIDIConnectionEvent</a> is delivered to the corresponding <code>MIDIPort</code> and <code>MIDIAccess</code>.
           </dd>
         </dl>
         
