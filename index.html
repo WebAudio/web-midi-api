@@ -142,6 +142,19 @@
     <section>
       <h2>Obtaining Access to MIDI Devices</h2>
 
+      <section>
+        <h2>Feature Policy Integration</h2>
+        <p>
+          <a data-lt="Navigator.requestMIDIAccess">requestMIDIAccess</a> is a <a data-cite="FEATURE-POLICY#policy-controlled-feature">policy-controlled feature</a>, as defined by <a data-cite="FEATURE-POLICY">Feature Policy</a>.
+        </p>
+        <p>
+          The <a data-cite="FEATURE-POLICY#feature-name">feature name</a> for <a data-lt="Navigator.requestMIDIAccess">requestMIDIAccess</a> is <dfn data-lt="midi-fp" data-lt-noDefault><code>midi</code></dfn>.
+        </p>
+        <p>
+          The <a data-cite="FEATURE-POLICY#default-allowlist">default allowlist</a> for <a data-lt="Navigator.requestMIDIAccess">requestMIDIAccess</a> is <code>["self"]</code>.
+        </p>
+      </section>
+
       <section data-dfn-for="Navigator">
           <h2>Extensions to the <dfn>Navigator</dfn> interface</h2>
 
@@ -182,6 +195,14 @@
               <ol>
                 <li><p>Let <var>promise</var> be a new Promise object and <var>resolver</var> be its associated resolver.</p></li>
                 <li><p>Return <var>promise</var> and run the following steps asynchronously.</p></li>
+                <li><p>Let <var>document</var> be the calling context's <a data-cite="!DOM#concept-document">Document</a>.</p></li>
+                <li>
+                  <p>
+                    If <var>document</var> is not <a data-cite="!HTML#allowed-to-use">allowed to use</a> the
+                    <a data-cite="FEATURE-POLICY#policy-controlled-feature">policy-controlled feature</a> named
+                    <a data-lt="midi-fp" data-lt-noDefault>midi</a>, jump to the step labeled <em>failure</em> below.
+                  </p>
+                </li>
 
                 <li><p>
                   Optionally, e.g. based on a previously-established user
