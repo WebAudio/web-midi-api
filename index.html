@@ -242,7 +242,7 @@
 
                 <li><p><em><b>failure</b></em>: Let <var>error</var> be a new <a>DOMException</a>.
                   This exception's .name should be <code>"SecurityError"</code> if the
-                  user or their security settings denied the application from creating a MIDIAccess instance with the requested options, <code>"AbortError"</code> if the page is going to be closed for a user navigation, <code>"InvalidStateError"</code> if the underlying systems raise any errors, or otherwise it should be <code>"NotSupportedError"</code>.</p></li>
+                  user or their security settings denied the application from creating a MIDIAccess instance with the requested options, or if the error is the result of <var>document</var> not being <a data-cite="!HTML#allowed-to-use">allowed to use</a> the feature,  <code>"AbortError"</code> if the page is going to be closed for a user navigation, <code>"InvalidStateError"</code> if the underlying systems raise any errors, or otherwise it should be <code>"NotSupportedError"</code>.</p></li>
                 <li><p>Call <var>resolver</var>'s <code>reject(value)</code> method with <var>error</var> as value argument.</p></li>
               </ol>
 
