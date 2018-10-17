@@ -160,7 +160,7 @@
 
           <pre class="idl">
             partial interface Navigator {
-              Promise &lt;MIDIAccess> requestMIDIAccess(optional MIDIOptions options);
+              [SecureContext] Promise &lt;MIDIAccess> requestMIDIAccess(optional MIDIOptions options);
             };
           </pre>
           <dl>
@@ -335,7 +335,7 @@
       <p>This interface provides the methods to list MIDI input and output
         devices, and obtain access to an individual device.</p>
       <pre class="idl">
-        interface MIDIAccess: EventTarget {
+        [SecureContext] interface MIDIAccess: EventTarget {
           readonly attribute MIDIInputMap inputs;
           readonly attribute MIDIOutputMap outputs;
           attribute EventHandler onstatechange;
@@ -377,7 +377,7 @@
 
       <p>This interface represents a MIDI input or output port.</p>
       <pre class="idl">
-        interface MIDIPort: EventTarget {
+        [SecureContext] interface MIDIPort: EventTarget {
           readonly attribute DOMString id;
           readonly attribute DOMString? manufacturer;
           readonly attribute DOMString? name;
@@ -653,7 +653,7 @@
       <section data-dfn-for="MIDIInput">
         <h3 id="MIDIInput"><dfn>MIDIInput</dfn> Interface</h3>
         <pre class="idl">
-          interface MIDIInput: MIDIPort {
+          [SecureContext] interface MIDIInput: MIDIPort {
             attribute EventHandler onmidimessage;
           };
         </pre>
@@ -713,7 +713,7 @@
       <section data-dfn-for="MIDIOutput">
         <h3 id="MIDIOutput"><dfn>MIDIOutput</dfn> Interface</h3>
         <pre class="idl">
-          interface MIDIOutput : MIDIPort {
+          [SecureContext] interface MIDIOutput : MIDIPort {
             void send(sequence&lt;octet> data, optional DOMHighResTimeStamp timestamp = 0);
             void clear();
           };
@@ -832,7 +832,7 @@
       <h2 id="MIDIMessageEvent"><dfn>MIDIMessageEvent</dfn> Interface</h2>
       <p>An event object implementing this interface is passed to a MIDIInput's onmidimessage handler when MIDI messages are received.  Note that the DOM <a>Event</a> <code>timeStamp</code> attribute is defined as a <a>DOMHighResTimeStamp</a>, and represents the high-resolution time of when the event was received or is to be sent.</p>
       <pre class="idl">
-        [Constructor(DOMString type, optional MIDIMessageEventInit eventInitDict)]
+        [SecureContext], [Constructor(DOMString type, optional MIDIMessageEventInit eventInitDict)]
         interface MIDIMessageEvent: Event {
           readonly attribute Uint8Array data;
         };
@@ -887,7 +887,7 @@
         for new devices infrequently.  As such, it is suggested that heavy 
         reliance on connection events not be used.</p>
       <pre class="idl">
-        [Constructor(DOMString type, optional MIDIConnectionEventInit eventInitDict)]
+        [SecureContext], [Constructor(DOMString type, optional MIDIConnectionEventInit eventInitDict)]
         interface MIDIConnectionEvent: Event {
           readonly attribute MIDIPort port;
         };
