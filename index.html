@@ -258,7 +258,7 @@
       <section data-dfn-for="MIDIInputMap">
         <h3 id="MIDIInputMap"><dfn>MIDIInputMap</dfn> Interface</h3>
         <pre class="idl">
-          interface MIDIInputMap {
+          [SecureContext] interface MIDIInputMap {
             readonly maplike &lt;DOMString, MIDIInput>;
           };
         </pre>
@@ -287,7 +287,7 @@
       <section data-dfn-for="MIDIOutputMap">
         <h3 id="MIDIOutputMap"><dfn>MIDIOutputMap</dfn> Interface</h3>
         <pre class="idl">
-          interface MIDIOutputMap {
+          [SecureContext] interface MIDIOutputMap {
             readonly maplike &lt;DOMString, MIDIOutput>;
           };
         </pre>
