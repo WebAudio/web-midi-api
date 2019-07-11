@@ -28,11 +28,12 @@
           wgPublicList: "public-audio",
           wgPatentURI: "https://www.w3.org/2004/01/pp-impl/46884/status",
           previousPublishDate: "2013-11-26",
-          previousMaturity: "WD"
+          previousMaturity: "WD",
+          xref: "web-platform",
       };
     </script>
   </head>
-  <body>
+  <body data-cite="hr-time">
     <section id="abstract">
       <p>
         Some user agents have music devices, such as synthesizers,
@@ -93,31 +94,11 @@
     <section>
       <h2>Terminology</h2>
       <p>
-        The concepts <dfn data-cite="HTML/webappapis.html#queue-a-task">queue a
-          task</dfn> and the terms <dfn data-cite="HTML/webappapis.html#event-handlers">
-        event handler</dfn> and
-        <dfn data-cite="HTML/webappapis.html#event-handler-event-type">
-      event handler event types</dfn> and corresponding <code><dfn data-cite=
-        "HTML/webappapis.html#eventhandler">EventHandler</dfn></code>, interface are defined in [[HTML]]. </p>
-      <p>
         The <dfn id="WebAudio">Web Audio API</dfn> and its associated interfaces and concepts are defined in [[webaudio]].
       </p>
       <p>
-        The <code><dfn data-cite="DOM#event">Event</dfn></code> interface and how to <dfn data-cite=
-        "DOM#concept-event-fire">fire an event</dfn> are defined in [[DOM]].
-      </p>
-      <p>
-        The <dfn data-cite="hr-time#dom-domhighrestimestamp">DOMHighResTimeStamp</dfn> interface is defined in [[hr-time]].
-      </p>
-      <p>
         The terms <dfn>MIDI</dfn>, <dfn>MIDI device</dfn>, <dfn>MIDI input port</dfn>, <dfn>MIDI output port</dfn>, <dfn>MIDI interface</dfn>, <dfn>MIDI message</dfn>, <dfn>MIDI System Real-Time message</dfn> and <dfn>system exclusive</dfn> are defined in [[MIDI]].
-      <p>
-        <code><dfn data-cite="ECMASCRIPT#sec-promise-objects">Promise</dfn></code> objects are defined in [[ECMASCRIPT]].
       </p>
-      <p>
-        The <code><dfn data-cite="WEBIDL#dfn-DOMException">DOMException</dfn></code> is defined in [[WEBIDL]].
-      </p>
-<!-- FIXME: This list is not exhaustive. -->
     </section>
 
     <section>
@@ -126,7 +107,7 @@
       <section>
         <h2>Feature Policy Integration</h2>
         <p>
-          <a data-lt="Navigator.requestMIDIAccess">requestMIDIAccess</a> is a <a data-cite="FEATURE-POLICY#policy-controlled-feature">policy-controlled feature</a>, as defined by <a data-cite="FEATURE-POLICY">Feature Policy</a>.
+          <a data-lt="Navigator.requestMIDIAccess">requestMIDIAccess</a> is a <a data-cite="FEATURE-POLICY#policy-controlled-feature">policy-controlled feature</a>, as defined by [[[Feature-Policy]]].
         </p>
         <p>
           The <a data-cite="FEATURE-POLICY#feature-name">feature name</a> for <a data-lt="Navigator.requestMIDIAccess">requestMIDIAccess</a> is <dfn data-lt="midi-fp" data-lt-noDefault><code>midi</code></dfn>.
@@ -145,7 +126,7 @@
             };
           </pre>
           <dl>
-            <dt><dfn>requestMIDIAccess</dfn></dt>
+            <dt><dfn>requestMIDIAccess()</dfn> method</dt>
             <dd>
               <p>
                 When invoked, returns a Promise object representing a request for access to MIDI devices on the user's system.
@@ -165,11 +146,11 @@
                 (or not) based on whether system exclusive support is
                 requested, as system exclusive access has greater privacy and
                 security implications.</p>
-              <p>If the user declines or the call is denied for any other reason, the Promise is rejected with a <a>DOMException</a> parameter.
+              <p>If the user declines or the call is denied for any other reason, the Promise is rejected with a {{DOMException}} parameter.
               </p>
-              <p>
+              <p data-link-for="Navigator">
                 When the
-                <a data-lt="Navigator.requestMIDIAccess">requestMIDIAccess</a> method is called, the user
+                {{requestMIDIAccess()}} method is called, the user
                 agent MUST run the <dfn>algorithm to request MIDI Access</dfn>:
               </p>
 
@@ -221,7 +202,7 @@
                 <li><p>Call <var>resolver</var>'s <code>accept(value)</code> method with <var>access</var> as value argument.</p></li>
                 <li><p>Terminate these steps.</p></li>
 
-                <li><p><em><b>failure</b></em>: Let <var>error</var> be a new <a>DOMException</a>.
+                <li><p><em><b>failure</b></em>: Let <var>error</var> be a new {{DOMException}}.
                   This exception's .name should be <code>"SecurityError"</code> if the
                   user or their security settings denied the application from creating a MIDIAccess instance with the requested options, or if the error is the result of <var>document</var> not being <a data-cite="!HTML#allowed-to-use">allowed to use</a> the feature,  <code>"AbortError"</code> if the page is going to be closed for a user navigation, <code>"InvalidStateError"</code> if the underlying systems raise any errors, or otherwise it should be <code>"NotSupportedError"</code>.</p></li>
                 <li><p>Call <var>resolver</var>'s <code>reject(value)</code> method with <var>error</var> as value argument.</p></li>
@@ -337,7 +318,7 @@
             MUST be supported by all objects implementing the
             <a>MIDIAccess</a> interface.
           </p>
-          <p class="note">It is important to understand that leaving an <a>EventHandler</a> attached to this object will prevent it from being garbage-collected; when finished using the <a>MIDIAccess</a>, you should remove any <a data-lt="MIDIAccess.onstatechange">onstatechange</a> listeners.</p>
+          <p class="note">It is important to understand that leaving an {{EventHandler}} attached to this object will prevent it from being garbage-collected; when finished using the <a>MIDIAccess</a>, you should remove any <a data-lt="MIDIAccess.onstatechange">onstatechange</a> listeners.</p>
           <p id="event-midiaccess-statechange">
               Whenever a previously unavailable MIDI port becomes available for use, or an existing port changes the state attribute,
               the user agent SHOULD run the following steps:</p>
@@ -429,7 +410,7 @@
             MUST be supported by all objects implementing
             <a>MIDIPort</a> interface.
           </p>
-          <p class="note">It is important to understand that leaving an <a>EventHandler</a> attached to this object will prevent it from being garbage-collected; when finished using the <a>MIDIPort</a>, you should remove any <a data-lt="MIDIPort.onstatechange">onstatechange</a> listeners.</p>
+          <p class="note">It is important to understand that leaving an {{EventHandler}} attached to this object will prevent it from being garbage-collected; when finished using the <a>MIDIPort</a>, you should remove any <a data-lt="MIDIPort.onstatechange">onstatechange</a> listeners.</p>
         </dd>
         <dt><dfn>open</dfn></dt>
         <dd>
@@ -525,7 +506,7 @@
             <li><p>Terminate these steps.</p></li>
 
             <li><p><em><b>failure</b></em>: Let <var>error</var> be a new
-              <a>DOMException</a>. This exception's .name should be
+              {{DOMException}}. This exception's .name should be
               <code>"InvalidAccessError"</code> if the port is unavailable.</p></li>
 
             <li><p>Call <var>resolver</var>'s <code>reject(value)</code> method
@@ -733,7 +714,7 @@
               </dd>
               <dt>optional DOMHighResTimeStamp timestamp</dt>
               <dd>
-                The time at which to begin sending the data to the port (as a <a>DOMHighResTimeStamp</a> - a number of milliseconds measured relative to the navigation start of the document).  If <code>timestamp</code> is set to zero (or another time in the past), the data is to be sent as soon as possible.
+                The time at which to begin sending the data to the port (as a {{DOMHighResTimeStamp}} - a number of milliseconds measured relative to the navigation start of the document).  If <code>timestamp</code> is set to zero (or another time in the past), the data is to be sent as soon as possible.
               </dd>
             </dl>
           </dd>
@@ -811,7 +792,7 @@
 
     <section data-dfn-for="MIDIMessageEvent">
       <h2 id="MIDIMessageEvent"><dfn>MIDIMessageEvent</dfn> Interface</h2>
-      <p>An event object implementing this interface is passed to a MIDIInput's onmidimessage handler when MIDI messages are received.  Note that the DOM <a>Event</a> <code>timeStamp</code> attribute is defined as a <a>DOMHighResTimeStamp</a>, and represents the high-resolution time of when the event was received or is to be sent.</p>
+      <p>An event object implementing this interface is passed to a MIDIInput's onmidimessage handler when MIDI messages are received.  Note that the DOM {{Event}} <code>timeStamp</code> attribute is defined as a {{DOMHighResTimeStamp}}, and represents the high-resolution time of when the event was received or is to be sent.</p>
       <pre class="idl">
         [SecureContext, Constructor(DOMString type, optional MIDIMessageEventInit eventInitDict = {})]
         interface MIDIMessageEvent : Event {
