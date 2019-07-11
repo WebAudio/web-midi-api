@@ -141,7 +141,7 @@
 
           <pre class="idl">
             partial interface Navigator {
-              [SecureContext] Promise &lt;MIDIAccess> requestMIDIAccess(optional MIDIOptions options);
+              [SecureContext] Promise &lt;MIDIAccess> requestMIDIAccess(optional MIDIOptions options = {});
             };
           </pre>
           <dl>
@@ -813,8 +813,8 @@
       <h2 id="MIDIMessageEvent"><dfn>MIDIMessageEvent</dfn> Interface</h2>
       <p>An event object implementing this interface is passed to a MIDIInput's onmidimessage handler when MIDI messages are received.  Note that the DOM <a>Event</a> <code>timeStamp</code> attribute is defined as a <a>DOMHighResTimeStamp</a>, and represents the high-resolution time of when the event was received or is to be sent.</p>
       <pre class="idl">
-        [SecureContext, Constructor(DOMString type, optional MIDIMessageEventInit eventInitDict)]
-        interface MIDIMessageEvent: Event {
+        [SecureContext, Constructor(DOMString type, optional MIDIMessageEventInit eventInitDict = {})]
+        interface MIDIMessageEvent : Event {
           readonly attribute Uint8Array data;
         };
       </pre>
@@ -868,8 +868,8 @@
         for new devices infrequently.  As such, it is suggested that heavy
         reliance on connection events not be used.</p>
       <pre class="idl">
-        [SecureContext, Constructor(DOMString type, optional MIDIConnectionEventInit eventInitDict)]
-        interface MIDIConnectionEvent: Event {
+        [SecureContext, Constructor(DOMString type, optional MIDIConnectionEventInit eventInitDict = {})]
+        interface MIDIConnectionEvent : Event {
           readonly attribute MIDIPort port;
         };
       </pre>
