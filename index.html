@@ -239,7 +239,7 @@
       <section data-dfn-for="MIDIInputMap">
         <h3 id="MIDIInputMap"><dfn>MIDIInputMap</dfn> Interface</h3>
         <pre class="idl">
-          [SecureContext] interface MIDIInputMap {
+          [SecureContext, Exposed=Window] interface MIDIInputMap {
             readonly maplike &lt;DOMString, MIDIInput>;
           };
         </pre>
@@ -268,7 +268,7 @@
       <section data-dfn-for="MIDIOutputMap">
         <h3 id="MIDIOutputMap"><dfn>MIDIOutputMap</dfn> Interface</h3>
         <pre class="idl">
-          [SecureContext] interface MIDIOutputMap {
+          [SecureContext, Exposed=Window] interface MIDIOutputMap {
             readonly maplike &lt;DOMString, MIDIOutput>;
           };
         </pre>
@@ -297,7 +297,7 @@
       <p>This interface provides the methods to list MIDI input and output
         devices, and obtain access to an individual device.</p>
       <pre class="idl">
-        [SecureContext] interface MIDIAccess: EventTarget {
+        [SecureContext, Exposed=Window] interface MIDIAccess: EventTarget {
           readonly attribute MIDIInputMap inputs;
           readonly attribute MIDIOutputMap outputs;
           attribute EventHandler onstatechange;
@@ -339,7 +339,7 @@
 
       <p>This interface represents a MIDI input or output port.</p>
       <pre class="idl">
-        [SecureContext] interface MIDIPort: EventTarget {
+        [SecureContext, Exposed=Window] interface MIDIPort: EventTarget {
           readonly attribute DOMString id;
           readonly attribute DOMString? manufacturer;
           readonly attribute DOMString? name;
@@ -615,7 +615,7 @@
       <section data-dfn-for="MIDIInput">
         <h3 id="MIDIInput"><dfn>MIDIInput</dfn> Interface</h3>
         <pre class="idl">
-          [SecureContext] interface MIDIInput: MIDIPort {
+          [SecureContext, Exposed=Window] interface MIDIInput: MIDIPort {
             attribute EventHandler onmidimessage;
           };
         </pre>
@@ -675,7 +675,7 @@
       <section data-dfn-for="MIDIOutput">
         <h3 id="MIDIOutput"><dfn>MIDIOutput</dfn> Interface</h3>
         <pre class="idl">
-          [SecureContext] interface MIDIOutput : MIDIPort {
+          [SecureContext, Exposed=Window] interface MIDIOutput : MIDIPort {
             void send(sequence&lt;octet> data, optional DOMHighResTimeStamp timestamp = 0);
             void clear();
           };
@@ -794,7 +794,7 @@
       <h2 id="MIDIMessageEvent"><dfn>MIDIMessageEvent</dfn> Interface</h2>
       <p>An event object implementing this interface is passed to a MIDIInput's onmidimessage handler when MIDI messages are received.  Note that the DOM {{Event}} <code>timeStamp</code> attribute is defined as a {{DOMHighResTimeStamp}}, and represents the high-resolution time of when the event was received or is to be sent.</p>
       <pre class="idl">
-        [SecureContext, Constructor(DOMString type, optional MIDIMessageEventInit eventInitDict = {})]
+        [SecureContext, Exposed=Window, Constructor(DOMString type, optional MIDIMessageEventInit eventInitDict = {})]
         interface MIDIMessageEvent : Event {
           readonly attribute Uint8Array data;
         };
@@ -849,7 +849,7 @@
         for new devices infrequently.  As such, it is suggested that heavy
         reliance on connection events not be used.</p>
       <pre class="idl">
-        [SecureContext, Constructor(DOMString type, optional MIDIConnectionEventInit eventInitDict = {})]
+        [SecureContext, Exposed=Window, Constructor(DOMString type, optional MIDIConnectionEventInit eventInitDict = {})]
         interface MIDIConnectionEvent : Event {
           readonly attribute MIDIPort port;
         };
