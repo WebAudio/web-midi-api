@@ -3,13 +3,12 @@
   <head>
     <title>Web MIDI API</title>
     <meta charset="utf-8" />
-    <script src='https://www.w3.org/Tools/respec/respec-w3c-common' class='remove'></script>
+    <script src='https://www.w3.org/Tools/respec/respec-w3c' class='remove'></script>
     <script class='remove'>
       var respecConfig = {
           shortName: "webmidi",
           specStatus: "ED",
           copyrightStart: "2015",
-          edDraftURI: "https://webaudio.github.io/web-midi-api/",
           editors: [
             { name: "Chris Wilson",
               url: "mailto:cwilso@google.com",
@@ -22,7 +21,7 @@
               w3cid: "45545"
             },
           ],
-          github: "https://github.com/WebAudio/web-midi-api/",
+          github: "WebAudio/web-midi-api",
           wg: "Audio Working Group",
           wgURI: "https://www.w3.org/2011/audio/",
           wgPublicList: "public-audio",
@@ -122,7 +121,8 @@
 
           <pre class="idl">
             partial interface Navigator {
-              [SecureContext] Promise &lt;MIDIAccess> requestMIDIAccess(optional MIDIOptions options = {});
+              [SecureContext] 
+              Promise &lt;MIDIAccess> requestMIDIAccess(optional MIDIOptions options = {});
             };
           </pre>
           <dl>
@@ -795,8 +795,9 @@
       <h2 id="MIDIMessageEvent"><dfn>MIDIMessageEvent</dfn> Interface</h2>
       <p>An event object implementing this interface is passed to a MIDIInput's onmidimessage handler when MIDI messages are received.  Note that the DOM {{Event}} <code>timeStamp</code> attribute is defined as a {{DOMHighResTimeStamp}}, and represents the high-resolution time of when the event was received or is to be sent.</p>
       <pre class="idl">
-        [SecureContext, Exposed=Window, Constructor(DOMString type, optional MIDIMessageEventInit eventInitDict = {})]
+        [SecureContext, Exposed=Window]
         interface MIDIMessageEvent : Event {
+          constructor(DOMString type, optional MIDIMessageEventInit eventInitDict = {});
           readonly attribute Uint8Array data;
         };
       </pre>
@@ -849,8 +850,9 @@
         for new devices infrequently.  As such, it is suggested that heavy
         reliance on connection events not be used.</p>
       <pre class="idl">
-        [SecureContext, Exposed=Window, Constructor(DOMString type, optional MIDIConnectionEventInit eventInitDict = {})]
+        [SecureContext, Exposed=Window]
         interface MIDIConnectionEvent : Event {
+          constructor(DOMString type, optional MIDIConnectionEventInit eventInitDict = {});
           readonly attribute MIDIPort port;
         };
       </pre>
@@ -1117,7 +1119,7 @@ navigator.requestMIDIAccess().then( onMIDISuccess, onMIDIFailure );</pre>
       <p>In short: the additional fingerprinting exposure of enumerating MIDI devices is directly analogous to the Gamepad API’s additional fingerprinting exposure through gamepad enumeration; typical users will only have at most a few devices connected, their configuration may change, and the information exposed is about the interface itself (i.e., no user-configured data).
       <p>The additional security concern for receiving short messages is also small - it’s analogous to listening to keyboard, mouse, mobile/laptop accelerometer, touch input or gamepad events; there is no additional information exposed, and all messages other than clock signals must be initiated by the user.
       <p>The additional concerns about sending short messages are analogous to any audio output - you cannot overwrite user information or expose use information, but you can make sounds happen, change patches, or (in rare configurations) toggle lights - but non-destructively, and not persistently.
-      <p>System Exclusive, on the other hand, has a much less bounded potential, and it seems that distinguishing requests for SysEx separately in the API is a good idea, in order to more carefully provide user security hooks. The <a data-lt="navigator.requestMIDIAccess">suggested security model</a> explicitly allows user agents to require the user's approval before giving access to MIDI devices, although it is not currently required to prompt the user for this approval - but it also detailed that system exclusive support must be requested as part of that request.
+      <p>System Exclusive, on the other hand, has a much less bounded potential, and it seems that distinguishing requests for SysEx separately in the API is a good idea, in order to more carefully provide user security hooks. The <a data-lt="Navigator.requestMIDIAccess">suggested security model</a> explicitly allows user agents to require the user's approval before giving access to MIDI devices, although it is not currently required to prompt the user for this approval - but it also detailed that system exclusive support must be requested as part of that request.
       </p>
     </section>
 
