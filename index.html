@@ -1,222 +1,323 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>Web MIDI API</title>
-    <meta charset="utf-8" />
-    <script src='https://www.w3.org/Tools/respec/respec-w3c' class='remove'></script>
+    <title>
+      Web MIDI API
+    </title>
+    <meta charset="utf-8">
+    <script src='https://www.w3.org/Tools/respec/respec-w3c' class=
+    'remove'></script>
     <script class='remove'>
       var respecConfig = {
-          shortName: "webmidi",
-          specStatus: "ED",
-          copyrightStart: "2015",
-          editors: [
-            { name: "Chris Wilson",
-              url: "mailto:cwilso@google.com",
-              w3cid: "3742",
-              company: "Google",
-              companyURL: "http://google.com"
-            },
-            { name: "Jussi Kalliokoski",
-              url: "http://juss.in",
-              w3cid: "45545"
-            },
-          ],
-          github: "WebAudio/web-midi-api",
-          wg: "Audio Working Group",
-          wgURI: "https://www.w3.org/2011/audio/",
-          wgPublicList: "public-audio",
-          wgPatentURI: "https://www.w3.org/2004/01/pp-impl/46884/status",
-          previousPublishDate: "2013-11-26",
-          previousMaturity: "WD",
-          xref: "web-platform",
+        shortName: "webmidi",
+        specStatus: "ED",
+        copyrightStart: "2015",
+        editors: [
+          { name: "Chris Wilson",
+            url: "mailto:cwilso@google.com",
+            w3cid: "3742",
+            company: "Google",
+            companyURL: "http://google.com"
+          },
+          { name: "Jussi Kalliokoski",
+            url: "http://juss.in",
+            w3cid: "45545"
+          },
+        ],
+        github: "WebAudio/web-midi-api",
+        wg: "Audio Working Group",
+        wgURI: "https://www.w3.org/2011/audio/",
+        wgPublicList: "public-audio",
+        wgPatentURI: "https://www.w3.org/2004/01/pp-impl/46884/status",
+        previousPublishDate: "2013-11-26",
+        previousMaturity: "WD",
+        xref: "web-platform",
       };
     </script>
   </head>
   <body data-cite="hr-time FEATURE-POLICY">
     <section id="abstract">
       <p>
-        Some user agents have music devices, such as synthesizers,
-        keyboard and other controllers, and drum machines connected to their host computer or device.  The widely adopted
-        Musical Instrument Digital Interface (MIDI) protocol enables
-        electronic musical instruments, controllers and computers to
-        communicate and synchronize with each other. MIDI does not transmit
-        audio signals: instead, it sends event messages about musical notes,
-        controller signals for parameters such as volume, vibrato and panning,
-        cues and clock signals to set the tempo, and system-specific MIDI
-        communications (e.g. to remotely store synthesizer-specific patch
-        data).  This same protocol has become a standard for non-musical uses,
+        Some user agents have music devices, such as synthesizers, keyboard and
+        other controllers, and drum machines connected to their host computer
+        or device. The widely adopted Musical Instrument Digital Interface
+        (MIDI) protocol enables electronic musical instruments, controllers and
+        computers to communicate and synchronize with each other. MIDI does not
+        transmit audio signals: instead, it sends event messages about musical
+        notes, controller signals for parameters such as volume, vibrato and
+        panning, cues and clock signals to set the tempo, and system-specific
+        MIDI communications (e.g. to remotely store synthesizer-specific patch
+        data). This same protocol has become a standard for non-musical uses,
         such as show control, lighting and special effects control.
       </p>
       <p>
-        This specification defines an API supporting the MIDI protocol, enabling web applications to enumerate and select MIDI input and output devices on the client system and send and receive MIDI messages. It is intended to enable non-music MIDI applications as well as music ones, by providing low-level access to the MIDI devices available on the users' systems.  The Web MIDI API is not intended to describe music or controller inputs semantically; it is designed to expose the mechanics of MIDI input and output interfaces, and the practical aspects of sending and receiving MIDI messages, without identifying what those actions might mean semantically (e.g., in terms of "modulate the vibrato by 20Hz" or "play a G#7 chord", other than in terms of changing a controller value or sending a set of note-on messages that happen to represent a G#7 chord).
+        This specification defines an API supporting the MIDI protocol,
+        enabling web applications to enumerate and select MIDI input and output
+        devices on the client system and send and receive MIDI messages. It is
+        intended to enable non-music MIDI applications as well as music ones,
+        by providing low-level access to the MIDI devices available on the
+        users' systems. The Web MIDI API is not intended to describe music or
+        controller inputs semantically; it is designed to expose the mechanics
+        of MIDI input and output interfaces, and the practical aspects of
+        sending and receiving MIDI messages, without identifying what those
+        actions might mean semantically (e.g., in terms of "modulate the
+        vibrato by 20Hz" or "play a G#7 chord", other than in terms of changing
+        a controller value or sending a set of note-on messages that happen to
+        represent a G#7 chord).
       </p>
       <p data-format="markdown">
-        To some users, "MIDI" has become synonymous with Standard MIDI Files and General MIDI.  That is not the intent of this API; the use case of simply playing back a .SMF file is not within the purview of this specification (it could be considered a different format to be supported by the HTML [^audio^] element, for example).  The Web MIDI API is intended to enable direct access to devices that respond to MIDI - controllers, external synthesizers or lighting systems, for example.  The Web MIDI API is also explicitly designed to enable a new class of applications on the web that can respond to MIDI controller inputs - using external hardware controllers with physical buttons, knobs and sliders (as well as musical controllers like keyboard, guitar or wind instrument controllers) to control web applications.
+        To some users, "MIDI" has become synonymous with Standard MIDI Files
+        and General MIDI. That is not the intent of this API; the use case of
+        simply playing back a .SMF file is not within the purview of this
+        specification (it could be considered a different format to be
+        supported by the HTML [^audio^] element, for example). The Web MIDI API
+        is intended to enable direct access to devices that respond to MIDI -
+        controllers, external synthesizers or lighting systems, for example.
+        The Web MIDI API is also explicitly designed to enable a new class of
+        applications on the web that can respond to MIDI controller inputs -
+        using external hardware controllers with physical buttons, knobs and
+        sliders (as well as musical controllers like keyboard, guitar or wind
+        instrument controllers) to control web applications.
       </p>
       <p>
-        The Web MIDI API is also expected to be used in conjunction with other APIs and elements of the web platform, notably the Web Audio API.  This API is also intended to be familiar to users of MIDI APIs on other systems, such as Apple's CoreMIDI and Microsoft's Windows MIDI API.
+        The Web MIDI API is also expected to be used in conjunction with other
+        APIs and elements of the web platform, notably the Web Audio API. This
+        API is also intended to be familiar to users of MIDI APIs on other
+        systems, such as Apple's CoreMIDI and Microsoft's Windows MIDI API.
       </p>
     </section>
     <section class="informative">
-      <h2>Introduction</h2>
+      <h2>
+        Introduction
+      </h2>
       <p>
         The Web MIDI API specification defines a means for web developers to
-        enumerate, manipulate and access MIDI devices - for example, interfaces that may provide hardware MIDI ports with other devices plugged in to them and USB devices that support the USB-MIDI specification. Having a Web API for MIDI enables web applications that use existing software and
-        hardware synthesizers, hardware music controllers and light systems and other mechanical
-        apparatus controlled by MIDI.  This API has been defined with this wide variety of use cases in mind.
+        enumerate, manipulate and access MIDI devices - for example, interfaces
+        that may provide hardware MIDI ports with other devices plugged in to
+        them and USB devices that support the USB-MIDI specification. Having a
+        Web API for MIDI enables web applications that use existing software
+        and hardware synthesizers, hardware music controllers and light systems
+        and other mechanical apparatus controlled by MIDI. This API has been
+        defined with this wide variety of use cases in mind.
       </p>
       <p>
-        The approaches taken by this API are similar to those taken in Apple's CoreMIDI API and Microsoft's Windows MIDI API; that is, the API is designed to represent the low-level software protocol of MIDI, in order to enable developers to build powerful MIDI software on top.  The API enables the developer to enumerate input and output interfaces, and send and receive MIDI messages, but (similar to the aforementioned APIs) it does not attempt to semantically define or interpret MIDI messages beyond what is necessary to robustly support current devices.
+        The approaches taken by this API are similar to those taken in Apple's
+        CoreMIDI API and Microsoft's Windows MIDI API; that is, the API is
+        designed to represent the low-level software protocol of MIDI, in order
+        to enable developers to build powerful MIDI software on top. The API
+        enables the developer to enumerate input and output interfaces, and
+        send and receive MIDI messages, but (similar to the aforementioned
+        APIs) it does not attempt to semantically define or interpret MIDI
+        messages beyond what is necessary to robustly support current devices.
       </p>
       <p>
-        The Web MIDI API is not intended to directly implement high-level concepts such as sequencing; it does not directly support Standard MIDI Files, for example, although a Standard MIDI File player can be built on top of the Web MIDI API.  It is also not intended to semantically capture patches or controller assignments, as General MIDI does; such interpretation is outside the scope of the Web MIDI API (though again, General MIDI can easily be utilized through the Web MIDI API).
+        The Web MIDI API is not intended to directly implement high-level
+        concepts such as sequencing; it does not directly support Standard MIDI
+        Files, for example, although a Standard MIDI File player can be built
+        on top of the Web MIDI API. It is also not intended to semantically
+        capture patches or controller assignments, as General MIDI does; such
+        interpretation is outside the scope of the Web MIDI API (though again,
+        General MIDI can easily be utilized through the Web MIDI API).
       </p>
     </section>
-
-    <section id="sotd">
-    </section>
-
+    <section id="sotd"></section>
     <section id="conformance">
       <p>
         This specification defines conformance criteria that apply to a single
-        product: the <dfn>user agent</dfn> that implements the
-        interfaces that it contains.
+        product: the <dfn>user agent</dfn> that implements the interfaces that
+        it contains.
       </p>
       <p>
         Implementations that use ECMAScript to implement the APIs defined in
         this specification MUST implement them in a manner consistent with the
-        ECMAScript Bindings defined in the Web IDL specification [[WEBIDL]],
-        as this specification uses that specification and terminology.
+        ECMAScript Bindings defined in the Web IDL specification [[WEBIDL]], as
+        this specification uses that specification and terminology.
       </p>
     </section>
-
     <section>
-      <h2>Terminology</h2>
+      <h2>
+        Terminology
+      </h2>
       <p>
-        The <dfn id="WebAudio">Web Audio API</dfn> and its associated interfaces and concepts are defined in [[webaudio]].
+        The <dfn id="WebAudio">Web Audio API</dfn> and its associated
+        interfaces and concepts are defined in [[webaudio]].
       </p>
       <p>
-        The terms <dfn>MIDI</dfn>, <dfn>MIDI device</dfn>, <dfn>MIDI input port</dfn>, <dfn>MIDI output port</dfn>, <dfn>MIDI interface</dfn>, <dfn>MIDI message</dfn>, <dfn>MIDI System Real-Time message</dfn> and <dfn>system exclusive</dfn> are defined in [[MIDI]].
+        The terms <dfn>MIDI</dfn>, <dfn>MIDI device</dfn>, <dfn>MIDI input
+        port</dfn>, <dfn>MIDI output port</dfn>, <dfn>MIDI interface</dfn>,
+        <dfn>MIDI message</dfn>, <dfn>MIDI System Real-Time message</dfn> and
+        <dfn>system exclusive</dfn> are defined in [[MIDI]].
       </p>
     </section>
-
     <section>
-      <h2>Obtaining Access to MIDI Devices</h2>
-
+      <h2>
+        Obtaining Access to MIDI Devices
+      </h2>
       <section data-link-for="Navigator">
-        <h2>Feature Policy Integration</h2>
+        <h2>
+          Feature Policy Integration
+        </h2>
         <p>
-          {{requestMIDIAccess()}} is a <a>policy-controlled feature</a>, as defined by [[[Feature-Policy]]].
+          {{requestMIDIAccess()}} is a <a>policy-controlled feature</a>, as
+          defined by [[[Feature-Policy]]].
         </p>
         <p>
-          The feature name for {{requestMIDIAccess()}} is <dfn data-lt="midi-fp" data-lt-noDefault>`midi`</dfn>.
+          The feature name for {{requestMIDIAccess()}} is <dfn data-lt=
+          "midi-fp" data-lt-nodefault="">`midi`</dfn>.
         </p>
         <p>
-          The <a>default allowlist</a> for {{requestMIDIAccess()}} is `["self"]`.
+          The <a>default allowlist</a> for {{requestMIDIAccess()}} is
+          `["self"]`.
         </p>
       </section>
-
       <section data-dfn-for="Navigator">
-          <h2>Extensions to the <dfn>Navigator</dfn> interface</h2>
-
-          <pre class="idl">
+        <h2>
+          Extensions to the <dfn>Navigator</dfn> interface
+        </h2>
+        <pre class="idl">
             partial interface Navigator {
               [SecureContext] 
-              Promise &lt;MIDIAccess> requestMIDIAccess(optional MIDIOptions options = {});
+              Promise &lt;MIDIAccess&gt; requestMIDIAccess(optional MIDIOptions options = {});
             };
           </pre>
-          <dl>
-            <dt><dfn>requestMIDIAccess()</dfn> method</dt>
-            <dd>
-              <p>
-                When invoked, returns a Promise object representing a request for access to MIDI devices on the user's system.
-              </p>
-
-              <p>
-                Requesting MIDI access SHOULD prompt the user for access to MIDI devices,
-                particularly if system exclusive access is requested.  In some
-                scenarios, this permission may have already been implicitly or
-                explicitly granted, in which case this prompt may not appear.
-                If the user gives express permission or the call is otherwise
-                approved, the vended Promise is resolved.  The
-                underlying system may choose to allow the user to select
-                specific MIDI interfaces to expose to this API (i.e. pick
-                and choose interfaces on an individual basis), although
-                this is not required.  The system may also choose to prompt
-                (or not) based on whether system exclusive support is
-                requested, as system exclusive access has greater privacy and
-                security implications.</p>
-              <p>If the user declines or the call is denied for any other reason, the Promise is rejected with a {{DOMException}} parameter.
-              </p>
-              <p data-link-for="Navigator">
-                When the
-                {{requestMIDIAccess()}} method is called, the user
-                agent MUST run the <dfn>algorithm to request MIDI Access</dfn>:
-              </p>
-
-              <ol>
-                <li><p>Let <var>promise</var> be a new Promise object and <var>resolver</var> be its associated resolver.</p></li>
-                <li><p>Return <var>promise</var> and run the following steps asynchronously.</p></li>
-                <li><p>Let <var>document</var> be the calling context's <a>Document</a>.</p></li>
-                <li>
-                  <p>
-                    If <var>document</var> is not <a>allowed to use</a> the
-                    <a>policy-controlled feature</a> named
-                    <a>midi</a>, jump to the step labeled <em>failure</em> below.
-                  </p>
-                </li>
-
-                <li><p>
+        <dl>
+          <dt>
+            <dfn>requestMIDIAccess()</dfn> method
+          </dt>
+          <dd>
+            <p>
+              When invoked, returns a Promise object representing a request for
+              access to MIDI devices on the user's system.
+            </p>
+            <p>
+              Requesting MIDI access SHOULD prompt the user for access to MIDI
+              devices, particularly if system exclusive access is requested. In
+              some scenarios, this permission may have already been implicitly
+              or explicitly granted, in which case this prompt may not appear.
+              If the user gives express permission or the call is otherwise
+              approved, the vended Promise is resolved. The underlying system
+              may choose to allow the user to select specific MIDI interfaces
+              to expose to this API (i.e. pick and choose interfaces on an
+              individual basis), although this is not required. The system may
+              also choose to prompt (or not) based on whether system exclusive
+              support is requested, as system exclusive access has greater
+              privacy and security implications.
+            </p>
+            <p>
+              If the user declines or the call is denied for any other reason,
+              the Promise is rejected with a {{DOMException}} parameter.
+            </p>
+            <p data-link-for="Navigator">
+              When the {{requestMIDIAccess()}} method is called, the user agent
+              MUST run the <dfn>algorithm to request MIDI Access</dfn>:
+            </p>
+            <ol>
+              <li>
+                <p>
+                  Let <var>promise</var> be a new Promise object and
+                  <var>resolver</var> be its associated resolver.
+                </p>
+              </li>
+              <li>
+                <p>
+                  Return <var>promise</var> and run the following steps
+                  asynchronously.
+                </p>
+              </li>
+              <li>
+                <p>
+                  Let <var>document</var> be the calling context's
+                  <a>Document</a>.
+                </p>
+              </li>
+              <li>
+                <p>
+                  If <var>document</var> is not <a>allowed to use</a> the
+                  <a>policy-controlled feature</a> named <a>midi</a>, jump to
+                  the step labeled <em>failure</em> below.
+                </p>
+              </li>
+              <li>
+                <p>
                   Optionally, e.g. based on a previously-established user
                   preference, for security reasons, or due to platform
-                  limitations, jump to the step labeled <em>failure</em>
-                  below.
-                </p></li>
-
-                <li><p>
+                  limitations, jump to the step labeled <em>failure</em> below.
+                </p>
+              </li>
+              <li>
+                <p>
                   Optionally, e.g. based on a previously-established user
-                  preference, jump to the step labeled <em>success</em>
-                  below.
-                </p></li>
-
-                <li><p>
-                    Prompt the user in a user-agent-specific manner for
-                    permission to provide the entry script's origin with a
-                    {{MIDIAccess}} object representing
-                    control over user's MIDI devices.  This prompt may
-                    be contingent upon whether system exclusive support was
-                    requested, and may allow the user to enable or disable
-                    that access.
-                  </p>
-
-                  <p>
-                    If permission is denied, jump to the step labeled
-                    <em>failure</em> below. If the user never responds, this
-                    algorithm will never progress beyond this step.  If
-                    permission is granted, continue the following steps.
-                  </p>
-                </li>
-
-                <li><p><em><b>success</b></em>: Let <var>access</var> be a new {{MIDIAccess}} object.  (It is possible to call requestMIDIAccess() multiple times; this may prompt the user multiple times, so it may not be best practice, and the same instance of MIDIAccess will not be returned each time.)</p></li>
-
-                <li><p>Call <var>resolver</var>'s <code>accept(value)</code> method with <var>access</var> as value argument.</p></li>
-                <li><p>Terminate these steps.</p></li>
-
-                <li><p><em><b>failure</b></em>: Let <var>error</var> be a new {{DOMException}}.
-                  This exception's .name should be {{"SecurityError"}} if the
-                  user or their security settings denied the application from creating a MIDIAccess instance with the requested options, or if the error is the result of <var>document</var> not being <a>allowed to use</a> the feature,  
-                  {{"AbortError"}} if the page is going to be closed for a user navigation, {{"InvalidStateError"}} if the underlying systems raise any errors, or otherwise it should be {{"NotSupportedError"}}.</p></li>
-                <li><p>Call <var>resolver</var>'s <code>reject(value)</code> method with <var>error</var> as value argument.</p></li>
-              </ol>
-
-            </dd>
-          </dl>
+                  preference, jump to the step labeled <em>success</em> below.
+                </p>
+              </li>
+              <li>
+                <p>
+                  Prompt the user in a user-agent-specific manner for
+                  permission to provide the entry script's origin with a
+                  {{MIDIAccess}} object representing control over user's MIDI
+                  devices. This prompt may be contingent upon whether system
+                  exclusive support was requested, and may allow the user to
+                  enable or disable that access.
+                </p>
+                <p>
+                  If permission is denied, jump to the step labeled
+                  <em>failure</em> below. If the user never responds, this
+                  algorithm will never progress beyond this step. If permission
+                  is granted, continue the following steps.
+                </p>
+              </li>
+              <li>
+                <p>
+                  <em><b>success</b></em>: Let <var>access</var> be a new
+                  {{MIDIAccess}} object. (It is possible to call
+                  requestMIDIAccess() multiple times; this may prompt the user
+                  multiple times, so it may not be best practice, and the same
+                  instance of MIDIAccess will not be returned each time.)
+                </p>
+              </li>
+              <li>
+                <p>
+                  Call <var>resolver</var>'s <code>accept(value)</code> method
+                  with <var>access</var> as value argument.
+                </p>
+              </li>
+              <li>
+                <p>
+                  Terminate these steps.
+                </p>
+              </li>
+              <li>
+                <p>
+                  <em><b>failure</b></em>: Let <var>error</var> be a new
+                  {{DOMException}}. This exception's .name should be
+                  {{"SecurityError"}} if the user or their security settings
+                  denied the application from creating a MIDIAccess instance
+                  with the requested options, or if the error is the result of
+                  <var>document</var> not being <a>allowed to use</a> the
+                  feature, {{"AbortError"}} if the page is going to be closed
+                  for a user navigation, {{"InvalidStateError"}} if the
+                  underlying systems raise any errors, or otherwise it should
+                  be {{"NotSupportedError"}}.
+                </p>
+              </li>
+              <li>
+                <p>
+                  Call <var>resolver</var>'s <code>reject(value)</code> method
+                  with <var>error</var> as value argument.
+                </p>
+              </li>
+            </ol>
+          </dd>
+        </dl>
       </section>
-
       <section data-dfn-for="MIDIOptions" data-link-for="Navigator">
-        <h2 id="MIDIOptions"><dfn>MIDIOptions</dfn> Dictionary</h2>
-        <p>This dictionary contains optional settings that may be provided to the {{requestMIDIAccess()}} request.</p>
-
+        <h2 id="MIDIOptions">
+          <dfn>MIDIOptions</dfn> Dictionary
+        </h2>
+        <p>
+          This dictionary contains optional settings that may be provided to
+          the {{requestMIDIAccess()}} request.
+        </p>
         <pre class="idl">
           dictionary MIDIOptions {
             boolean sysex;
@@ -224,28 +325,63 @@
           };
         </pre>
         <dl>
-          <dt><dfn>sysex</dfn></dt>
+          <dt>
+            <dfn>sysex</dfn>
+          </dt>
           <dd>
-            <p>This member informs the system whether the ability to send and receive system exclusive messages is requested or allowed on a given {{MIDIAccess}} object.  On the option passed to {{requestMIDIAccess()}}, if this member is set to true, but system exclusive support is denied (either by policy or by user action), the access request will fail with a {{"SecurityError"}} error.  If this support is not requested (and allowed), the system will throw exceptions if the user tries to send system exclusive messages, and will silently mask out any system exclusive messages received on the port.</p>
+            <p>
+              This member informs the system whether the ability to send and
+              receive system exclusive messages is requested or allowed on a
+              given {{MIDIAccess}} object. On the option passed to
+              {{requestMIDIAccess()}}, if this member is set to true, but
+              system exclusive support is denied (either by policy or by user
+              action), the access request will fail with a {{"SecurityError"}}
+              error. If this support is not requested (and allowed), the system
+              will throw exceptions if the user tries to send system exclusive
+              messages, and will silently mask out any system exclusive
+              messages received on the port.
+            </p>
           </dd>
-
-          <dt><dfn>software</dfn></dt>
+          <dt>
+            <dfn>software</dfn>
+          </dt>
           <dd>
-            <p>This member informs the system whether the ability to utilize any software synthesizers installed in the host system is requested or allowed on a given {{MIDIAccess}} object.  On t{{requestMIDIAccess()}}, if this member is set to true, but software synthesizer support is denied (either by policy or by user action), the access request will fail with a {{"SecurityError"}} error.  If this support is not requested, the system should not include any software synthesizers in the {{MIDIAccess}} exposure of available ports.</p>
-            <p>Note that may result in a two-step request procedure if software synthesizer support is desired but not required - software synthesizers may be disabled when MIDI hardware device access is allowed.
+            <p>
+              This member informs the system whether the ability to utilize any
+              software synthesizers installed in the host system is requested
+              or allowed on a given {{MIDIAccess}} object. On
+              t{{requestMIDIAccess()}}, if this member is set to true, but
+              software synthesizer support is denied (either by policy or by
+              user action), the access request will fail with a
+              {{"SecurityError"}} error. If this support is not requested, the
+              system should not include any software synthesizers in the
+              {{MIDIAccess}} exposure of available ports.
+            </p>
+            <p>
+              Note that may result in a two-step request procedure if software
+              synthesizer support is desired but not required - software
+              synthesizers may be disabled when MIDI hardware device access is
+              allowed.
+            </p>
           </dd>
         </dl>
       </section>
-
       <section data-dfn-for="MIDIInputMap">
-        <h3 id="MIDIInputMap"><dfn>MIDIInputMap</dfn> Interface</h3>
+        <h3 id="MIDIInputMap">
+          <dfn>MIDIInputMap</dfn> Interface
+        </h3>
         <pre class="idl">
           [SecureContext, Exposed=Window] interface MIDIInputMap {
-            readonly maplike &lt;DOMString, MIDIInput>;
+            readonly maplike &lt;DOMString, MIDIInput&gt;;
           };
         </pre>
-        <p>The <a>MIDIInputMap</a> is a maplike interface whose value is a {{MIDIInput}} instance and key is its ID.</p>
-        <p>This type is used to represent all the currently available MIDI input ports. This enables:
+        <p>
+          The <a>MIDIInputMap</a> is a maplike interface whose value is a
+          {{MIDIInput}} instance and key is its ID.
+        </p>
+        <p>
+          This type is used to represent all the currently available MIDI input
+          ports. This enables:
         </p>
         <pre class="example">    // to tell how many entries there are:
     var numberOfMIDIInputs = inputs.size;
@@ -264,18 +400,24 @@
       document.getElementById("inputportselector").add(opt);
     }</pre>
       </section>
-
-
       <section data-dfn-for="MIDIOutputMap">
-        <h3 id="MIDIOutputMap"><dfn>MIDIOutputMap</dfn> Interface</h3>
+        <h3 id="MIDIOutputMap">
+          <dfn>MIDIOutputMap</dfn> Interface
+        </h3>
         <pre class="idl">
           [SecureContext, Exposed=Window] interface MIDIOutputMap {
-            readonly maplike &lt;DOMString, MIDIOutput>;
+            readonly maplike &lt;DOMString, MIDIOutput&gt;;
           };
         </pre>
-        <p>The <a>MIDIOutputMap</a> is a maplike interface whose value is a <a>MIDIOutput</a> instance and key is its ID.</p>
-        <p>This type is used to represent all the currently available MIDI output ports.  This enables:
-          <pre class="example">    // to tell how many entries there are:
+        <p>
+          The <a>MIDIOutputMap</a> is a maplike interface whose value is a
+          <a>MIDIOutput</a> instance and key is its ID.
+        </p>
+        <p>
+          This type is used to represent all the currently available MIDI
+          output ports. This enables:
+        </p>
+        <pre class="example">    // to tell how many entries there are:
     var numberOfMIDIOutputs = outputs.size;
 
     // add each of the ports to a &lt;select&gt; box
@@ -292,12 +434,15 @@
       document.getElementById("outputportselector").add(opt);
     }</pre>
       </section>
-
-    <section data-dfn-for="MIDIAccess" data-link-for="MIDIAccess">
-      <h2 id="MIDIAccess"><dfn>MIDIAccess</dfn> Interface</h2>
-      <p>This interface provides the methods to list MIDI input and output
-        devices, and obtain access to an individual device.</p>
-      <pre class="idl">
+      <section data-dfn-for="MIDIAccess" data-link-for="MIDIAccess">
+        <h2 id="MIDIAccess">
+          <dfn>MIDIAccess</dfn> Interface
+        </h2>
+        <p>
+          This interface provides the methods to list MIDI input and output
+          devices, and obtain access to an individual device.
+        </p>
+        <pre class="idl">
         [SecureContext, Exposed=Window] interface MIDIAccess: EventTarget {
           readonly attribute MIDIInputMap inputs;
           readonly attribute MIDIOutputMap outputs;
@@ -305,41 +450,74 @@
           readonly attribute boolean sysexEnabled;
         };
       </pre>
-      <dl>
-        <dt><dfn>inputs</dfn></dt>
-        <dd>The MIDI input ports available to the system.</dd>
-
-        <dt><dfn>outputs</dfn></dt>
-        <dd>The MIDI output ports available to the system.</dd>
-
-        <dt><dfn>onstatechange</dfn></dt>
-        <dd>
-          <p>The handler called when a new port is connected or an existing port changes the state attribute.</p>
-          <p>This <a>event handler</a>, of type {{MIDIConnectionEvent}},
-            MUST be supported by all objects implementing the
-            {{MIDIAccess}} interface.
-          </p>
-          <p class="note">It is important to understand that leaving an {{EventHandler}} attached to this object will prevent it from being garbage-collected; when finished using the {{MIDIAccess}}, you should remove any {{onstatechange}} listeners.</p>
-          <p id="event-midiaccess-statechange">
-              Whenever a previously unavailable MIDI port becomes available for use, or an existing port changes the state attribute,
-              the user agent SHOULD run the following steps:</p>
-          <ol>
-            <li>Let |port:MIDIPort| be the {{MIDIPort}} corresponding to the newly-available, or the existing port.</li>
-            <li>Let |event:MIDIConnectionEvent| be a newly constructed {{MIDIConnectionEvent}}, with the {{MIDIConnectionEvent/port}} attribute set to the port.</li>
-            <li><a>Fire an event</a> named "statechange" at the {{MIDIAccess}}, using the |event| as the event object.</li>
-          </ol>
-        </dd>
-
-        <dt><dfn>sysexEnabled</dfn></dt>
-        <dd>This attribute informs the user whether system exclusive support is enabled on this MIDIAccess.</dd>
-      </dl>
-    </section>
-
-    <section data-dfn-for="MIDIPort">
-      <h2 id="MIDIPort"><dfn>MIDIPort</dfn> Interface</h2>
-
-      <p>This interface represents a MIDI input or output port.</p>
-      <pre class="idl">
+        <dl>
+          <dt>
+            <dfn>inputs</dfn>
+          </dt>
+          <dd>
+            The MIDI input ports available to the system.
+          </dd>
+          <dt>
+            <dfn>outputs</dfn>
+          </dt>
+          <dd>
+            The MIDI output ports available to the system.
+          </dd>
+          <dt>
+            <dfn>onstatechange</dfn>
+          </dt>
+          <dd>
+            <p>
+              The handler called when a new port is connected or an existing
+              port changes the state attribute.
+            </p>
+            <p>
+              This <a>event handler</a>, of type {{MIDIConnectionEvent}}, MUST
+              be supported by all objects implementing the {{MIDIAccess}}
+              interface.
+            </p>
+            <p class="note">
+              It is important to understand that leaving an {{EventHandler}}
+              attached to this object will prevent it from being
+              garbage-collected; when finished using the {{MIDIAccess}}, you
+              should remove any {{onstatechange}} listeners.
+            </p>
+            <p id="event-midiaccess-statechange">
+              Whenever a previously unavailable MIDI port becomes available for
+              use, or an existing port changes the state attribute, the user
+              agent SHOULD run the following steps:
+            </p>
+            <ol>
+              <li>Let |port:MIDIPort| be the {{MIDIPort}} corresponding to the
+              newly-available, or the existing port.
+              </li>
+              <li>Let |event:MIDIConnectionEvent| be a newly constructed
+              {{MIDIConnectionEvent}}, with the {{MIDIConnectionEvent/port}}
+              attribute set to the port.
+              </li>
+              <li>
+                <a>Fire an event</a> named "statechange" at the {{MIDIAccess}},
+                using the |event| as the event object.
+              </li>
+            </ol>
+          </dd>
+          <dt>
+            <dfn>sysexEnabled</dfn>
+          </dt>
+          <dd>
+            This attribute informs the user whether system exclusive support is
+            enabled on this MIDIAccess.
+          </dd>
+        </dl>
+      </section>
+      <section data-dfn-for="MIDIPort">
+        <h2 id="MIDIPort">
+          <dfn>MIDIPort</dfn> Interface
+        </h2>
+        <p>
+          This interface represents a MIDI input or output port.
+        </p>
+        <pre class="idl">
         [SecureContext, Exposed=Window] interface MIDIPort: EventTarget {
           readonly attribute DOMString id;
           readonly attribute DOMString? manufacturer;
@@ -349,543 +527,783 @@
           readonly attribute MIDIPortDeviceState state;
           readonly attribute MIDIPortConnectionState connection;
           attribute EventHandler onstatechange;
-          Promise &lt;MIDIPort> open();
-          Promise &lt;MIDIPort> close();
+          Promise &lt;MIDIPort&gt; open();
+          Promise &lt;MIDIPort&gt; close();
         };
       </pre>
-      <dl>
-        <dt><dfn>id</dfn></dt>
-        <dd>
-          <p>
-            A unique ID of the port. This can be used by developers to
-            remember ports the user has chosen for their application. The
-            User Agent MUST ensure that the {{MIDIPort/id}}
-            is unique to only that port.  The User Agent SHOULD ensure that
-            the id is maintained across instances of the
-            application - e.g., when the system is rebooted - and when a
-            device is removed from the system.  Applications may want to
-            cache these ids locally to re-create a MIDI setup.
-            Some systems may not support completely unique persistent
-            identifiers; in such cases, it will be more challenging to
-            maintain identifiers when another interface is added or removed
-            from the system.  (This might throw off the index of the
-            requested port.)  It is expected that the system will do the
-            best it can to match a port across instances of the MIDI API:
-            for example, an implementation may opaquely use some form of
-            hash of the port interface manufacturer, name and
-            index as the id, so that a reference to that port id is likely
-            to match the port when plugged in. Applications may use the
-            comparison of id of MIDIPorts to test for equality.</p>
-        </dd>
-        <dt><dfn>manufacturer</dfn></dt>
-        <dd>
-          <p>The manufacturer of the port.</p>
-        </dd>
-        <dt><dfn>name</dfn></dt>
-        <dd>
-          <p>The system name of the port.</p>
-        </dd>
-        <dt><dfn>type</dfn></dt>
-        <dd>
-          <p>
-            A descriptor property to distinguish whether the port is an
-            input or an output port.
-            For <a>MIDIOutput</a>,
-            this MUST be <code>"output"</code>.
-            For {{MIDIInput}},
-            this MUST be <code>"input"</code>.
-          </p>
-        </dd>
-        <dt><dfn>version</dfn></dt>
-        <dd>
-          <p>The version of the port.</p>
-        </dd>
-        <dt><dfn>state</dfn></dt>
-        <dd>The state of the device.</dd>
-        <dt><dfn>connection</dfn></dt>
-        <dd>The state of the connection to the device.</dd>
-        <dt><dfn>onstatechange</dfn></dt>
-        <dd>
-          <p>The handler called when an existing port changes its state or connection attributes.</p>
-          <p>This <a>event handler</a>, of type "statechange",
-            MUST be supported by all objects implementing
-            {{MIDIPort}} interface.
-          </p>
-          <p class="note">It is important to understand that leaving an {{EventHandler}} attached to this object will prevent it from being garbage-collected; when finished using the {{MIDIPort}}, you should remove any {{MIDIPort/onstatechange}} listeners.</p>
-        </dd>
-        <dt><dfn>open</dfn></dt>
-        <dd>
-          <p>
-            Makes the MIDI device corresponding to the {{MIDIPort}} explicitly
-            available.  Note that this call is NOT required in order to use the
-            {{MIDIPort}}-  calling <code>send()</code> on a <a>MIDIOutput</a>
-            or attaching a MIDIMessageEvent handler on a {{MIDIInput}} will
-            cause an implicit open().  The underlying implementation may not need
-            to do anything in response to this call.  However, some underlying
-            implementations may not be able to support shared access to MIDI devices,
-            so using explicit open() and close() calls will enable MIDI applications
-            to predictably control this exclusive access to devices.
-          </p>
-          <p>
-            When invoked, this method returns a Promise object representing a
-            request for access to the given MIDI port on the user's system.
-          </p>
-          <p>If the port device has a state of
-            <a data-lt="MIDIPortDeviceState.connected">"connected"</a>,
-            when access to the port has been obtained (and the port is ready for
-            input or output), the vended Promise is resolved.
-          </p>
-          <p>If access to a connected port is not available (for example, the port is
-            already in use in an exclusive-access-only platform), the Promise is rejected (if any) is invoked.
-          </p>
-          <p>If <code>open()</code> is called on a port that is
-            <a data-lt="MIDIPortDeviceState.disconnected">"disconnected"</a>,
-            the port's <a data-lt="MIDIPort.connection">.connection</a> will transition to
-            <a data-lt="MIDIPortConnectionState.pending">"pending"</a>,
-            until the port becomes <a data-lt="MIDIPortDeviceState.connected">"connected"</a> or all references to it are dropped.
-
-          <p>
-            When this method is called, the user
-            agent MUST run the <dfn data-lt="open the port">algorithm to open a MIDIPort</dfn>:
-          </p>
-
-          <ol>
-            <li><p>Let <var>promise</var> be a new Promise object and
-              <var>resolver</var> be its associated resolver.</p></li>
-
-            <li><p>Return <var>promise</var> and run the following steps
-              asynchronously.</p></li>
-
-            <li><p>Let <var>port</var> be the given
-              {{MIDIPort}}
-              object.</p></li>
-
-            <li><p>If the device's connection is already <a
-              data-lt="MIDIPortConnectionState.open">"open"</a>
-              (e.g. open() has already been called on this MIDIPort, or the
-              port has been implicitly opened), jump to the step labeled
-              <em>success</em> below.</p></li>
-
-            <li><p>If the device's connection is <a
-              data-lt="MIDIPortConnectionState.pending">"pending"</a>
-              (i.e. the connection had been opened and the device was
-              subsequently disconnected), jump to the step labeled
-              <em>success</em> below.</p></li>
-
-            <li><p>If the device's state is <a
-              data-lt="MIDIPortDeviceState.disconnected">"disconnected"</a>,
-              change the <a data-link-for="MIDIPort">connection</a> attribute of the
-              {{MIDIPort}} to
-              <a data-lt="MIDIPortConnectionState.pending">"pending"</a>,
-              and enqueue a new <a
-              data-lt="MIDIConnectionEvent">MIDIConnectionEvent</a>
-              to the <a data-lt="MIDIAccess.onstatechange">statechange</a>
-              handler of the {{MIDIAccess}} and to the  <a data-lt="MIDIPort.onstatechange">statechange</a>
-              handler of the {{MIDIPort}}
-              and jump to the step labeled <em>success</em> below.</p></li>
-
-            <li><p>Attempt to obtain access to the given MIDI device in the
-              system.  If the device is unavailable (e.g. is already in use by another
-              process and cannot be opened, or is disconnected), jump to the step labeled
-              <em>failure</em> below.  If the device is available and access is
-              obtained, continue the following steps.</p></li>
-
-            <li><p>Change the <code>connection</code> attribute of the MIDIPort to
-              <code>"open"</code>, and enqueue a new {{MIDIConnectionEvent}}
-              to the <a data-lt="MIDIAccess.onstatechange">statechange</a>
-              handler of the {{MIDIAccess}} and to the  <a data-lt="MIDIPort.onstatechange">statechange</a>
-              handler of the {{MIDIPort}}.</p></li>
-
-            <li><p>If this port is an output port and has any pending data
-              that is waiting to be sent, asynchronously begin sending that
-              data.</p></li>
-
-            <li><p><em><b>success</b></em>: Call <var>resolver</var>'s
-              <code>accept(value)</code> method with <var>port</var> as
-              value argument.</p></li>
-
-            <li><p>Terminate these steps.</p></li>
-
-            <li><p><em><b>failure</b></em>: Let <var>error</var> be a new
-              {{DOMException}}. This exception's .name should be
-              <code>"InvalidAccessError"</code> if the port is unavailable.</p></li>
-
-            <li><p>Call <var>resolver</var>'s <code>reject(value)</code> method
-              with <var>error</var> as value argument.</p></li>
-          </ol>
-        </dd>
-        <dt><dfn>close</dfn></dt>
-        <dd>
-          <p>
-            Makes the MIDI device corresponding to the
-            {{MIDIPort}} explicitly
-            unavailable (subsequently changing the state from "open" to "closed").
-            Note that successful invocation of this method will result in MIDI
-            messages no longer being delivered to MIDIMessageEvent handlers on a
-            {{MIDIInput}} (although setting a new handler will cause an
-            implicit open()).</p>
-          <p>The underlying implementation may not need to do anything in response
-            to this call.  However, some underlying implementations may not be able
-            to support shared access to MIDI devices, and the explicit close() call
-            enables MIDI applications to ensure other applications can gain access
-            to devices.</p>
-          <p>When invoked, this method returns a Promise object representing a
-            request for access to the given MIDI port on the user's system.
-            When the port has been closed (and therefore, in exclusive access
-            systems, the port is available to other applications), the vended
-            Promise is resolved.  If the port is
-            disconnected, the Promise is rejected.</p>
-          <p>When the <code>close()</code> method is called, the user
-            agent MUST run the <dfn>algorithm to close a MIDIPort</dfn>:</p>
-
-          <ol>
-            <li><p>Let <var>promise</var> be a new Promise object and
-              <var>resolver</var> be its associated resolver.</p></li>
-            <li><p>Return <var>promise</var> and run the following steps
-              asynchronously.</p></li>
-
-            <li><p>Let <var>port</var> be the given
-              {{MIDIPort}} object.</p></li>
-
-            <li><p>If the port is already closed (its <a
-              data-lt="MIDIPort.connection">.connection</a> is <a
-              data-lt="MIDIPortConnectionState.closed">"closed"</a>
-              - e.g. the port has not yet been implicitly or explicitly opened,
-              or <a data-lt="MIDIPort.close">close()</a>
-              has already been called on this <a
-             >MIDIPort</a>), jump to the step
-              labeled <em><b>closed</b></em> below. </p></li>
-
-            <li><p>If the port is an input port, skip to the next step.  If
-              the output port's <a data-lt="MIDIPort.state">.state</a>
-              is not <a data-lt="MIDIPortDeviceState.connected">"connected"</a>,
-              clear all pending send data and skip to the next step.  Clear
-              any pending send data in the system with timestamps in the
-              future, then finish sending any send messages with no timestamp
-              or with a timestamp in the past or present, prior to proceeding
-              to the next step.</p></li>
-
-            <li><p>Close access to the port in the underlying system if open,
-              and release any blocking resources in the underlying system.</p></li>
-
-            <li><p>Change the <code>connection</code>
-              attribute of the MIDIPort to <code>"closed"</code>, and enqueue
-              a new {{MIDIConnectionEvent}} to the <a
-              data-lt="MIDIAccess.onstatechange">statechange</a>
-              handler of the {{MIDIAccess}} and to the  <a data-lt="MIDIPort.onstatechange">statechange</a>
-              handler of the {{MIDIPort}}.</p>
-
-            <li><p><em><b>closed</b></em>: Call <var>resolver</var>'s
-              <code>accept(value)</code> method with
-              <var>port</var> as value argument.</p></li>
-
-            <li><p>Terminate these steps.</p></li>
-          </ol>
-        </dd>
-      </dl>
-
-      <p id="event-midiport-statechange">
-          Whenever the MIDI port corresponding to the
-          {{MIDIPort}} changes the state attribute, the user agent SHOULD
-          run the following steps:
+        <dl>
+          <dt>
+            <dfn>id</dfn>
+          </dt>
+          <dd>
+            <p>
+              A unique ID of the port. This can be used by developers to
+              remember ports the user has chosen for their application. The
+              User Agent MUST ensure that the {{MIDIPort/id}} is unique to only
+              that port. The User Agent SHOULD ensure that the id is maintained
+              across instances of the application - e.g., when the system is
+              rebooted - and when a device is removed from the system.
+              Applications may want to cache these ids locally to re-create a
+              MIDI setup. Some systems may not support completely unique
+              persistent identifiers; in such cases, it will be more
+              challenging to maintain identifiers when another interface is
+              added or removed from the system. (This might throw off the index
+              of the requested port.) It is expected that the system will do
+              the best it can to match a port across instances of the MIDI API:
+              for example, an implementation may opaquely use some form of hash
+              of the port interface manufacturer, name and index as the id, so
+              that a reference to that port id is likely to match the port when
+              plugged in. Applications may use the comparison of id of
+              MIDIPorts to test for equality.
+            </p>
+          </dd>
+          <dt>
+            <dfn>manufacturer</dfn>
+          </dt>
+          <dd>
+            <p>
+              The manufacturer of the port.
+            </p>
+          </dd>
+          <dt>
+            <dfn>name</dfn>
+          </dt>
+          <dd>
+            <p>
+              The system name of the port.
+            </p>
+          </dd>
+          <dt>
+            <dfn>type</dfn>
+          </dt>
+          <dd>
+            <p>
+              A descriptor property to distinguish whether the port is an input
+              or an output port. For <a>MIDIOutput</a>, this MUST be
+              <code>"output"</code>. For {{MIDIInput}}, this MUST be
+              <code>"input"</code>.
+            </p>
+          </dd>
+          <dt>
+            <dfn>version</dfn>
+          </dt>
+          <dd>
+            <p>
+              The version of the port.
+            </p>
+          </dd>
+          <dt>
+            <dfn>state</dfn>
+          </dt>
+          <dd>
+            The state of the device.
+          </dd>
+          <dt>
+            <dfn>connection</dfn>
+          </dt>
+          <dd>
+            The state of the connection to the device.
+          </dd>
+          <dt>
+            <dfn>onstatechange</dfn>
+          </dt>
+          <dd>
+            <p>
+              The handler called when an existing port changes its state or
+              connection attributes.
+            </p>
+            <p>
+              This <a>event handler</a>, of type "statechange", MUST be
+              supported by all objects implementing {{MIDIPort}} interface.
+            </p>
+            <p class="note">
+              It is important to understand that leaving an {{EventHandler}}
+              attached to this object will prevent it from being
+              garbage-collected; when finished using the {{MIDIPort}}, you
+              should remove any {{MIDIPort/onstatechange}} listeners.
+            </p>
+          </dd>
+          <dt>
+            <dfn>open</dfn>
+          </dt>
+          <dd>
+            <p>
+              Makes the MIDI device corresponding to the {{MIDIPort}}
+              explicitly available. Note that this call is NOT required in
+              order to use the {{MIDIPort}}- calling <code>send()</code> on a
+              <a>MIDIOutput</a> or attaching a MIDIMessageEvent handler on a
+              {{MIDIInput}} will cause an implicit open(). The underlying
+              implementation may not need to do anything in response to this
+              call. However, some underlying implementations may not be able to
+              support shared access to MIDI devices, so using explicit open()
+              and close() calls will enable MIDI applications to predictably
+              control this exclusive access to devices.
+            </p>
+            <p>
+              When invoked, this method returns a Promise object representing a
+              request for access to the given MIDI port on the user's system.
+            </p>
+            <p>
+              If the port device has a state of <a data-lt=
+              "MIDIPortDeviceState.connected">"connected"</a>, when access to
+              the port has been obtained (and the port is ready for input or
+              output), the vended Promise is resolved.
+            </p>
+            <p>
+              If access to a connected port is not available (for example, the
+              port is already in use in an exclusive-access-only platform), the
+              Promise is rejected (if any) is invoked.
+            </p>
+            <p>
+              If <code>open()</code> is called on a port that is <a data-lt=
+              "MIDIPortDeviceState.disconnected">"disconnected"</a>, the port's
+              <a data-lt="MIDIPort.connection">.connection</a> will transition
+              to <a data-lt="MIDIPortConnectionState.pending">"pending"</a>,
+              until the port becomes <a data-lt=
+              "MIDIPortDeviceState.connected">"connected"</a> or all references
+              to it are dropped.
+            </p>
+            <p>
+              When this method is called, the user agent MUST run the
+              <dfn data-lt="open the port">algorithm to open a MIDIPort</dfn>:
+            </p>
+            <ol>
+              <li>
+                <p>
+                  Let <var>promise</var> be a new Promise object and
+                  <var>resolver</var> be its associated resolver.
+                </p>
+              </li>
+              <li>
+                <p>
+                  Return <var>promise</var> and run the following steps
+                  asynchronously.
+                </p>
+              </li>
+              <li>
+                <p>
+                  Let <var>port</var> be the given {{MIDIPort}} object.
+                </p>
+              </li>
+              <li>
+                <p>
+                  If the device's connection is already <a data-lt=
+                  "MIDIPortConnectionState.open">"open"</a> (e.g. open() has
+                  already been called on this MIDIPort, or the port has been
+                  implicitly opened), jump to the step labeled <em>success</em>
+                  below.
+                </p>
+              </li>
+              <li>
+                <p>
+                  If the device's connection is <a data-lt=
+                  "MIDIPortConnectionState.pending">"pending"</a> (i.e. the
+                  connection had been opened and the device was subsequently
+                  disconnected), jump to the step labeled <em>success</em>
+                  below.
+                </p>
+              </li>
+              <li>
+                <p>
+                  If the device's state is <a data-lt=
+                  "MIDIPortDeviceState.disconnected">"disconnected"</a>, change
+                  the <a data-link-for="MIDIPort">connection</a> attribute of
+                  the {{MIDIPort}} to <a data-lt=
+                  "MIDIPortConnectionState.pending">"pending"</a>, and enqueue
+                  a new <a data-lt=
+                  "MIDIConnectionEvent">MIDIConnectionEvent</a> to the
+                  <a data-lt="MIDIAccess.onstatechange">statechange</a> handler
+                  of the {{MIDIAccess}} and to the <a data-lt=
+                  "MIDIPort.onstatechange">statechange</a> handler of the
+                  {{MIDIPort}} and jump to the step labeled <em>success</em>
+                  below.
+                </p>
+              </li>
+              <li>
+                <p>
+                  Attempt to obtain access to the given MIDI device in the
+                  system. If the device is unavailable (e.g. is already in use
+                  by another process and cannot be opened, or is disconnected),
+                  jump to the step labeled <em>failure</em> below. If the
+                  device is available and access is obtained, continue the
+                  following steps.
+                </p>
+              </li>
+              <li>
+                <p>
+                  Change the <code>connection</code> attribute of the MIDIPort
+                  to <code>"open"</code>, and enqueue a new
+                  {{MIDIConnectionEvent}} to the <a data-lt=
+                  "MIDIAccess.onstatechange">statechange</a> handler of the
+                  {{MIDIAccess}} and to the <a data-lt=
+                  "MIDIPort.onstatechange">statechange</a> handler of the
+                  {{MIDIPort}}.
+                </p>
+              </li>
+              <li>
+                <p>
+                  If this port is an output port and has any pending data that
+                  is waiting to be sent, asynchronously begin sending that
+                  data.
+                </p>
+              </li>
+              <li>
+                <p>
+                  <em><b>success</b></em>: Call <var>resolver</var>'s
+                  <code>accept(value)</code> method with <var>port</var> as
+                  value argument.
+                </p>
+              </li>
+              <li>
+                <p>
+                  Terminate these steps.
+                </p>
+              </li>
+              <li>
+                <p>
+                  <em><b>failure</b></em>: Let <var>error</var> be a new
+                  {{DOMException}}. This exception's .name should be
+                  <code>"InvalidAccessError"</code> if the port is unavailable.
+                </p>
+              </li>
+              <li>
+                <p>
+                  Call <var>resolver</var>'s <code>reject(value)</code> method
+                  with <var>error</var> as value argument.
+                </p>
+              </li>
+            </ol>
+          </dd>
+          <dt>
+            <dfn>close</dfn>
+          </dt>
+          <dd>
+            <p>
+              Makes the MIDI device corresponding to the {{MIDIPort}}
+              explicitly unavailable (subsequently changing the state from
+              "open" to "closed"). Note that successful invocation of this
+              method will result in MIDI messages no longer being delivered to
+              MIDIMessageEvent handlers on a {{MIDIInput}} (although setting a
+              new handler will cause an implicit open()).
+            </p>
+            <p>
+              The underlying implementation may not need to do anything in
+              response to this call. However, some underlying implementations
+              may not be able to support shared access to MIDI devices, and the
+              explicit close() call enables MIDI applications to ensure other
+              applications can gain access to devices.
+            </p>
+            <p>
+              When invoked, this method returns a Promise object representing a
+              request for access to the given MIDI port on the user's system.
+              When the port has been closed (and therefore, in exclusive access
+              systems, the port is available to other applications), the vended
+              Promise is resolved. If the port is disconnected, the Promise is
+              rejected.
+            </p>
+            <p>
+              When the <code>close()</code> method is called, the user agent
+              MUST run the <dfn>algorithm to close a MIDIPort</dfn>:
+            </p>
+            <ol>
+              <li>
+                <p>
+                  Let <var>promise</var> be a new Promise object and
+                  <var>resolver</var> be its associated resolver.
+                </p>
+              </li>
+              <li>
+                <p>
+                  Return <var>promise</var> and run the following steps
+                  asynchronously.
+                </p>
+              </li>
+              <li>
+                <p>
+                  Let <var>port</var> be the given {{MIDIPort}} object.
+                </p>
+              </li>
+              <li>
+                <p>
+                  If the port is already closed (its <a data-lt=
+                  "MIDIPort.connection">.connection</a> is <a data-lt=
+                  "MIDIPortConnectionState.closed">"closed"</a> - e.g. the port
+                  has not yet been implicitly or explicitly opened, or
+                  <a data-lt="MIDIPort.close">close()</a> has already been
+                  called on this <a>MIDIPort</a>), jump to the step labeled
+                  <em><b>closed</b></em> below.
+                </p>
+              </li>
+              <li>
+                <p>
+                  If the port is an input port, skip to the next step. If the
+                  output port's <a data-lt="MIDIPort.state">.state</a> is not
+                  <a data-lt="MIDIPortDeviceState.connected">"connected"</a>,
+                  clear all pending send data and skip to the next step. Clear
+                  any pending send data in the system with timestamps in the
+                  future, then finish sending any send messages with no
+                  timestamp or with a timestamp in the past or present, prior
+                  to proceeding to the next step.
+                </p>
+              </li>
+              <li>
+                <p>
+                  Close access to the port in the underlying system if open,
+                  and release any blocking resources in the underlying system.
+                </p>
+              </li>
+              <li>
+                <p>
+                  Change the <code>connection</code> attribute of the MIDIPort
+                  to <code>"closed"</code>, and enqueue a new
+                  {{MIDIConnectionEvent}} to the <a data-lt=
+                  "MIDIAccess.onstatechange">statechange</a> handler of the
+                  {{MIDIAccess}} and to the <a data-lt=
+                  "MIDIPort.onstatechange">statechange</a> handler of the
+                  {{MIDIPort}}.
+                </p>
+              </li>
+              <li>
+                <p>
+                  <em><b>closed</b></em>: Call <var>resolver</var>'s
+                  <code>accept(value)</code> method with <var>port</var> as
+                  value argument.
+                </p>
+              </li>
+              <li>
+                <p>
+                  Terminate these steps.
+                </p>
+              </li>
+            </ol>
+          </dd>
+        </dl>
+        <p id="event-midiport-statechange">
+          Whenever the MIDI port corresponding to the {{MIDIPort}} changes the
+          state attribute, the user agent SHOULD run the following steps:
         </p>
-
         <ol>
           <li>
             <p>
               Let <code>port</code> be the {{MIDIPort}}.
             </p>
           </li>
-
           <li>
             <p>
               Let <code>event</code> be a newly constructed
-              {{MIDIConnectionEvent}}, with the <code>port</code>
-              attribute set to the port.
+              {{MIDIConnectionEvent}}, with the <code>port</code> attribute set
+              to the port.
             </p>
           </li>
-
           <li>
             <p>
-              <a>Fire an event</a> named <a data-lt="MIDIPort.onstatechange">statechange</a>
-              at the {{MIDIPort}}, and <a data-lt="MIDIAccess.onstatechange">statechange</a> at the {{MIDIAccess}}, using the <code>event</code> as the event object.
+              <a>Fire an event</a> named <a data-lt=
+              "MIDIPort.onstatechange">statechange</a> at the {{MIDIPort}}, and
+              <a data-lt="MIDIAccess.onstatechange">statechange</a> at the
+              {{MIDIAccess}}, using the <code>event</code> as the event object.
             </p>
           </li>
         </ol>
-
-      <section data-dfn-for="MIDIInput">
-        <h3 id="MIDIInput"><dfn>MIDIInput</dfn> Interface</h3>
-        <pre class="idl">
+        <section data-dfn-for="MIDIInput">
+          <h3 id="MIDIInput">
+            <dfn>MIDIInput</dfn> Interface
+          </h3>
+          <pre class="idl">
           [SecureContext, Exposed=Window] interface MIDIInput: MIDIPort {
             attribute EventHandler onmidimessage;
           };
         </pre>
-        <dl>
-          <dt><dfn>onmidimessage</dfn></dt>
-          <dd>
-            <p>
-              This <a>event handler</a>, of type "midimessage",
-              MUST be supported by all objects implementing
-              {{MIDIInput}} interface.
-            </p>
-            <p>If the handler is set and the state attribute is not <code>"opened"</code>, underlying implementation tries to make the port available, and change the state attribute to <code>"opened"</code>.  If succeeded, {{MIDIConnectionEvent}} is delivered to the corresponding <code>MIDIPort</code> and {{MIDIAccess}}.
-          </dd>
-        </dl>
-
-      <p id="event-midiinput-message">
-          Whenever the MIDI port corresponding to the
-          {{MIDIInput}} finishes receiving one or more MIDI messages, the user agent MUST
-          run the following steps:
-        </p>
-
-        <ol>
-          <li>
-            <p>
-              Let <code>port</code> be the {{MIDIInput}}.
-            </p>
-          </li>
-
-          <li>
-            <p>
-              If the {{MIDIAccess}} did not enable system exclusive access, and the message is a system exclusive message, abort this process.
-            </p>
-          </li>
-
-          <li>
-            <p>
-              Let <code>event</code> be a newly constructed
-              <a>MIDIMessageEvent</a>, with the <code>timestamp</code>
-              attribute set to the time the message was received by the system, and
-              with the <code>data</code> attribute set to a Uint8Array of MIDI data
-              bytes representing a single MIDI message.
-            </p>
-          </li>
-
-          <li>
-            <p>
-              <a>Fire an event</a> named "midimessage"
-              at the <code>port</code>, using the <code>event</code> as the event object.
-            </p>
-          </li>
-        </ol>
-        <p>It is specifically noted that MIDI System Real-Time Messages may actually occur in the middle of other messages in the input stream; in this case, the System Real-Time messages will be dispatched as they occur, while the normal messages will be buffered until they are complete (and then dispatched).
-        </p>
-
-      </section>
-
-      <section data-dfn-for="MIDIOutput">
-        <h3 id="MIDIOutput"><dfn>MIDIOutput</dfn> Interface</h3>
-        <pre class="idl">
+          <dl>
+            <dt>
+              <dfn>onmidimessage</dfn>
+            </dt>
+            <dd>
+              <p>
+                This <a>event handler</a>, of type "midimessage", MUST be
+                supported by all objects implementing {{MIDIInput}} interface.
+              </p>
+              <p>
+                If the handler is set and the state attribute is not
+                <code>"opened"</code>, underlying implementation tries to make
+                the port available, and change the state attribute to
+                <code>"opened"</code>. If succeeded, {{MIDIConnectionEvent}} is
+                delivered to the corresponding <code>MIDIPort</code> and
+                {{MIDIAccess}}.
+              </p>
+            </dd>
+          </dl>
+          <p id="event-midiinput-message">
+            Whenever the MIDI port corresponding to the {{MIDIInput}} finishes
+            receiving one or more MIDI messages, the user agent MUST run the
+            following steps:
+          </p>
+          <ol>
+            <li>
+              <p>
+                Let <code>port</code> be the {{MIDIInput}}.
+              </p>
+            </li>
+            <li>
+              <p>
+                If the {{MIDIAccess}} did not enable system exclusive access,
+                and the message is a system exclusive message, abort this
+                process.
+              </p>
+            </li>
+            <li>
+              <p>
+                Let <code>event</code> be a newly constructed
+                <a>MIDIMessageEvent</a>, with the <code>timestamp</code>
+                attribute set to the time the message was received by the
+                system, and with the <code>data</code> attribute set to a
+                Uint8Array of MIDI data bytes representing a single MIDI
+                message.
+              </p>
+            </li>
+            <li>
+              <p>
+                <a>Fire an event</a> named "midimessage" at the
+                <code>port</code>, using the <code>event</code> as the event
+                object.
+              </p>
+            </li>
+          </ol>
+          <p>
+            It is specifically noted that MIDI System Real-Time Messages may
+            actually occur in the middle of other messages in the input stream;
+            in this case, the System Real-Time messages will be dispatched as
+            they occur, while the normal messages will be buffered until they
+            are complete (and then dispatched).
+          </p>
+        </section>
+        <section data-dfn-for="MIDIOutput">
+          <h3 id="MIDIOutput">
+            <dfn>MIDIOutput</dfn> Interface
+          </h3>
+          <pre class="idl">
           [SecureContext, Exposed=Window] interface MIDIOutput : MIDIPort {
-            void send(sequence&lt;octet> data, optional DOMHighResTimeStamp timestamp = 0);
+            void send(sequence&lt;octet&gt; data, optional DOMHighResTimeStamp timestamp = 0);
             void clear();
           };
         </pre>
-        <dl>
-          <dt><dfn>send</dfn></dt>
-          <dd>
-            <p>
-              Enqueues the message to be sent to the corresponding MIDI port.  The underlying implementation will (if necessary) coerce each member of the sequence to an unsigned 8-bit integer.  The use of sequence rather than a Uint8Array enables developers to use the convenience of <code>output.send( [ 0x90, 0x45, 0x7f ] );</code> rather than having to create a Uint8Array, e.g. <code>output.send( new Uint8Array( [ 0x90, 0x45, 0x7f ] ) );</code> - while still enabling use of Uint8Arrays for efficiency in large MIDI data scenarios (e.g. reading Standard MIDI Files and sending sysex messages).
-            </p>
-            <p>
-              The data contains one or more valid, complete MIDI messages.  Running status is not allowed in the data, as underlying systems may not support it.
-            </p>
-            <p>
-                If <var>data</var> is not a valid sequence or does not contain a valid MIDI message, throw a <code>TypeError</code> exception.
-            </p>
-            <p>
-              If <var>data</var> is a system exclusive message, and the {{MIDIAccess}} did not enable system exclusive access, throw an <code>InvalidAccessError</code> exception.
-            </p>
-            <p>
-                If the port is <a
-                data-lt="MIDIPortDeviceState.disconnected">"disconnected"</a>,
-                throw an <code>InvalidStateError</code> exception.
-            </p>
-            <p>
-                If the port is <a
-                data-lt="MIDIPortDeviceState.connected">"connected"</a>
-                but the connection is <a
-                data-lt="MIDIPortConnectionState.closed">"closed"</a>,
-                asynchronously try to <a>open the port</a>.
-            </p>
-            <dl class='parameters'>
-              <dt>sequence&lt;octet&gt; data</dt>
-              <dd>
-                The data to be enqueued, with each sequence entry representing a single byte of data.
-              </dd>
-              <dt>optional DOMHighResTimeStamp timestamp</dt>
-              <dd>
-                The time at which to begin sending the data to the port (as a {{DOMHighResTimeStamp}} - a number of milliseconds measured relative to the navigation start of the document).  If <code>timestamp</code> is set to zero (or another time in the past), the data is to be sent as soon as possible.
-              </dd>
-            </dl>
-          </dd>
-          <dt><dfn>clear</dfn></dt>
-          <dd>
-            <p>Clears any pending send data that has not yet been sent from the <code>MIDIOutput</code>'s queue.  The implementation will need to ensure the MIDI stream is left in a good state, so if the output port is in the middle of a sysex message, a sysex termination byte (0xf7) should be sent.</p>
-          </dd>
-        </dl>
-      </section>
-      <section data-dfn-for="MIDIPortType">
-        <h2><dfn>MIDIPortType</dfn> Enum</h2>
-
-        <pre class="idl">
+          <dl>
+            <dt>
+              <dfn>send</dfn>
+            </dt>
+            <dd>
+              <p>
+                Enqueues the message to be sent to the corresponding MIDI port.
+                The underlying implementation will (if necessary) coerce each
+                member of the sequence to an unsigned 8-bit integer. The use of
+                sequence rather than a Uint8Array enables developers to use the
+                convenience of <code>output.send( [ 0x90, 0x45, 0x7f ]
+                );</code> rather than having to create a Uint8Array, e.g.
+                <code>output.send( new Uint8Array( [ 0x90, 0x45, 0x7f ] )
+                );</code> - while still enabling use of Uint8Arrays for
+                efficiency in large MIDI data scenarios (e.g. reading Standard
+                MIDI Files and sending sysex messages).
+              </p>
+              <p>
+                The data contains one or more valid, complete MIDI messages.
+                Running status is not allowed in the data, as underlying
+                systems may not support it.
+              </p>
+              <p>
+                If <var>data</var> is not a valid sequence or does not contain
+                a valid MIDI message, throw a <code>TypeError</code> exception.
+              </p>
+              <p>
+                If <var>data</var> is a system exclusive message, and the
+                {{MIDIAccess}} did not enable system exclusive access, throw an
+                <code>InvalidAccessError</code> exception.
+              </p>
+              <p>
+                If the port is <a data-lt=
+                "MIDIPortDeviceState.disconnected">"disconnected"</a>, throw an
+                <code>InvalidStateError</code> exception.
+              </p>
+              <p>
+                If the port is <a data-lt=
+                "MIDIPortDeviceState.connected">"connected"</a> but the
+                connection is <a data-lt=
+                "MIDIPortConnectionState.closed">"closed"</a>, asynchronously
+                try to <a>open the port</a>.
+              </p>
+              <dl class='parameters'>
+                <dt>
+                  sequence&lt;octet&gt; data
+                </dt>
+                <dd>
+                  The data to be enqueued, with each sequence entry
+                  representing a single byte of data.
+                </dd>
+                <dt>
+                  optional DOMHighResTimeStamp timestamp
+                </dt>
+                <dd>
+                  The time at which to begin sending the data to the port (as a
+                  {{DOMHighResTimeStamp}} - a number of milliseconds measured
+                  relative to the navigation start of the document). If
+                  <code>timestamp</code> is set to zero (or another time in the
+                  past), the data is to be sent as soon as possible.
+                </dd>
+              </dl>
+            </dd>
+            <dt>
+              <dfn>clear</dfn>
+            </dt>
+            <dd>
+              <p>
+                Clears any pending send data that has not yet been sent from
+                the <code>MIDIOutput</code>'s queue. The implementation will
+                need to ensure the MIDI stream is left in a good state, so if
+                the output port is in the middle of a sysex message, a sysex
+                termination byte (0xf7) should be sent.
+              </p>
+            </dd>
+          </dl>
+        </section>
+        <section data-dfn-for="MIDIPortType">
+          <h2>
+            <dfn>MIDIPortType</dfn> Enum
+          </h2>
+          <pre class="idl">
           enum MIDIPortType {
             "input",
             "output",
           };
         </pre>
-        <dl>
-          <dt><dfn>input</dfn></dt>
-          <dd>
-            If a MIDIPort is an input port, the type member MUST be this value.
-          </dd>
-          <dt><dfn>output</dfn></dt>
-          <dd>
-            If a MIDIPort is an output port, the type member MUST be this value.
-          </dd>
-        </dl>
-      </section>
-      <section data-dfn-for="MIDIPortDeviceState">
-      <h2><dfn>MIDIPortDeviceState</dfn> Enum</h2>
-
-      <pre class="idl">
+          <dl>
+            <dt>
+              <dfn>input</dfn>
+            </dt>
+            <dd>
+              If a MIDIPort is an input port, the type member MUST be this
+              value.
+            </dd>
+            <dt>
+              <dfn>output</dfn>
+            </dt>
+            <dd>
+              If a MIDIPort is an output port, the type member MUST be this
+              value.
+            </dd>
+          </dl>
+        </section>
+        <section data-dfn-for="MIDIPortDeviceState">
+          <h2>
+            <dfn>MIDIPortDeviceState</dfn> Enum
+          </h2>
+          <pre class="idl">
         enum MIDIPortDeviceState {
           "disconnected",
           "connected",
         };
       </pre>
-      <dl>
-        <dt><dfn>disconnected</dfn></dt>
-        <dd>
-          The device that MIDIPort represents is disconnected from the system.  When a device is disconnected from the system, it should not appear in the relevant map of input and output ports.
-        </dd>
-        <dt><dfn>connected</dfn></dt>
-        <dd>
-          The device that MIDIPort represents is connected, and should appear in the map of input and output ports.
-        </dd>
-      </dl>
-      </section>
-      <section data-dfn-for="MIDIPortConnectionState">
-      <h2><dfn>MIDIPortConnectionState</dfn> Enum</h2>
-      <pre class="idl">
+          <dl>
+            <dt>
+              <dfn>disconnected</dfn>
+            </dt>
+            <dd>
+              The device that MIDIPort represents is disconnected from the
+              system. When a device is disconnected from the system, it should
+              not appear in the relevant map of input and output ports.
+            </dd>
+            <dt>
+              <dfn>connected</dfn>
+            </dt>
+            <dd>
+              The device that MIDIPort represents is connected, and should
+              appear in the map of input and output ports.
+            </dd>
+          </dl>
+        </section>
+        <section data-dfn-for="MIDIPortConnectionState">
+          <h2>
+            <dfn>MIDIPortConnectionState</dfn> Enum
+          </h2>
+          <pre class="idl">
         enum MIDIPortConnectionState {
           "open",
           "closed",
           "pending",
         };
       </pre>
-      <dl>
-        <dt><dfn>open</dfn></dt>
-        <dd>
-          The device that MIDIPort represents has been opened (either <a data-lt="MIDIPort.open">implicitly or explicitly</a>) and is available for use.
-        </dd>
-        <dt><dfn>closed</dfn></dt>
-        <dd>
-          The device that MIDIPort represents has not been opened, or has been explicitly closed.  Until a MIDIPort has been opened either explicitly (through {{MIDIPort.open()}}) or implicitly (by adding a <a data-lt="MIDIInput.onmidimessage">midimessage</a> event handler on an input port, or calling {{MIDIOutput.send()}} on an output port, this should be the default state of the device.
-        </dd>
-        <dt><dfn>pending</dfn></dt>
-        <dd>
-          The device that {{MIDIPort}} represents has been opened (either <a data-lt="MIDIPortConnectionState.open">implicitly or explicitly</a>), but the device has subsequently been disconnected and is unavailable for use.  If the device is reconnected, prior to sending a <a data-lt="MIDIPort.onstatechange">statechange</a> event, the system should attempt to reopen the device (following the <a>algorithm to open a MIDIPort</a>); this will result in either the connection state transitioning to "open" or to "closed".
-        </dd>
-      </dl>
+          <dl>
+            <dt>
+              <dfn>open</dfn>
+            </dt>
+            <dd>
+              The device that MIDIPort represents has been opened (either
+              <a data-lt="MIDIPort.open">implicitly or explicitly</a>) and is
+              available for use.
+            </dd>
+            <dt>
+              <dfn>closed</dfn>
+            </dt>
+            <dd>
+              The device that MIDIPort represents has not been opened, or has
+              been explicitly closed. Until a MIDIPort has been opened either
+              explicitly (through {{MIDIPort.open()}}) or implicitly (by adding
+              a <a data-lt="MIDIInput.onmidimessage">midimessage</a> event
+              handler on an input port, or calling {{MIDIOutput.send()}} on an
+              output port, this should be the default state of the device.
+            </dd>
+            <dt>
+              <dfn>pending</dfn>
+            </dt>
+            <dd>
+              The device that {{MIDIPort}} represents has been opened (either
+              <a data-lt="MIDIPortConnectionState.open">implicitly or
+              explicitly</a>), but the device has subsequently been
+              disconnected and is unavailable for use. If the device is
+              reconnected, prior to sending a <a data-lt=
+              "MIDIPort.onstatechange">statechange</a> event, the system should
+              attempt to reopen the device (following the <a>algorithm to open
+              a MIDIPort</a>); this will result in either the connection state
+              transitioning to "open" or to "closed".
+            </dd>
+          </dl>
+        </section>
       </section>
-    </section>
-
-    <section data-dfn-for="MIDIMessageEvent">
-      <h2 id="MIDIMessageEvent"><dfn>MIDIMessageEvent</dfn> Interface</h2>
-      <p>An event object implementing this interface is passed to a MIDIInput's onmidimessage handler when MIDI messages are received.  Note that the DOM {{Event}} <code>timeStamp</code> attribute is defined as a {{DOMHighResTimeStamp}}, and represents the high-resolution time of when the event was received or is to be sent.</p>
-      <pre class="idl">
+      <section data-dfn-for="MIDIMessageEvent">
+        <h2 id="MIDIMessageEvent">
+          <dfn>MIDIMessageEvent</dfn> Interface
+        </h2>
+        <p>
+          An event object implementing this interface is passed to a
+          MIDIInput's onmidimessage handler when MIDI messages are received.
+          Note that the DOM {{Event}} <code>timeStamp</code> attribute is
+          defined as a {{DOMHighResTimeStamp}}, and represents the
+          high-resolution time of when the event was received or is to be sent.
+        </p>
+        <pre class="idl">
         [SecureContext, Exposed=Window]
         interface MIDIMessageEvent : Event {
           constructor(DOMString type, optional MIDIMessageEventInit eventInitDict = {});
           readonly attribute Uint8Array data;
         };
       </pre>
-      <dl>
-        <dt><dfn>data</dfn></dt>
-        <dd>
-          <p>A Uint8Array containing the MIDI data bytes of a single MIDI message.</p>
-        </dd>
-      </dl>
-      <section data-dfn-for="MIDIMessageEventInit">
-        <h2 id="MIDIMessageEventInit"><dfn>MIDIMessageEventInit</dfn> Dictionary</h2>
-        <pre class="idl">
+        <dl>
+          <dt>
+            <dfn>data</dfn>
+          </dt>
+          <dd>
+            <p>
+              A Uint8Array containing the MIDI data bytes of a single MIDI
+              message.
+            </p>
+          </dd>
+        </dl>
+        <section data-dfn-for="MIDIMessageEventInit">
+          <h2 id="MIDIMessageEventInit">
+            <dfn>MIDIMessageEventInit</dfn> Dictionary
+          </h2>
+          <pre class="idl">
           dictionary MIDIMessageEventInit: EventInit {
             Uint8Array data;
           };
         </pre>
-        <dl>
-          <dt><dfn>data</dfn></dt>
-          <dd>
-            <p>A Uint8Array containing the MIDI data bytes of a single MIDI message.</p>
-          </dd>
-        </dl>
+          <dl>
+            <dt>
+              <dfn>data</dfn>
+            </dt>
+            <dd>
+              <p>
+                A Uint8Array containing the MIDI data bytes of a single MIDI
+                message.
+              </p>
+            </dd>
+          </dl>
+        </section>
       </section>
-    </section>
-
-    <section data-dfn-for="MIDIConnectionEvent">
-      <h2 id="MIDIConnectionEvent"><dfn>MIDIConnectionEvent</dfn> Interface</h2>
-      <p>An event object implementing this interface is passed to a
-        {{MIDIAccess}}' <a data-lt="MIDIAccess.onstatechange">onstatechange</a> handler when a new port becomes available
-        (for example, when a MIDI device is first plugged in to the computer),
-        when a previously-available port becomes unavailable, or becomes
-        available again (for example, when a MIDI interface is disconnected,
-        then reconnected) and (if present) is also passed to the {{MIDIPort/onstatechange}} handlers for any {{MIDIPort}}s
-        referencing the port.</p>
-      <p>When a {{MIDIPort}} is in
-        the <a
-        data-lt="MIDIPortConnectionState.pending">"pending"</a>
-        state and the device is reconnected to the host system, prior to
-        firing a <a data-lt="MIDIAccess.onstatechange">statechange</a>
-        event the <a>algorithm to open a MIDIPort</a> is run on it to attempt to reopen the port. If this
-        transition fails (e.g. the Port is reserved by something else in the
-        underlying system, and therefore unavailable for use), the connection
-        state moves to "closed", else it transitions back to "open". This is
-        done prior to the <a
-        data-lt="MIDIAccess.onstatechange">statechange</a> event for
-        the device state change so that the event will reflect the final
-        connection state as well as the device state.</p>
-      <p>Some underlying systems may not provide notification events for device
-        connection status; such systems may have long time delays as they poll
-        for new devices infrequently.  As such, it is suggested that heavy
-        reliance on connection events not be used.</p>
-      <pre class="idl">
+      <section data-dfn-for="MIDIConnectionEvent">
+        <h2 id="MIDIConnectionEvent">
+          <dfn>MIDIConnectionEvent</dfn> Interface
+        </h2>
+        <p>
+          An event object implementing this interface is passed to a
+          {{MIDIAccess}}' <a data-lt=
+          "MIDIAccess.onstatechange">onstatechange</a> handler when a new port
+          becomes available (for example, when a MIDI device is first plugged
+          in to the computer), when a previously-available port becomes
+          unavailable, or becomes available again (for example, when a MIDI
+          interface is disconnected, then reconnected) and (if present) is also
+          passed to the {{MIDIPort/onstatechange}} handlers for any
+          {{MIDIPort}}s referencing the port.
+        </p>
+        <p>
+          When a {{MIDIPort}} is in the <a data-lt=
+          "MIDIPortConnectionState.pending">"pending"</a> state and the device
+          is reconnected to the host system, prior to firing a <a data-lt=
+          "MIDIAccess.onstatechange">statechange</a> event the <a>algorithm to
+          open a MIDIPort</a> is run on it to attempt to reopen the port. If
+          this transition fails (e.g. the Port is reserved by something else in
+          the underlying system, and therefore unavailable for use), the
+          connection state moves to "closed", else it transitions back to
+          "open". This is done prior to the <a data-lt=
+          "MIDIAccess.onstatechange">statechange</a> event for the device state
+          change so that the event will reflect the final connection state as
+          well as the device state.
+        </p>
+        <p>
+          Some underlying systems may not provide notification events for
+          device connection status; such systems may have long time delays as
+          they poll for new devices infrequently. As such, it is suggested that
+          heavy reliance on connection events not be used.
+        </p>
+        <pre class="idl">
         [SecureContext, Exposed=Window]
         interface MIDIConnectionEvent : Event {
           constructor(DOMString type, optional MIDIConnectionEventInit eventInitDict = {});
           readonly attribute MIDIPort port;
         };
       </pre>
-      <dl>
-        <dt><dfn>port</dfn></dt>
-        <dd>
-          <p>The port that has been connected or disconnected.</p>
-        </dd>
-      </dl>
-
-      <section data-dfn-for="MIDIConnectionEventInit">
-        <h2 id="MIDIConnectionEventInit"><dfn>MIDIConnectionEventInit</dfn> Dictionary</h2>
-        <pre class="idl">
+        <dl>
+          <dt>
+            <dfn>port</dfn>
+          </dt>
+          <dd>
+            <p>
+              The port that has been connected or disconnected.
+            </p>
+          </dd>
+        </dl>
+        <section data-dfn-for="MIDIConnectionEventInit">
+          <h2 id="MIDIConnectionEventInit">
+            <dfn>MIDIConnectionEventInit</dfn> Dictionary
+          </h2>
+          <pre class="idl">
           dictionary MIDIConnectionEventInit: EventInit {
             MIDIPort port;
           };
         </pre>
-        <dl>
-          <dt><dfn>port</dfn></dt>
-          <dd>
-            <p>The port that has been connected or disconnected.</p>
-          </dd>
-        </dl>
+          <dl>
+            <dt>
+              <dfn>port</dfn>
+            </dt>
+            <dd>
+              <p>
+                The port that has been connected or disconnected.
+              </p>
+            </dd>
+          </dl>
+        </section>
       </section>
-    </section>
-
-    <section class="informative">
-      <h2 id="examples">Examples of Web MIDI API Usage in JavaScript</h2>
-      <p>The following are some examples of common MIDI usage in JavaScript.</p>
-
-      <section>
-        <h3>Getting Access to the MIDI System</h3>
-        <p>This example shows how to request access to the MIDI system.</p>
+      <section class="informative">
+        <h2 id="examples">
+          Examples of Web MIDI API Usage in JavaScript
+        </h2>
+        <p>
+          The following are some examples of common MIDI usage in JavaScript.
+        </p>
+        <section>
+          <h3>
+            Getting Access to the MIDI System
+          </h3>
+          <p>
+            This example shows how to request access to the MIDI system.
+          </p>
           <pre class="example">var midi = null;  // global MIDIAccess object
 
 function onMIDISuccess( midiAccess ) {
@@ -898,11 +1316,16 @@ function onMIDIFailure(msg) {
 }
 
 navigator.requestMIDIAccess().then( onMIDISuccess, onMIDIFailure );</pre>
-      </section>
-
-      <section>
-        <h3>Requesting Access to the MIDI System with System Exclusive Support</h3>
-        <p>This example shows how to request access to the MIDI system, including the ability to send and receive system exclusive messages.</p>
+        </section>
+        <section>
+          <h3>
+            Requesting Access to the MIDI System with System Exclusive Support
+          </h3>
+          <p>
+            This example shows how to request access to the MIDI system,
+            including the ability to send and receive system exclusive
+            messages.
+          </p>
           <pre class="example">var midi = null;  // global MIDIAccess object
 
 function onMIDISuccess( midiAccess ) {
@@ -915,11 +1338,15 @@ function onMIDIFailure(msg) {
 }
 
 navigator.requestMIDIAccess( { sysex: true } ).then( onMIDISuccess, onMIDIFailure );</pre>
-      </section>
-
-      <section>
-        <h3>Listing Inputs and Outputs</h3>
-        <p>This example gets the list of the input and output ports and prints their information to the console log, using ES6 for...of notation.
+        </section>
+        <section>
+          <h3>
+            Listing Inputs and Outputs
+          </h3>
+          <p>
+            This example gets the list of the input and output ports and prints
+            their information to the console log, using ES6 for...of notation.
+          </p>
           <pre class="example">function listInputsAndOutputs( midiAccess ) {
   for (var entry of midiAccess.inputs) {
     var input = entry[1];
@@ -935,12 +1362,16 @@ navigator.requestMIDIAccess( { sysex: true } ).then( onMIDISuccess, onMIDIFailur
       "' version:'" + output.version + "'" );
   }
 }</pre>
-      </section>
-
-      <section>
-        <h3>Handling MIDI Input</h3>
-        <p>This example prints incoming MIDI messages on a single arbitrary input port to the console log.</p>
-        <pre class="example">function onMIDIMessage( event ) {
+        </section>
+        <section>
+          <h3>
+            Handling MIDI Input
+          </h3>
+          <p>
+            This example prints incoming MIDI messages on a single arbitrary
+            input port to the console log.
+          </p>
+          <pre class="example">function onMIDIMessage( event ) {
   var str = "MIDI message received at timestamp " + event.timestamp + "[" + event.data.length + " bytes]: ";
   for (var i=0; i&lt;event.data.length; i++) {
     str += "0x" + event.data[i].toString(16) + " ";
@@ -951,24 +1382,34 @@ navigator.requestMIDIAccess( { sysex: true } ).then( onMIDISuccess, onMIDIFailur
 function startLoggingMIDIInput( midiAccess, indexOfPort ) {
   midiAccess.inputs.forEach( function(entry) {entry.onmidimessage = onMIDIMessage;});
 }</pre>
-      </section>
-
-      <section>
-        <h3>Sending MIDI Messages to an Output Device</h3>
-        <p>This example sends a middle C note on message immediately on MIDI channel 1 (MIDI channels are 0-indexed, but generally referred to as channels 1-16), and queues a corresponding note off message for 1 second later.</p>
-        <pre class="example">function sendMiddleC( midiAccess, portID ) {
+        </section>
+        <section>
+          <h3>
+            Sending MIDI Messages to an Output Device
+          </h3>
+          <p>
+            This example sends a middle C note on message immediately on MIDI
+            channel 1 (MIDI channels are 0-indexed, but generally referred to
+            as channels 1-16), and queues a corresponding note off message for
+            1 second later.
+          </p>
+          <pre class="example">function sendMiddleC( midiAccess, portID ) {
   var noteOnMessage = [0x90, 60, 0x7f];    // note on, middle C, full velocity
   var output = midiAccess.outputs.get(portID);
   output.send( noteOnMessage );  //omitting the timestamp means send immediately.
   output.send( [0x80, 60, 0x40], window.performance.now() + 1000.0 ); // Inlined array creation- note off, middle C,
                                                                       // release velocity = 64, timestamp = now + 1000ms.
 }</pre>
-      </section>
-
-      <section>
-        <h3>A Simple Loopback</h3>
-        <p>This example loops all input messages on the first input port to the first output port - including system exclusive messages.</p>
-        <pre class="example">var midi = null;  // global MIDIAccess object
+        </section>
+        <section>
+          <h3>
+            A Simple Loopback
+          </h3>
+          <p>
+            This example loops all input messages on the first input port to
+            the first output port - including system exclusive messages.
+          </p>
+          <pre class="example">var midi = null;  // global MIDIAccess object
 var output = null;
 
 function echoMIDIMessage( event ) {
@@ -992,12 +1433,21 @@ function onMIDIFailure(msg) {
 }
 
 navigator.requestMIDIAccess().then( onMIDISuccess, onMIDIFailure );</pre>
-      </section>
-
-      <section>
-        <h3>A Simple Monophonic Sine Wave MIDI Synthesizer</h3>
-        <p>This example listens to all input messages from all available input ports, and uses note messages to drive the envelope and frequency on a monophonic sine wave oscillator, creating a very simple synthesizer, using the <a>Web Audio API</a>.  Note on and note off messages are supported, but sustain pedal, velocity and pitch bend are not.  This sample is also hosted on <a href="http://webaudiodemos.appspot.com/monosynth/index.html">webaudiodemos.appspot.com</a>.</p>
-        <pre class="example">
+        </section>
+        <section>
+          <h3>
+            A Simple Monophonic Sine Wave MIDI Synthesizer
+          </h3>
+          <p>
+            This example listens to all input messages from all available input
+            ports, and uses note messages to drive the envelope and frequency
+            on a monophonic sine wave oscillator, creating a very simple
+            synthesizer, using the <a>Web Audio API</a>. Note on and note off
+            messages are supported, but sustain pedal, velocity and pitch bend
+            are not. This sample is also hosted on <a href=
+            "http://webaudiodemos.appspot.com/monosynth/index.html">webaudiodemos.appspot.com</a>.
+          </p>
+          <pre class="example">
     var context=null;   // the Web Audio "context" object
     var midiAccess=null;  // the MIDIAccess object.
     var oscillator=null;  // the single oscillator
@@ -1032,7 +1482,7 @@ navigator.requestMIDIAccess().then( onMIDISuccess, onMIDIFailure );</pre>
 
       var haveAtLeastOneDevice=false;
       var inputs=midiAccess.inputs.values();
-      for ( var input = inputs.next(); input &amp;&amp; !input.done; input = inputs.next()) {
+      for ( var input = inputs.next(); input &amp;& !input.done; input = inputs.next()) {
         input.value.onmidimessage = MIDIMessageEventHandler;
         haveAtLeastOneDevice = true;
       }
@@ -1046,7 +1496,7 @@ navigator.requestMIDIAccess().then( onMIDISuccess, onMIDIFailure );</pre>
 
     function MIDIMessageEventHandler(event) {
       // Mask off the lower nibble (MIDI channel, which we don't care about)
-      switch (event.data[0] &amp; 0xf0) {
+      switch (event.data[0] & 0xf0) {
         case 0x90:
           if (event.data[2]!=0) {  // if velocity != 0, this is a note-on message
             noteOn(event.data[1]);
@@ -1084,44 +1534,188 @@ navigator.requestMIDIAccess().then( onMIDISuccess, onMIDIFailure );</pre>
         oscillator.frequency.setTargetAtTime( frequencyFromNoteNumber(activeNotes[activeNotes.length-1]), 0, portamento );
       }
     }</pre>
+        </section>
       </section>
-
-    </section>
-    <section>
-      <h2>Security and Privacy Considerations of MIDI</h2>
-      <p>
-        There are two primary security and privacy concerns with adding the Web MIDI API to the web platform:
-      </p>
-      <ol>
-        <li>Allowing the enumeration of the user's MIDI interfaces is a potential target for fingerprinting (that is, uniquely identifying a user by the specific MIDI interfaces they have connected).  Note that in this context, what can be enumerated is the MIDI <i>interfaces</i> - not, for example, an individual sampler or synthesizer plugged into a MIDI interface, as these would not be enumerated, unless those devices are connected to the host computer with USB (USB-MIDI devices typically have their own MIDI interface, and would be enumerated).  The interfaces that could be fingerprinted are equivalent to MIDI "ports", and for each device the API will expose the name of the device, manufacturer, and opaque identifier of the MIDI interface (but not any attached devices).
-          <p>Few systems will have significant numbers of MIDI devices attached; those systems that do will typically use hardware MIDI interfaces, not fanning out a dozen USB-MIDI connections through USB hubs.  In this case, of course, enumerating the MIDI “devices” will only see the hardware MIDI interface(s), not the synthesizers, samplers, etc. plugged into it on the other side.  Given the few number of devices plugged in, the amount of information exposed here is fairly symmetric with the fingerprinting concern exposed by other APIs such as the Gamepad API.  The vast majority of systems have relatively few MIDI interfaces attached.</li>
-        <li>Separate from the fingerprinting concerns of identifying the available ports are concerns around sending and receiving MIDI messages.  Those issues are explored in more depth below.</li>
-      </ol>
-      <p>In brief, the general categories of things you can do with MIDI ports are:
+      <section>
+        <h2>
+          Security and Privacy Considerations of MIDI
+        </h2>
+        <p>
+          There are two primary security and privacy concerns with adding the
+          Web MIDI API to the web platform:
+        </p>
+        <ol>
+          <li>Allowing the enumeration of the user's MIDI interfaces is a
+          potential target for fingerprinting (that is, uniquely identifying a
+          user by the specific MIDI interfaces they have connected). Note that
+          in this context, what can be enumerated is the MIDI <i>interfaces</i>
+          - not, for example, an individual sampler or synthesizer plugged into
+          a MIDI interface, as these would not be enumerated, unless those
+          devices are connected to the host computer with USB (USB-MIDI devices
+          typically have their own MIDI interface, and would be enumerated).
+          The interfaces that could be fingerprinted are equivalent to MIDI
+          "ports", and for each device the API will expose the name of the
+          device, manufacturer, and opaque identifier of the MIDI interface
+          (but not any attached devices).
+            <p>
+              Few systems will have significant numbers of MIDI devices
+              attached; those systems that do will typically use hardware MIDI
+              interfaces, not fanning out a dozen USB-MIDI connections through
+              USB hubs. In this case, of course, enumerating the MIDI “devices”
+              will only see the hardware MIDI interface(s), not the
+              synthesizers, samplers, etc. plugged into it on the other side.
+              Given the few number of devices plugged in, the amount of
+              information exposed here is fairly symmetric with the
+              fingerprinting concern exposed by other APIs such as the Gamepad
+              API. The vast majority of systems have relatively few MIDI
+              interfaces attached.
+            </p>
+          </li>
+          <li>Separate from the fingerprinting concerns of identifying the
+          available ports are concerns around sending and receiving MIDI
+          messages. Those issues are explored in more depth below.
+          </li>
+        </ol>
+        <p>
+          In brief, the general categories of things you can do with MIDI ports
+          are:
+        </p>
         <ol>
           <li>Sending short messages (all messages except SysEx)
+          </li>
           <li>Receiving short messages (all messages except SysEx)
-          <li>Sending SysEx messages.  SysEx messages include both commonly recognized MIDI Time Code and MIDI Sample Dump Standard, as well as device-specific messages (like “patch control data for a Roland Jupiter-80 synthesizer”) that do not apply to other devices.
+          </li>
+          <li>Sending SysEx messages. SysEx messages include both commonly
+          recognized MIDI Time Code and MIDI Sample Dump Standard, as well as
+          device-specific messages (like “patch control data for a Roland
+          Jupiter-80 synthesizer”) that do not apply to other devices.
+          </li>
           <li>Receiving SysEx messages.
+          </li>
         </ol>
-      <p>The impact of each of these is:
+        <p>
+          The impact of each of these is:
+        </p>
         <ol>
-          <li>Sending short messages: sending note-on/note-off/controller messages would let you cause sounds to be played by attached devices, including (on Mac and Windows) any default virtual synthesizers. This by itself does not cause any concerning exposure - you can already make sounds without interaction, through &lt;audio&gt;, Flash, or Web Audio.  Some attached devices might be professional lighting control systems, so it’s possible you could control stage lighting; however, this is extremely rare, and no known system has the ability to cause lasting damage or information leakage based solely on short messages; at worst, a malicious page could flash lights, and the user could close the page and reset their lighting controller.
-          <li>Receiving short messages: receiving note-on/note-off/controller messages would not cause any information exposure or security issues, as there is no identifying data being received, just a stream of controller messages - all of which must be initiated by the user on that MIDI device (except clock-type messages).  This is very analogous to receiving keyboard or mouse events.
-          <li>Sending and Receiving SysEx.  This is the biggest concern, because it would be possible to write code that looked for system-specific responses to sysex messages, which could identify the hardware available, and then use it to download data - e.g. samples stored in a sampler - or replace that data (erasing sample data or patches in the device), although both these scenarios would have to be coded for a particular device.  It is also possible that some samplers might enable a system exclusive message to start recording a sample - so if the sampler happened to have a dedicated microphone attached (uncommon in practice, but possible), it would be possible to write code specific to a particular device that could record a short sample of sound and then upload it to the network without further user intervention.  (You could not stream audio from the device, and most samplers have fairly limited memory, and MIDI Sample Dump sysex is a slow way to transfer data - it has to transcode into 7-bit - so it’s unlikely you could listen in for long periods.)  More explicit fingerprinting is a concern, as the patch information/stored samples/user configuration could uniquely identify the system (although again, this requires much device-specific code; there is not standardized “grab all patches and hash it” capability.)  This does suggest that system exclusive messages are in a security category of their own.
+          <li>Sending short messages: sending note-on/note-off/controller
+          messages would let you cause sounds to be played by attached devices,
+          including (on Mac and Windows) any default virtual synthesizers. This
+          by itself does not cause any concerning exposure - you can already
+          make sounds without interaction, through &lt;audio&gt;, Flash, or Web
+          Audio. Some attached devices might be professional lighting control
+          systems, so it’s possible you could control stage lighting; however,
+          this is extremely rare, and no known system has the ability to cause
+          lasting damage or information leakage based solely on short messages;
+          at worst, a malicious page could flash lights, and the user could
+          close the page and reset their lighting controller.
+          </li>
+          <li>Receiving short messages: receiving note-on/note-off/controller
+          messages would not cause any information exposure or security issues,
+          as there is no identifying data being received, just a stream of
+          controller messages - all of which must be initiated by the user on
+          that MIDI device (except clock-type messages). This is very analogous
+          to receiving keyboard or mouse events.
+          </li>
+          <li>Sending and Receiving SysEx. This is the biggest concern, because
+          it would be possible to write code that looked for system-specific
+          responses to sysex messages, which could identify the hardware
+          available, and then use it to download data - e.g. samples stored in
+          a sampler - or replace that data (erasing sample data or patches in
+          the device), although both these scenarios would have to be coded for
+          a particular device. It is also possible that some samplers might
+          enable a system exclusive message to start recording a sample - so if
+          the sampler happened to have a dedicated microphone attached
+          (uncommon in practice, but possible), it would be possible to write
+          code specific to a particular device that could record a short sample
+          of sound and then upload it to the network without further user
+          intervention. (You could not stream audio from the device, and most
+          samplers have fairly limited memory, and MIDI Sample Dump sysex is a
+          slow way to transfer data - it has to transcode into 7-bit - so it’s
+          unlikely you could listen in for long periods.) More explicit
+          fingerprinting is a concern, as the patch information/stored
+          samples/user configuration could uniquely identify the system
+          (although again, this requires much device-specific code; there is
+          not standardized “grab all patches and hash it” capability.) This
+          does suggest that system exclusive messages are in a security
+          category of their own.
+          </li>
         </ol>
-      <p>It's also useful to examine what scenarios are enabled by MIDI, mapped against these features:
+        <p>
+          It's also useful to examine what scenarios are enabled by MIDI,
+          mapped against these features:
+        </p>
         <ol>
-          <li>Receiving short messages.  This is the most attractive scenario for Web MIDI, as it enables getting input from keyboards, drum pads, guitars, wind controllers, DJ/controllerist controllers, and more, and use those messages as input to control instruments and features in the Web Audio API as well as other control scenarios (MIDI is the protocol of choice for the multi-billion-dollar music production industry for getting physical controllers like knobs and buttons attached to your computer, both in pro/prosumer audio and media applications as well as consumer applications like Garageband.)
-          <li>Sending short messages - it’s tempting to say sending is significantly less interesting, as the scenario of attached output devices like hardware synthesizers is less common in today's market.  The major exception to this is that many of the MIDI controllers have external host control of their indicator lights, and this makes them dramatically more useful.  For example, the very popular Novation Launchpad controller uses MIDI note on/off messages sent to it to turn on/off and change colors of the buttons.  The same is true of nearly all DJ controllers.
-          <li>Sending and receiving SysEx - obviously, for more advanced communication with high-end hardware devices, SysEx is required.  Unfortunately, some common MIDI commands are also sent as system exclusive messages (MIDI Machine Control, for example - generic start/stop/rew/ffw commands) - and many devices use system exclusive to program patches, send advanced controller messages, download firmware, etc., which are much-demanded scenarios for Web MIDI.  Some devices use sysex as a direct control protocol, as they can pack more data into a single “message”, and most devices use SysEx as way to save and restore patches and configuration information on less-expensive computer storage.  Several of the major music hardware producers have expressed strong interest in using Web MIDI to provide web-based configuration and programming interfaces to their hardware.  In short, disabling sysex altogether does not only disable high-end scenarios.
+          <li>Receiving short messages. This is the most attractive scenario
+          for Web MIDI, as it enables getting input from keyboards, drum pads,
+          guitars, wind controllers, DJ/controllerist controllers, and more,
+          and use those messages as input to control instruments and features
+          in the Web Audio API as well as other control scenarios (MIDI is the
+          protocol of choice for the multi-billion-dollar music production
+          industry for getting physical controllers like knobs and buttons
+          attached to your computer, both in pro/prosumer audio and media
+          applications as well as consumer applications like Garageband.)
+          </li>
+          <li>Sending short messages - it’s tempting to say sending is
+          significantly less interesting, as the scenario of attached output
+          devices like hardware synthesizers is less common in today's market.
+          The major exception to this is that many of the MIDI controllers have
+          external host control of their indicator lights, and this makes them
+          dramatically more useful. For example, the very popular Novation
+          Launchpad controller uses MIDI note on/off messages sent to it to
+          turn on/off and change colors of the buttons. The same is true of
+          nearly all DJ controllers.
+          </li>
+          <li>Sending and receiving SysEx - obviously, for more advanced
+          communication with high-end hardware devices, SysEx is required.
+          Unfortunately, some common MIDI commands are also sent as system
+          exclusive messages (MIDI Machine Control, for example - generic
+          start/stop/rew/ffw commands) - and many devices use system exclusive
+          to program patches, send advanced controller messages, download
+          firmware, etc., which are much-demanded scenarios for Web MIDI. Some
+          devices use sysex as a direct control protocol, as they can pack more
+          data into a single “message”, and most devices use SysEx as way to
+          save and restore patches and configuration information on
+          less-expensive computer storage. Several of the major music hardware
+          producers have expressed strong interest in using Web MIDI to provide
+          web-based configuration and programming interfaces to their hardware.
+          In short, disabling sysex altogether does not only disable high-end
+          scenarios.
+          </li>
         </ol>
-      <p>In short: the additional fingerprinting exposure of enumerating MIDI devices is directly analogous to the Gamepad API’s additional fingerprinting exposure through gamepad enumeration; typical users will only have at most a few devices connected, their configuration may change, and the information exposed is about the interface itself (i.e., no user-configured data).
-      <p>The additional security concern for receiving short messages is also small - it’s analogous to listening to keyboard, mouse, mobile/laptop accelerometer, touch input or gamepad events; there is no additional information exposed, and all messages other than clock signals must be initiated by the user.
-      <p>The additional concerns about sending short messages are analogous to any audio output - you cannot overwrite user information or expose use information, but you can make sounds happen, change patches, or (in rare configurations) toggle lights - but non-destructively, and not persistently.
-      <p>System Exclusive, on the other hand, has a much less bounded potential, and it seems that distinguishing requests for SysEx separately in the API is a good idea, in order to more carefully provide user security hooks. The <a data-lt="Navigator.requestMIDIAccess">suggested security model</a> explicitly allows user agents to require the user's approval before giving access to MIDI devices, although it is not currently required to prompt the user for this approval - but it also detailed that system exclusive support must be requested as part of that request.
-      </p>
+        <p>
+          In short: the additional fingerprinting exposure of enumerating MIDI
+          devices is directly analogous to the Gamepad API’s additional
+          fingerprinting exposure through gamepad enumeration; typical users
+          will only have at most a few devices connected, their configuration
+          may change, and the information exposed is about the interface itself
+          (i.e., no user-configured data).
+        </p>
+        <p>
+          The additional security concern for receiving short messages is also
+          small - it’s analogous to listening to keyboard, mouse, mobile/laptop
+          accelerometer, touch input or gamepad events; there is no additional
+          information exposed, and all messages other than clock signals must
+          be initiated by the user.
+        </p>
+        <p>
+          The additional concerns about sending short messages are analogous to
+          any audio output - you cannot overwrite user information or expose
+          use information, but you can make sounds happen, change patches, or
+          (in rare configurations) toggle lights - but non-destructively, and
+          not persistently.
+        </p>
+        <p>
+          System Exclusive, on the other hand, has a much less bounded
+          potential, and it seems that distinguishing requests for SysEx
+          separately in the API is a good idea, in order to more carefully
+          provide user security hooks. The <a data-lt=
+          "Navigator.requestMIDIAccess">suggested security model</a> explicitly
+          allows user agents to require the user's approval before giving
+          access to MIDI devices, although it is not currently required to
+          prompt the user for this approval - but it also detailed that system
+          exclusive support must be requested as part of that request.
+        </p>
+      </section>
     </section>
-
   </body>
 </html>
