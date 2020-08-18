@@ -982,10 +982,10 @@
           </h3>
           <pre class="idl">
           [SecureContext, Exposed=Window] interface MIDIOutput : MIDIPort {
-            void send(sequence&lt;octet&gt; data, optional DOMHighResTimeStamp timestamp = 0);
-            void clear();
+            undefined send(sequence&lt;octet&gt; data, optional DOMHighResTimeStamp timestamp = 0);
+            undefined clear();
           };
-        </pre>
+          </pre>
           <dl>
             <dt>
               <dfn>send</dfn>
