@@ -1,8 +1,8 @@
 # Web MIDI API Spec
 
-This repository contains the latest editor's draft of the [W3C AudioWG](http://www.w3.org/2011/audio/)'s Web MIDI API.
+This repository contains the latest editor's draft of the [W3C AudioWG](https://www.w3.org/2011/audio/)'s Web MIDI API.
 
-You can preview the current version of the master branch [here](http://webaudio.github.com/web-midi-api/).
+You can preview the current version of the master branch [here](https://webaudio.github.io/web-midi-api/).
 
 # Tests
 
