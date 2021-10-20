@@ -155,6 +155,32 @@
       </h2>
       <section data-link-for="Navigator">
         <h2>
+          Permissions Integration
+        </h2>
+        <p data-cite="permissions">
+          The Web Midi API is a [=default powerful feature=] that is identified
+          by the [=powerful feature/name=] "midi" [[!Permissions]]. It defines
+          the following:
+        </p>
+        <dl>
+          <dt>
+            [=powerful feature/permission descriptor type=]
+          </dt>
+          <dd>
+            <pre class="idl">
+              dictionary MidiPermissionDescriptor : PermissionDescriptor {
+                boolean sysex = false;
+              };
+            </pre>
+            <p>
+              `{name: "midi", sysex: true}` is [=PermissionDescriptor/stronger than=] `{name:
+              "midi", sysex: false}`.
+            </p>
+          </dd>
+        </dl>
+      </section>
+      <section data-link-for="Navigator">
+        <h2>
           Permissions Policy Integration
         </h2>
         <p>
