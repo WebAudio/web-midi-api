@@ -31,11 +31,14 @@
         wgPatentURI: "https://www.w3.org/2004/01/pp-impl/46884/status",
         previousPublishDate: "2013-11-26",
         previousMaturity: "WD",
-        xref: "web-platform",
+        xref: {
+          profile: "web-platform",
+          specs: ["hr-time", "permissions", "permissions-policy"],
+        }
       };
     </script>
   </head>
-  <body data-cite="hr-time permissions-policy">
+  <body>
     <section id="abstract">
       <p>
         Some user agents have music devices, such as synthesizers, keyboard and
@@ -157,9 +160,9 @@
         <h2>
           Permissions Integration
         </h2>
-        <p data-cite="permissions">
+        <p>
           The Web Midi API is a [=default powerful feature=] that is identified
-          by the [=powerful feature/name=] "midi" [[!Permissions]]. It defines
+          by the [=powerful feature/name=] "midi" [[Permissions]]. It defines
           the following:
         </p>
         <dl>
@@ -186,7 +189,7 @@
         <p>
           The Web Midi API defines a <a>policy-controlled feature</a> named
           <dfn data-lt="midi-fp" data-lt-nodefault="">`midi`</dfn> which has a
-          <a>default allowlist</a> of `'self'` [[!Permissions-Policy]].
+          <a>default allowlist</a> of `'self'` [[Permissions-Policy]].
         </p>
       </section>
       <section data-dfn-for="Navigator">
