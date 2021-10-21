@@ -1372,7 +1372,7 @@ navigator.requestMIDIAccess( { sysex: true } ).then( onMIDISuccess, onMIDIFailur
             input port to the console log.
           </p>
           <pre class="example">function onMIDIMessage( event ) {
-  var str = "MIDI message received at timestamp " + event.timestamp + "[" + event.data.length + " bytes]: ";
+  var str = "MIDI message received at timestamp " + event.timeStamp + "[" + event.data.length + " bytes]: ";
   for (var i=0; i&lt;event.data.length; i++) {
     str += "0x" + event.data[i].toString(16) + " ";
   }
@@ -1414,7 +1414,7 @@ var output = null;
 
 function echoMIDIMessage( event ) {
   if (output) {
-    output.send( event.data, event.timestamp );
+    output.send( event.data, event.timeStamp );
   }
 }
 
