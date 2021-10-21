@@ -31,11 +31,14 @@
         wgPatentURI: "https://www.w3.org/2004/01/pp-impl/46884/status",
         previousPublishDate: "2013-11-26",
         previousMaturity: "WD",
-        xref: "web-platform",
+        xref: {
+          profile: "web-platform",
+          specs: ["hr-time", "permissions", "permissions-policy"],
+        }
       };
     </script>
   </head>
-  <body data-cite="hr-time permissions-policy">
+  <body>
     <section id="abstract">
       <p>
         Some user agents have music devices, such as synthesizers, keyboard and
@@ -155,19 +158,38 @@
       </h2>
       <section data-link-for="Navigator">
         <h2>
+          Permissions Integration
+        </h2>
+        <p>
+          The Web Midi API is a [=powerful feature=] that is identified
+          by the [=powerful feature/name=] <a>"midi"</a>. It defines
+          the following:
+        </p>
+        <dl>
+          <dt>
+            [=powerful feature/permission descriptor type=]
+          </dt>
+          <dd>
+            <pre class="idl">
+              dictionary MidiPermissionDescriptor : PermissionDescriptor {
+                boolean sysex = false;
+              };
+            </pre>
+            <p>
+              `{name: "midi", sysex: true}` is [=PermissionDescriptor/stronger than=] `{name:
+              "midi", sysex: false}`.
+            </p>
+          </dd>
+        </dl>
+      </section>
+      <section data-link-for="Navigator">
+        <h2>
           Permissions Policy Integration
         </h2>
         <p>
-          {{requestMIDIAccess()}} is a <a>policy-controlled feature</a>, as
-          defined by [[[Permissions-Policy]]].
-        </p>
-        <p>
-          The feature name for {{requestMIDIAccess()}} is <dfn data-lt=
-          "midi-fp" data-lt-nodefault="">`midi`</dfn>.
-        </p>
-        <p>
-          The <a>default allowlist</a> for {{requestMIDIAccess()}} is
-          `["self"]`.
+          The Web Midi API defines a [=policy-controlled feature=] named
+          <dfn class="permission">"midi"</dfn> which has a
+          <a>default allowlist</a> of `'self'`.
         </p>
       </section>
       <section data-dfn-for="Navigator">
@@ -176,7 +198,7 @@
         </h2>
         <pre class="idl">
             partial interface Navigator {
-              [SecureContext] 
+              [SecureContext]
               Promise &lt;MIDIAccess&gt; requestMIDIAccess(optional MIDIOptions options = {});
             };
           </pre>
