@@ -193,8 +193,9 @@
           </dt>
           <dd>
             <p>
-              When invoked, returns a Promise object representing a request for
-              access to MIDI devices on the user's system.
+              When invoked the {{Navigator/requestMIDIAccess()}} method returns
+              a promise that represents a request for access to MIDI devices on
+              the user's system.
             </p>
             <p>
               Requesting MIDI access SHOULD prompt the user for access to MIDI
@@ -216,106 +217,170 @@
             </p>
             <p data-link-for="Navigator">
               When the {{requestMIDIAccess()}} method is called, the user agent
-              MUST run the <dfn>algorithm to request MIDI Access</dfn>:
+              MUST run the following steps:
             </p>
             <ol>
               <li>
                 <p>
-                  Let <var>promise</var> be a new Promise object and
-                  <var>resolver</var> be its associated resolver.
+                  Let <var>promise</var> be [=a new promise=].
                 </p>
               </li>
               <li>
                 <p>
-                  Return <var>promise</var> and run the following steps
-                  asynchronously.
+                  Run the following steps [=in parallel=]:
                 </p>
               </li>
-              <li>
-                <p>
-                  Let <var>document</var> be the calling context's
-                  <a>Document</a>.
-                </p>
-              </li>
-              <li>
-                <p>
-                  If <var>document</var> is not <a>allowed to use</a> the
-                  <a>policy-controlled feature</a> named <a>midi</a>, jump to
-                  the step labeled <em>failure</em> below.
-                </p>
-              </li>
-              <li>
-                <p>
-                  Optionally, e.g. based on a previously-established user
-                  preference, for security reasons, or due to platform
-                  limitations, jump to the step labeled <em>failure</em> below.
-                </p>
-              </li>
-              <li>
-                <p>
-                  Optionally, e.g. based on a previously-established user
-                  preference, jump to the step labeled <em>success</em> below.
-                </p>
-              </li>
-              <li>
-                <p>
-                  Prompt the user in a user-agent-specific manner for
-                  permission to provide the entry script's origin with a
-                  {{MIDIAccess}} object representing control over user's MIDI
-                  devices. This prompt may be contingent upon whether system
-                  exclusive support was requested, and may allow the user to
-                  enable or disable that access.
-                </p>
-                <p>
-                  If permission is denied, jump to the step labeled
-                  <em>failure</em> below. If the user never responds, this
-                  algorithm will never progress beyond this step. If permission
-                  is granted, continue the following steps.
-                </p>
-              </li>
-              <li>
-                <p>
-                  <em><b>success</b></em>: Let <var>access</var> be a new
-                  {{MIDIAccess}} object. (It is possible to call
-                  requestMIDIAccess() multiple times; this may prompt the user
-                  multiple times, so it may not be best practice, and the same
-                  instance of MIDIAccess will not be returned each time.)
-                </p>
-              </li>
-              <li>
-                <p>
-                  Call <var>resolver</var>'s <code>accept(value)</code> method
-                  with <var>access</var> as value argument.
-                </p>
-              </li>
-              <li>
-                <p>
-                  Terminate these steps.
-                </p>
-              </li>
-              <li>
-                <p>
-                  <em><b>failure</b></em>: Let <var>error</var> be a new
-                  {{DOMException}}. This exception's .name should be
-                  {{"SecurityError"}} if the user or their security settings
-                  denied the application from creating a MIDIAccess instance
-                  with the requested options, or if the error is the result of
-                  <var>document</var> not being <a>allowed to use</a> the
-                  feature, {{"AbortError"}} if the page is going to be closed
-                  for a user navigation, {{"InvalidStateError"}} if the
-                  underlying systems raise any errors, or otherwise it should
-                  be {{"NotSupportedError"}}.
-                </p>
-              </li>
-              <li>
-                <p>
-                  Call <var>resolver</var>'s <code>reject(value)</code> method
-                  with <var>error</var> as value argument.
-                </p>
-              </li>
+              <ol>
+                <li>
+                  <p>
+                    Let <var>document</var> be the calling context's
+                    <a>Document</a>.
+                  </p>
+                </li>
+                <li>
+                  <p>
+                    If <var>document</var> is not <a>allowed to use</a> the
+                    <a>policy-controlled feature</a> named <a>"midi"</a>, then:
+                    <ol>
+                      <li>
+                        <p>
+                          [=Deny MIDI access=] with |promise| and
+                          {{"SecurityError"}}.
+                        </p>
+                      </li>
+                      <li>
+                        <p>Return |promise|.</p>
+                      </li>
+                    </ol>
+                  </p>
+                </li>
+                <li>
+                  <p>
+                    Optionally, e.g. based on a previously-established user
+                    preference, for security reasons, or due to platform
+                    limitations:
+                    <ol>
+                      <li>
+                        <p>
+                          Let |exception name| be {{"SecurityError"}} if the
+                          user or their security settings denied the application
+                          from creating a {{MIDIAccess}} instance with the
+                          requested options, {{"AbortError"}} if the
+                          page is going to be closed for a user navigation,
+                          {{"InvalidStateError"}} if the underlying systems
+                          raise any errors, or otherwise to
+                          {{"NotSupportedError"}}.
+                        </p>
+                        <li>
+                          <p>
+                            [=Deny MIDI access=] with |promise| and
+                            |exception name|.
+                          </p>
+                        </li>
+                        <li>
+                          <p>Return |promise|.</p>
+                        </li>
+                      </li>
+                    </ol>
+                  </p>
+                </li>
+                <li>
+                  <p>
+                    Optionally, e.g. based on a previously-established user
+                    preference:
+                    <ol>
+                      <li>
+                        <p>
+                          [=Grant MIDI access=] with |promise|.
+                        </p>
+                      </li>
+                      <li>
+                        <p>Return |promise|.</p>
+                      </li>
+                    </ol>
+                  </p>
+                </li>
+                <li>
+                  <p>
+                    Prompt the user in a user-agent-specific manner for
+                    permission to provide the entry script's origin with a
+                    {{MIDIAccess}} object representing control over user's MIDI
+                    devices. This prompt may be contingent upon whether system
+                    exclusive support was requested, and may allow the user to
+                    enable or disable that access:
+                    <ol>
+                      <li>
+                        <p>
+                          If permission is denied:
+                          <ol>
+                            <li>
+                              <p>
+                                [=Deny MIDI access=] with |promise| and
+                                {{"SecurityError"}}.
+                              </p>
+                            </li>
+                            <li>
+                              <p>Return |promise|.</p>
+                            </li>
+                          </ol>
+                        </p>
+                      </li>
+                      <li>
+                        <p>
+                          If permission is granted:
+                        </p>
+                          <ol>
+                            <li>
+                              <p>
+                                [=Grant MIDI access=] with |promise|.
+                              </p>
+                            </li>
+                            <li>
+                              <p>Return |promise|.</p>
+                            </li>
+                          </ol>
+                        </p>
+                      </li>
+                    </ol>
+                  </p>
+                </li>
+              </ol>
             </ol>
           </dd>
         </dl>
+        <p>
+          To <dfn>deny MIDI access</dfn> with |promise| and |exception name|,
+          run these steps:
+          <ol>
+            <li>
+              <p>Let |error| be a new {{DOMException}} with its
+              {{DOMException/name}} set to |exception name|.</p>
+            </li>
+            <li>
+              <p>[=Reject=] |promise| with |error|.</p>
+            </li>
+          </ol>
+        </p>
+        <p>
+          To <dfn>grant MIDI access</dfn> with |promise|, run these
+          steps:
+          <ol>
+            <li>
+              <p>
+                Let <var>access</var> be a new {{MIDIAccess}} object.
+              </p>
+              <p class="note">
+                It is possible to call {{Navigator/requestMIDIAccess()}}
+                multiple times; this may prompt the user multiple times, so it
+                may not be best practice, and the same instance of
+                {{MIDIAccess}} will not be returned each time.
+              </p>
+            </li>
+            <li>
+              <p>[=Resolve=] |promise| with |access|.</p>
+            </li>
+          </ol>
+        </p>
       </section>
       <section data-dfn-for="MidiPermissionDescriptor" data-link-for="Navigator">
         <h2 id="MidiPermissionDescriptor">
