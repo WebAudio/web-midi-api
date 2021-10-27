@@ -173,11 +173,16 @@
             <pre class="idl exclude">
               dictionary MidiPermissionDescriptor : PermissionDescriptor {
                 boolean sysex = false;
+                boolean software = false;
               };
             </pre>
             <p>
               `{name: "midi", sysex: true}` is [=PermissionDescriptor/stronger than=] `{name:
               "midi", sysex: false}`.
+            </p>
+            <p>
+              `{name: "midi", software: true}` is [=PermissionDescriptor/stronger than=] `{name:
+              "midi", software: false}`.
             </p>
           </dd>
         </dl>
