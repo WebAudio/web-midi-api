@@ -198,17 +198,17 @@
             </p>
             <p>
               Requesting MIDI access SHOULD prompt the user for access to MIDI
-              devices, particularly if system exclusive access is requested. In
-              some scenarios, this permission may have already been implicitly
-              or explicitly granted, in which case this prompt may not appear.
-              If the user gives [=express permission=] or the call is otherwise
-              approved, the vended Promise is resolved. The underlying system
-              may choose to allow the user to select specific MIDI interfaces
-              to expose to this API (i.e. pick and choose interfaces on an
-              individual basis), although this is not required. The system may
-              also choose to prompt (or not) based on whether system exclusive
-              support is requested, as system exclusive access has greater
-              privacy and security implications.
+              devices, particularly if [=system exclusive=] access is requested.
+              In some scenarios, this permission may have already been
+              implicitly or explicitly granted, in which case this prompt may
+              not appear. If the user gives [=express permission=] or the call
+              is otherwise approved, the vended Promise is resolved. The
+              underlying system may choose to allow the user to select specific
+              MIDI interfaces to expose to this API (i.e. pick and choose
+              interfaces on an individual basis), although this is not required.
+              The system may also choose to prompt (or not) based on whether
+              [=system exclusive=] support is requested, as [=system exclusive=]
+              access has greater privacy and security implications.
             </p>
             <p>
               If the user declines or the call is denied for any other reason,
@@ -338,19 +338,19 @@
           <dd>
             <p>
               This member informs the system whether the ability to send and
-              receive system exclusive messages is requested or allowed on a
+              receive [=system exclusive=] messages is requested or allowed on a
               given {{MIDIAccess}} object. On the option passed to
               {{requestMIDIAccess()}}, if this member is set to true, but
-              system exclusive support is denied (either by policy or by user
-              action), the access request will fail with a {{"SecurityError"}}
-              error. If this support is not requested (and allowed), the system
-              will throw exceptions if the user tries to send system exclusive
-              messages, and will silently mask out any system exclusive
-              messages received on the port.
+              [=system exclusive=] support is denied (either by policy or by
+              user action), the access request will fail with a
+              {{"SecurityError"}} error. If this support is not requested (and
+              allowed), the system will throw exceptions if the user tries to
+              send [=system exclusive=] messages, and will silently mask out any
+              [=system exclusive=] messages received on the port.
             </p>
             <p>
-              `{name: "midi", sysex: true}` is [=PermissionDescriptor/stronger than=] `{name:
-              "midi", sysex: false}`.
+              `{name: "midi", sysex: true}` is
+              [=PermissionDescriptor/stronger than=] `{name: "midi", sysex: false}`.
             </p>
           </dd>
           <dt>
@@ -375,8 +375,8 @@
               allowed.
             </p>
             <p>
-              `{name: "midi", software: true}` is [=PermissionDescriptor/stronger than=] `{name:
-              "midi", software: false}`.
+              `{name: "midi", software: true}` is
+              [=PermissionDescriptor/stronger than=] `{name: "midi", software: false}`.
             </p>
           </dd>
         </dl>
@@ -520,8 +520,8 @@
             <dfn>sysexEnabled</dfn>
           </dt>
           <dd>
-            This attribute informs the user whether system exclusive support is
-            enabled on this MIDIAccess.
+            This attribute informs the user whether [=system exclusive=] support
+            is enabled on this MIDIAccess.
           </dd>
         </dl>
       </section>
@@ -960,9 +960,9 @@
             </li>
             <li>
               <p>
-                If the {{MIDIAccess}} did not enable system exclusive access,
-                and the message is a system exclusive message, abort this
-                process.
+                If the {{MIDIAccess}} did not enable [=system exclusive=]
+                access, and the message is a [=system exclusive=] message, abort
+                this process.
               </p>
             </li>
             <li>
@@ -1028,9 +1028,9 @@
                 a valid MIDI message, throw a <code>TypeError</code> exception.
               </p>
               <p>
-                If <var>data</var> is a system exclusive message, and the
-                {{MIDIAccess}} did not enable system exclusive access, throw an
-                <code>InvalidAccessError</code> exception.
+                If <var>data</var> is a [=system exclusive=] message, and the
+                {{MIDIAccess}} did not enable [=system exclusive=] access, throw
+                an <code>InvalidAccessError</code> exception.
               </p>
               <p>
                 If the port is <a data-lt=
@@ -1338,7 +1338,7 @@ navigator.requestMIDIAccess().then( onMIDISuccess, onMIDIFailure );</pre>
           </h3>
           <p>
             This example shows how to request access to the MIDI system,
-            including the ability to send and receive system exclusive
+            including the ability to send and receive [=system exclusive=]
             messages.
           </p>
           <pre class="example">var midi = null;  // global MIDIAccess object
