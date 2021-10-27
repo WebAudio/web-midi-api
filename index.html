@@ -163,29 +163,9 @@
         <p>
           The Web Midi API is a [=powerful feature=] that is identified
           by the [=powerful feature/name=] <a>"midi"</a>. It defines
-          the following:
+          the {{MidiPermissionDescriptor}}
+          [=powerful feature/permission descriptor type=].
         </p>
-        <dl>
-          <dt>
-            [=powerful feature/permission descriptor type=]
-          </dt>
-          <dd>
-            <pre class="idl exclude">
-              dictionary MidiPermissionDescriptor : PermissionDescriptor {
-                boolean sysex = false;
-                boolean software = false;
-              };
-            </pre>
-            <p>
-              `{name: "midi", sysex: true}` is [=PermissionDescriptor/stronger than=] `{name:
-              "midi", sysex: false}`.
-            </p>
-            <p>
-              `{name: "midi", software: true}` is [=PermissionDescriptor/stronger than=] `{name:
-              "midi", software: false}`.
-            </p>
-          </dd>
-        </dl>
       </section>
       <section data-link-for="Navigator">
         <h2>
@@ -204,7 +184,7 @@
         <pre class="idl">
             partial interface Navigator {
               [SecureContext]
-              Promise &lt;MIDIAccess&gt; requestMIDIAccess(optional MIDIOptions options = {});
+              Promise &lt;MIDIAccess&gt; requestMIDIAccess(optional MidiPermissionDescriptor options = {});
             };
           </pre>
         <dl>
@@ -337,18 +317,18 @@
           </dd>
         </dl>
       </section>
-      <section data-dfn-for="MIDIOptions" data-link-for="Navigator">
-        <h2 id="MIDIOptions">
-          <dfn>MIDIOptions</dfn> Dictionary
+      <section data-dfn-for="MidiPermissionDescriptor" data-link-for="Navigator">
+        <h2 id="MidiPermissionDescriptor">
+          {{MidiPermissionDescriptor}} Dictionary
         </h2>
         <p>
           This dictionary contains optional settings that may be provided to
           the {{requestMIDIAccess()}} request.
         </p>
-        <pre class="idl">
-          dictionary MIDIOptions {
-            boolean sysex;
-            boolean software;
+        <pre class="idl exclude">
+          dictionary MidiPermissionDescriptor : PermissionDescriptor {
+            boolean sysex = false;
+            boolean software = false;
           };
         </pre>
         <dl>
@@ -367,6 +347,10 @@
               will throw exceptions if the user tries to send system exclusive
               messages, and will silently mask out any system exclusive
               messages received on the port.
+            </p>
+            <p>
+              `{name: "midi", sysex: true}` is [=PermissionDescriptor/stronger than=] `{name:
+              "midi", sysex: false}`.
             </p>
           </dd>
           <dt>
@@ -389,6 +373,10 @@
               synthesizer support is desired but not required - software
               synthesizers may be disabled when MIDI hardware device access is
               allowed.
+            </p>
+            <p>
+              `{name: "midi", software: true}` is [=PermissionDescriptor/stronger than=] `{name:
+              "midi", software: false}`.
             </p>
           </dd>
         </dl>
