@@ -515,7 +515,7 @@
               attribute set to the port.
               </li>
               <li>
-                <a>Fire an event</a> named "statechange" at the {{MIDIAccess}},
+                <a>Fire an event</a> named <dfn data-dfn-type=event data-dfn-for="MIDIAccess,MIDIPort">statechange</dfn> using {{MIDIConnectionEvent}} at the {{MIDIAccess}},
                 using the |event| as the event object.
               </li>
             </ol>
@@ -916,10 +916,9 @@
           </li>
           <li>
             <p>
-              <a>Fire an event</a> named <a data-lt=
-              "MIDIPort.onstatechange">statechange</a> at the {{MIDIPort}}, and
-              <a data-lt="MIDIAccess.onstatechange">statechange</a> at the
-              {{MIDIAccess}}, using the <code>event</code> as the event object.
+              <a>Fire an event</a> named <a data-link-type="event" data-link-for="MIDIAccess,MIDIPort">statechange</a> using {{MIDIConnectionEvent}} at the {{MIDIPort}} and
+               at the
+              {{MIDIAccess}}, using <code>event</code> as the event object.
             </p>
           </li>
         </ol>
