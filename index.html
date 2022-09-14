@@ -1442,7 +1442,7 @@ function echoMIDIMessage( event ) {
 
 function onMIDISuccess( midiAccess ) {
   console.log( "MIDI ready!" );
-  var input = midiAccess.inputs.entries.next();
+  var input = midiAccess.inputs.entries().next();
   if (input)
     input.onmidimessage = echoMIDIMessage;
   output = midiAccess.outputs.values().next().value;
