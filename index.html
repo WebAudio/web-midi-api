@@ -154,7 +154,7 @@
         The terms <dfn>MIDI</dfn>, <dfn>MIDI device</dfn>, <dfn>MIDI input
         port</dfn>, <dfn>MIDI output port</dfn>, <dfn>MIDI interface</dfn>,
         <dfn>MIDI message</dfn>, <dfn>MIDI System Real-Time message</dfn> and
-        <dfn>system exclusive</dfn> are defined in [[MIDI]].
+        <dfn>System Exclusive</dfn> are defined in [[MIDI]].
       </p>
     </section>
     <section>
@@ -218,17 +218,18 @@
             </p>
             <p>
               Requesting MIDI access SHOULD prompt the user for access to MIDI
-              devices, particularly if system exclusive access is requested. In
-              some scenarios, this permission may have already been implicitly
-              or explicitly granted, in which case this prompt may not appear.
-              If the user gives express permission or the call is otherwise
-              approved, the vended Promise is resolved. The underlying system
-              may choose to allow the user to select specific MIDI interfaces
-              to expose to this API (i.e. pick and choose interfaces on an
-              individual basis), although this is not required. The system may
-              also choose to prompt (or not) based on whether system exclusive
-              support is requested, as system exclusive access has greater
-              privacy and security implications.
+              devices, particularly if <a>System Exclusive</a> access is
+              requested. In some scenarios, this permission may have already
+              been implicitly or explicitly granted, in which case this prompt
+              may not appear.  If the user gives express permission or the call
+              is otherwise approved, the vended Promise is resolved. The
+              underlying system may choose to allow the user to select specific
+              MIDI interfaces to expose to this API (i.e. pick and choose
+              interfaces on an individual basis), although this is not
+              required. The system may also choose to prompt (or not) based on
+              whether <a>System Exclusive</a> support is requested, as <a>System
+              Exclusive</a> access has greater privacy and security
+              implications.
             </p>
             <p>
               If the user declines or the call is denied for any other reason,
@@ -282,8 +283,8 @@
                   Prompt the user in a user-agent-specific manner for
                   permission to provide the entry script's origin with a
                   {{MIDIAccess}} object representing control over user's MIDI
-                  devices. This prompt may be contingent upon whether system
-                  exclusive support was requested, and may allow the user to
+                  devices. This prompt may be contingent upon whether <a>System
+                  Exclusive</a> support was requested, and may allow the user to
                   enable or disable that access.
                 </p>
                 <p>
@@ -358,15 +359,15 @@
           <dd>
             <p>
               This member informs the system whether the ability to send and
-              receive system exclusive messages is requested or allowed on a
-              given {{MIDIAccess}} object. On the option passed to
+              receive <a>System Exclusive</a> messages is requested or allowed
+              on a given {{MIDIAccess}} object. On the option passed to
               {{requestMIDIAccess()}}, if this member is set to true, but
-              system exclusive support is denied (either by policy or by user
-              action), the access request will fail with a {{"SecurityError"}}
-              error. If this support is not requested (and allowed), the system
-              will throw exceptions if the user tries to send system exclusive
-              messages, and will silently mask out any system exclusive
-              messages received on the port.
+              <a>System Exclusive</a> support is denied (either by policy or by
+              user action), the access request will fail with a
+              {{"SecurityError"}} error. If this support is not requested (and
+              allowed), the system will throw exceptions if the user tries to
+              send <a>System Exclusive</a> messages, and will silently mask out
+              any <a>System Exclusive</a> messages received on the port.
             </p>
           </dd>
           <dt>
@@ -528,8 +529,8 @@
             <dfn>sysexEnabled</dfn>
           </dt>
           <dd>
-            This attribute informs the user whether system exclusive support is
-            enabled on this MIDIAccess.
+            This attribute informs the user whether <a>System Exclusive</a>
+            support is enabled on this MIDIAccess.
           </dd>
         </dl>
       </section>
@@ -962,9 +963,9 @@
             </li>
             <li>
               <p>
-                If the {{MIDIAccess}} did not enable system exclusive access,
-                and the message is a system exclusive message, abort this
-                process.
+                If the {{MIDIAccess}} did not enable <a>System Exclusive</a>
+                access, and the message is a <a>System Exclusive</a> message,
+                abort this process.
               </p>
             </li>
             <li>
@@ -1021,9 +1022,9 @@
                 a valid MIDI message, throw a <code>TypeError</code> exception.
               </p>
               <p>
-                If <var>data</var> is a system exclusive message, and the
-                {{MIDIAccess}} did not enable system exclusive access, throw an
-                <code>InvalidAccessError</code> exception.
+                If <var>data</var> is a <a>System Exclusive</a> message, and the
+                {{MIDIAccess}} did not enable <a>System Exclusive</a> access,
+                throw an <code>InvalidAccessError</code> exception.
               </p>
               <p>
                 If the port is <a data-lt=
@@ -1327,11 +1328,12 @@ navigator.requestMIDIAccess().then( onMIDISuccess, onMIDIFailure );</pre>
         </section>
         <section>
           <h3>
-            Requesting Access to the MIDI System with System Exclusive Support
+            Requesting Access to the MIDI System with <a>System Exclusive</a>
+            Support
           </h3>
           <p>
             This example shows how to request access to the MIDI system,
-            including the ability to send and receive system exclusive
+            including the ability to send and receive <a>System Exclusive</a>
             messages.
           </p>
           <pre class="example">var midi = null;  // global MIDIAccess object
@@ -1414,8 +1416,8 @@ function startLoggingMIDIInput( midiAccess, indexOfPort ) {
             A Simple Loopback
           </h3>
           <p>
-            This example loops all input messages on the first input port to
-            the first output port - including system exclusive messages.
+            This example loops all input messages on the first input port to the
+            first output port - including <a>System Exclusive</a> messages.
           </p>
           <pre class="example">var midi = null;  // global MIDIAccess object
 var output = null;
@@ -1627,24 +1629,24 @@ navigator.requestMIDIAccess().then( onMIDISuccess, onMIDIFailure );</pre>
           <li>Sending and Receiving SysEx. This is the biggest concern, because
           it would be possible to write code that looked for system-specific
           responses to sysex messages, which could identify the hardware
-          available, and then use it to download data - e.g. samples stored in
-          a sampler - or replace that data (erasing sample data or patches in
-          the device), although both these scenarios would have to be coded for
-          a particular device. It is also possible that some samplers might
-          enable a system exclusive message to start recording a sample - so if
-          the sampler happened to have a dedicated microphone attached
-          (uncommon in practice, but possible), it would be possible to write
-          code specific to a particular device that could record a short sample
-          of sound and then upload it to the network without further user
+          available, and then use it to download data - e.g. samples stored in a
+          sampler - or replace that data (erasing sample data or patches in the
+          device), although both these scenarios would have to be coded for a
+          particular device. It is also possible that some samplers might enable
+          a <a>System Exclusive</a> message to start recording a sample - so if
+          the sampler happened to have a dedicated microphone attached (uncommon
+          in practice, but possible), it would be possible to write code
+          specific to a particular device that could record a short sample of
+          sound and then upload it to the network without further user
           intervention. (You could not stream audio from the device, and most
           samplers have fairly limited memory, and MIDI Sample Dump sysex is a
           slow way to transfer data - it has to transcode into 7-bit - so it’s
           unlikely you could listen in for long periods.) More explicit
           fingerprinting is a concern, as the patch information/stored
           samples/user configuration could uniquely identify the system
-          (although again, this requires much device-specific code; there is
-          not standardized “grab all patches and hash it” capability.) This
-          does suggest that system exclusive messages are in a security
+          (although again, this requires much device-specific code; there is not
+          standardized “grab all patches and hash it” capability.) This does
+          suggest that <a>System Exclusive</a> messages are in a security
           category of their own.
           </li>
         </ol>
@@ -1675,14 +1677,14 @@ navigator.requestMIDIAccess().then( onMIDISuccess, onMIDIFailure );</pre>
           </li>
           <li>Sending and receiving SysEx - obviously, for more advanced
           communication with high-end hardware devices, SysEx is required.
-          Unfortunately, some common MIDI commands are also sent as system
-          exclusive messages (MIDI Machine Control, for example - generic
-          start/stop/rew/ffw commands) - and many devices use system exclusive
-          to program patches, send advanced controller messages, download
-          firmware, etc., which are much-demanded scenarios for Web MIDI. Some
-          devices use sysex as a direct control protocol, as they can pack more
-          data into a single “message”, and most devices use SysEx as way to
-          save and restore patches and configuration information on
+          Unfortunately, some common MIDI commands are also sent as <a>System
+          Exclusive</a> messages (MIDI Machine Control, for example - generic
+          start/stop/rew/ffw commands) - and many devices use <a>System
+          Exclusive</a> to program patches, send advanced controller messages,
+          download firmware, etc., which are much-demanded scenarios for Web
+          MIDI. Some devices use sysex as a direct control protocol, as they can
+          pack more data into a single “message”, and most devices use SysEx as
+          way to save and restore patches and configuration information on
           less-expensive computer storage. Several of the major music hardware
           producers have expressed strong interest in using Web MIDI to provide
           web-based configuration and programming interfaces to their hardware.
@@ -1713,15 +1715,15 @@ navigator.requestMIDIAccess().then( onMIDISuccess, onMIDIFailure );</pre>
           not persistently.
         </p>
         <p>
-          System Exclusive, on the other hand, has a much less bounded
+          <a>System Exclusive</a>, on the other hand, has a much less bounded
           potential, and it seems that distinguishing requests for SysEx
           separately in the API is a good idea, in order to more carefully
           provide user security hooks. The <a data-lt=
           "Navigator.requestMIDIAccess">suggested security model</a> explicitly
-          allows user agents to require the user's approval before giving
-          access to MIDI devices, although it is not currently required to
-          prompt the user for this approval - but it also detailed that system
-          exclusive support must be requested as part of that request.
+          allows user agents to require the user's approval before giving access
+          to MIDI devices, although it is not currently required to prompt the
+          user for this approval - but it also detailed that <a>System
+          Exclusive</a> support must be requested as part of that request.
         </p>
       </section>
     </section>
