@@ -153,7 +153,7 @@
       <p>
         The terms <dfn>MIDI</dfn>, <dfn>MIDI device</dfn>, <dfn>MIDI input
         port</dfn>, <dfn>MIDI output port</dfn>, <dfn>MIDI interface</dfn>,
-        <dfn>MIDI message</dfn>, <dfn>MIDI System Real-Time message</dfn> and
+        <dfn>MIDI message</dfn>, <dfn>System Real Time</dfn> and
         <dfn>system exclusive</dfn> are defined in [[MIDI]].
       </p>
     </section>
@@ -979,11 +979,11 @@
             </li>
           </ol>
           <p>
-            It is specifically noted that MIDI System Real-Time Messages may
-            actually occur in the middle of other messages in the input stream;
-            in this case, the System Real-Time messages will be dispatched as
-            they occur, while the normal messages will be buffered until they
-            are complete (and then dispatched).
+            It is specifically noted that MIDI <a>System Real Time</a> messages
+            may actually occur in the middle of other messages in the input
+            stream; in this case, the <a>System Real Time</a> messages will be
+            dispatched as they occur, while the normal messages will be buffered
+            until they are complete (and then dispatched).
           </p>
         </section>
         <section data-dfn-for="MIDIOutput">
