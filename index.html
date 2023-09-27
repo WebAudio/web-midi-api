@@ -337,63 +337,68 @@
             </ol>
           </dd>
         </dl>
+        <section data-dfn-for="MIDIOptions" data-link-for="Navigator">
+          <h2 id="MIDIOptions">
+            <dfn>MIDIOptions</dfn> Dictionary
+          </h2>
+          <p>
+            This dictionary contains optional settings that may be provided to
+            the {{requestMIDIAccess()}} request.
+          </p>
+          <pre class="idl">
+            dictionary MIDIOptions {
+              boolean sysex;
+              boolean software;
+            };
+          </pre>
+          <dl>
+            <dt>
+              <dfn>sysex</dfn>
+            </dt>
+            <dd>
+              <p>
+                This member informs the system whether the ability to send and
+                receive <a>System Exclusive</a> messages is requested or allowed
+                on a given {{MIDIAccess}} object. On the option passed to
+                {{requestMIDIAccess()}}, if this member is set to true, but
+                <a>System Exclusive</a> support is denied (either by policy or by
+                user action), the access request will fail with a
+                {{"SecurityError"}} error. If this support is not requested (and
+                allowed), the system will throw exceptions if the user tries to
+                send <a>System Exclusive</a> messages, and will silently mask out
+                any <a>System Exclusive</a> messages received on the port.
+              </p>
+            </dd>
+            <dt>
+              <dfn>software</dfn>
+            </dt>
+            <dd>
+              <p>
+                This member informs the system whether the ability to utilize any
+                software synthesizers installed in the host system is requested
+                or allowed on a given {{MIDIAccess}} object. On
+                {{requestMIDIAccess()}}, if this member is set to true, but
+                software synthesizer support is denied (either by policy or by
+                user action), the access request will fail with a
+                {{"SecurityError"}} error. If this support is not requested, the
+                system should not include any software synthesizers in the
+                {{MIDIAccess}} exposure of available ports.
+              </p>
+              <p>
+                Note that may result in a two-step request procedure if software
+                synthesizer support is desired but not required - software
+                synthesizers may be disabled when MIDI hardware device access is
+                allowed.
+              </p>
+            </dd>
+          </dl>
+        </section>
       </section>
-      <section data-dfn-for="MIDIOptions" data-link-for="Navigator">
-        <h2 id="MIDIOptions">
-          <dfn>MIDIOptions</dfn> Dictionary
-        </h2>
-        <p>
-          This dictionary contains optional settings that may be provided to
-          the {{requestMIDIAccess()}} request.
-        </p>
-        <pre class="idl">
-          dictionary MIDIOptions {
-            boolean sysex;
-            boolean software;
-          };
-        </pre>
-        <dl>
-          <dt>
-            <dfn>sysex</dfn>
-          </dt>
-          <dd>
-            <p>
-              This member informs the system whether the ability to send and
-              receive <a>System Exclusive</a> messages is requested or allowed
-              on a given {{MIDIAccess}} object. On the option passed to
-              {{requestMIDIAccess()}}, if this member is set to true, but
-              <a>System Exclusive</a> support is denied (either by policy or by
-              user action), the access request will fail with a
-              {{"SecurityError"}} error. If this support is not requested (and
-              allowed), the system will throw exceptions if the user tries to
-              send <a>System Exclusive</a> messages, and will silently mask out
-              any <a>System Exclusive</a> messages received on the port.
-            </p>
-          </dd>
-          <dt>
-            <dfn>software</dfn>
-          </dt>
-          <dd>
-            <p>
-              This member informs the system whether the ability to utilize any
-              software synthesizers installed in the host system is requested
-              or allowed on a given {{MIDIAccess}} object. On
-              {{requestMIDIAccess()}}, if this member is set to true, but
-              software synthesizer support is denied (either by policy or by
-              user action), the access request will fail with a
-              {{"SecurityError"}} error. If this support is not requested, the
-              system should not include any software synthesizers in the
-              {{MIDIAccess}} exposure of available ports.
-            </p>
-            <p>
-              Note that may result in a two-step request procedure if software
-              synthesizer support is desired but not required - software
-              synthesizers may be disabled when MIDI hardware device access is
-              allowed.
-            </p>
-          </dd>
-        </dl>
-      </section>
+    </section>
+    <section>
+      <h2>
+        The MIDI API
+      </h2>
       <section data-dfn-for="MIDIInputMap">
         <h3 id="MIDIInputMap">
           <dfn>MIDIInputMap</dfn> Interface
@@ -1299,6 +1304,7 @@
           </dl>
         </section>
       </section>
+    </section>
       <section>
         <h2>
           Security and Privacy Considerations of MIDI
