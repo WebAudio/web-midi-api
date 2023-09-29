@@ -1307,44 +1307,52 @@
     </section>
       <section>
         <h2>
-          Security and Privacy Considerations of MIDI
+          Privacy Considerations
         </h2>
         <p>
-          There are two primary security and privacy concerns with adding the
-          Web MIDI API to the web platform:
+          Allowing the enumeration of the user's MIDI interfaces is a potential
+          target for fingerprinting (that is, uniquely identifying a user by the
+          specific MIDI interfaces they have connected). Note that in this
+          context, what can be enumerated is the MIDI <i>interfaces</i> - not,
+          for example, an individual sampler or synthesizer plugged into a MIDI
+          interface, as these would not be enumerated, unless those devices are
+          connected to the host computer with USB (USB-MIDI devices typically
+          have their own MIDI interface, and would be enumerated).  The
+          interfaces that could be fingerprinted are equivalent to MIDI "ports",
+          and for each device the API will expose the name of the device,
+          manufacturer, and opaque identifier of the MIDI interface (but not any
+          attached devices).
         </p>
-        <ol>
-          <li>Allowing the enumeration of the user's MIDI interfaces is a
-          potential target for fingerprinting (that is, uniquely identifying a
-          user by the specific MIDI interfaces they have connected). Note that
-          in this context, what can be enumerated is the MIDI <i>interfaces</i>
-          - not, for example, an individual sampler or synthesizer plugged into
-          a MIDI interface, as these would not be enumerated, unless those
-          devices are connected to the host computer with USB (USB-MIDI devices
-          typically have their own MIDI interface, and would be enumerated).
-          The interfaces that could be fingerprinted are equivalent to MIDI
-          "ports", and for each device the API will expose the name of the
-          device, manufacturer, and opaque identifier of the MIDI interface
-          (but not any attached devices).
-            <p>
-              Few systems will have significant numbers of MIDI devices
-              attached; those systems that do will typically use hardware MIDI
-              interfaces, not fanning out a dozen USB-MIDI connections through
-              USB hubs. In this case, of course, enumerating the MIDI “devices”
-              will only see the hardware MIDI interface(s), not the
-              synthesizers, samplers, etc. plugged into it on the other side.
-              Given the few number of devices plugged in, the amount of
-              information exposed here is fairly symmetric with the
-              fingerprinting concern exposed by other APIs such as the Gamepad
-              API. The vast majority of systems have relatively few MIDI
-              interfaces attached.
-            </p>
-          </li>
-          <li>Separate from the fingerprinting concerns of identifying the
-          available ports are concerns around sending and receiving MIDI
-          messages. Those issues are explored in more depth below.
-          </li>
-        </ol>
+        <p>
+          Few systems will have significant numbers of MIDI devices attached;
+          those systems that do will typically use hardware MIDI interfaces, not
+          fanning out a dozen USB-MIDI connections through USB hubs. In this
+          case, of course, enumerating the MIDI “devices” will only see the
+          hardware MIDI interface(s), not the synthesizers, samplers,
+          etc. plugged into it on the other side.  Given the few number of
+          devices plugged in, the amount of information exposed here is fairly
+          symmetric with the fingerprinting concern exposed by other APIs such
+          as the Gamepad API. The vast majority of systems have relatively few
+          MIDI interfaces attached.
+        </p>
+        <p>
+          In short: the additional fingerprinting exposure of enumerating MIDI
+          devices is directly analogous to the Gamepad API’s additional
+          fingerprinting exposure through gamepad enumeration; typical users
+          will only have at most a few devices connected, their configuration
+          may change, and the information exposed is about the interface itself
+          (i.e., no user-configured data).
+        </p>
+      </section>
+      <section>
+        <h2>
+          Security Considerations
+        </h2>
+        <p>
+          Separate from the fingerprinting concerns of identifying the available
+          ports are concerns around sending and receiving MIDI messages. Those
+          issues are explored in more depth below.
+        </p>
         <p>
           In brief, the general categories of things you can do with MIDI ports
           are:
@@ -1451,14 +1459,6 @@
           scenarios.
           </li>
         </ol>
-        <p>
-          In short: the additional fingerprinting exposure of enumerating MIDI
-          devices is directly analogous to the Gamepad API’s additional
-          fingerprinting exposure through gamepad enumeration; typical users
-          will only have at most a few devices connected, their configuration
-          may change, and the information exposed is about the interface itself
-          (i.e., no user-configured data).
-        </p>
         <p>
           The additional security concern for receiving short messages is also
           small - it’s analogous to listening to keyboard, mouse, mobile/laptop
