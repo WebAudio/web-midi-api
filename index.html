@@ -34,8 +34,19 @@
         ],
         github: "WebAudio/web-midi-api",
         group: "wg/audio",
+        otherLinks: [
+          {
+            key: "Implementation report:",
+            data: [
+              {
+                value: "No preliminary interoperability or implementation report exists.",
+              },
+            ],
+          },
+        ],
         previousPublishDate: "2013-11-26",
         previousMaturity: "WD",
+        testSuiteURI: "https://github.com/web-platform-tests/wpt/tree/master/webmidi",
         xref: {
           profile: "web-platform",
           specs: ["hr-time", "permissions", "permissions-policy"],
@@ -89,9 +100,10 @@
       </p>
       <p>
         The Web MIDI API is also expected to be used in conjunction with other
-        APIs and elements of the web platform, notably the Web Audio API. This
-        API is also intended to be familiar to users of MIDI APIs on other
-        systems, such as Apple's CoreMIDI and Microsoft's Windows MIDI API.
+        APIs and elements of the web platform, notably the <a>Web Audio
+        API</a>. This API is also intended to be familiar to users of MIDI APIs
+        on other systems, such as Apple's CoreMIDI and Microsoft's Windows MIDI
+        API.
       </p>
     </section>
     <section id="sotd"></section>
@@ -923,7 +935,7 @@
               "MIDIPort.onstatechange">statechange</a> at the {{MIDIPort}}, and
               <a data-lt="MIDIAccess.onstatechange">statechange</a> at the
               {{MIDIAccess}}, using {{MIDIConnectionEvent}}  with the {{MIDIConnectionEvent/port}} attribute set
-              to |port|
+              to |port|.
             </p>
           </li>
         </ol>
@@ -1422,12 +1434,12 @@
           mapped against these features:
         </p>
         <ol>
-          <li>Receiving short messages. This is the most attractive scenario
-          for Web MIDI, as it enables getting input from keyboards, drum pads,
-          guitars, wind controllers, DJ/controllerist controllers, and more,
-          and use those messages as input to control instruments and features
-          in the Web Audio API as well as other control scenarios (MIDI is the
-          protocol of choice for the multi-billion-dollar music production
+          <li>Receiving short messages. This is the most attractive scenario for
+          Web MIDI, as it enables getting input from keyboards, drum pads,
+          guitars, wind controllers, DJ/controllerist controllers, and more, and
+          use those messages as input to control instruments and features in
+          the <a>Web Audio API</a> as well as other control scenarios (MIDI is
+          the protocol of choice for the multi-billion-dollar music production
           industry for getting physical controllers like knobs and buttons
           attached to your computer, both in pro/prosumer audio and media
           applications as well as consumer applications like Garageband.)
