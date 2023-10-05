@@ -1206,8 +1206,8 @@
         <pre class="idl">
         [SecureContext, Exposed=Window]
         interface MIDIMessageEvent : Event {
-          constructor(DOMString type, MIDIMessageEventInit eventInitDict);
-          readonly attribute Uint8Array data;
+          constructor(DOMString type, optional MIDIMessageEventInit eventInitDict = {});
+          readonly attribute Uint8Array? data;
         };
       </pre>
         <dl>
@@ -1227,7 +1227,7 @@
           </h2>
           <pre class="idl">
           dictionary MIDIMessageEventInit: EventInit {
-            required Uint8Array data;
+            Uint8Array? data;
           };
         </pre>
           <dl>
@@ -1281,8 +1281,8 @@
         <pre class="idl">
         [SecureContext, Exposed=Window]
         interface MIDIConnectionEvent : Event {
-          constructor(DOMString type, MIDIConnectionEventInit eventInitDict);
-          readonly attribute MIDIPort port;
+          constructor(DOMString type, optional MIDIConnectionEventInit eventInitDict = {});
+          readonly attribute MIDIPort? port;
         };
       </pre>
         <dl>
@@ -1301,7 +1301,7 @@
           </h2>
           <pre class="idl">
           dictionary MIDIConnectionEventInit: EventInit {
-            required MIDIPort port;
+            MIDIPort? port;
           };
         </pre>
           <dl>
