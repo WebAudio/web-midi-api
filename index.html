@@ -1207,7 +1207,7 @@
         [SecureContext, Exposed=Window]
         interface MIDIMessageEvent : Event {
           constructor(DOMString type, optional MIDIMessageEventInit eventInitDict = {});
-          readonly attribute Uint8Array data;
+          readonly attribute Uint8Array? data;
         };
       </pre>
         <dl>
@@ -1282,7 +1282,7 @@
         [SecureContext, Exposed=Window]
         interface MIDIConnectionEvent : Event {
           constructor(DOMString type, optional MIDIConnectionEventInit eventInitDict = {});
-          readonly attribute MIDIPort port;
+          readonly attribute MIDIPort? port;
         };
       </pre>
         <dl>
