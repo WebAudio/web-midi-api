@@ -416,7 +416,7 @@
           <dfn>MIDIInputMap</dfn> Interface
         </h3>
         <pre class="idl">
-          [SecureContext, Exposed=Window] interface MIDIInputMap {
+          [SecureContext, Exposed=(Window,Worker)] interface MIDIInputMap {
             readonly maplike &lt;DOMString, MIDIInput&gt;;
           };
         </pre>
@@ -450,7 +450,7 @@
           <dfn>MIDIOutputMap</dfn> Interface
         </h3>
         <pre class="idl">
-          [SecureContext, Exposed=Window] interface MIDIOutputMap {
+          [SecureContext, Exposed=(Window,Worker)] interface MIDIOutputMap {
             readonly maplike &lt;DOMString, MIDIOutput&gt;;
           };
         </pre>
@@ -559,7 +559,7 @@
           This interface represents a MIDI input or output port.
         </p>
         <pre class="idl">
-        [SecureContext, Exposed=Window] interface MIDIPort: EventTarget {
+        [SecureContext, Exposed=(Window,Worker)] interface MIDIPort: EventTarget {
           readonly attribute DOMString id;
           readonly attribute DOMString? manufacturer;
           readonly attribute DOMString? name;
@@ -944,7 +944,7 @@
             <dfn>MIDIInput</dfn> Interface
           </h3>
           <pre class="idl">
-          [SecureContext, Exposed=Window] interface MIDIInput: MIDIPort {
+          [SecureContext, Exposed=(Window,Worker)] interface MIDIInput: MIDIPort {
             attribute EventHandler onmidimessage;
           };
         </pre>
@@ -1008,7 +1008,7 @@
             <dfn>MIDIOutput</dfn> Interface
           </h3>
           <pre class="idl">
-          [SecureContext, Exposed=Window] interface MIDIOutput : MIDIPort {
+          [SecureContext, Exposed=(Window,Worker)] interface MIDIOutput : MIDIPort {
             undefined send(sequence&lt;octet&gt; data, optional DOMHighResTimeStamp timestamp = 0);
             undefined clear();
           };
@@ -1202,7 +1202,7 @@
           high-resolution time of when the event was received or is to be sent.
         </p>
         <pre class="idl">
-        [SecureContext, Exposed=Window]
+        [SecureContext, Exposed=(Window,Worker)]
         interface MIDIMessageEvent : Event {
           constructor(DOMString type, optional MIDIMessageEventInit eventInitDict = {});
           readonly attribute Uint8Array? data;
@@ -1277,7 +1277,7 @@
           heavy reliance on connection events not be used.
         </p>
         <pre class="idl">
-        [SecureContext, Exposed=Window]
+        [SecureContext, Exposed=(Window,Worker)]
         interface MIDIConnectionEvent : Event {
           constructor(DOMString type, optional MIDIConnectionEventInit eventInitDict = {});
           readonly attribute MIDIPort? port;
