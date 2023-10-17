@@ -488,7 +488,7 @@
           devices, and obtain access to an individual device.
         </p>
         <pre class="idl">
-        [SecureContext, Exposed=Window] interface MIDIAccess: EventTarget {
+        [SecureContext, Exposed=(Window,Worker), Transferable] interface MIDIAccess: EventTarget {
           readonly attribute MIDIInputMap inputs;
           readonly attribute MIDIOutputMap outputs;
           attribute EventHandler onstatechange;
