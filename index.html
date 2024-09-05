@@ -169,6 +169,32 @@
         <dfn>MIDI message</dfn>, <dfn>System Real Time</dfn> and
         <dfn>System Exclusive</dfn> are defined in [[MIDI]].
       </p>
+      <div class="note">
+        <dfn>Valid MIDI message</dfn> is defined in [[MIDI]]. The
+        following may be used as a non-normative guide:
+        <ul>
+        <li>The first byte (the status byte) should have the high bit
+        set, any following bytes should not unless they are part of a
+        [=System Exclusive=] message</li>
+        <li>If the high nibble of the status byte in hex is `8`, `9`,
+        `A`, `B`, or `E` then the total message length should be 3
+        bytes
+        <li>If the high nibble of the status byte is `C` or `D` then
+        the total message length should be 2 bytes</li>
+        <li>If the status byte is `F1` or `F3` then the total message
+        length should be 2 bytes</li>
+        <li>If the status byte is `F2` then the total message length
+        should be 3 bytes</li>
+        <li>If the status byte is `F6`, `F8`, `FA`, `FB`, `FC`, `FE`,
+        or `FF` then the total message length should be 1 byte (only
+        the status byte)</li>
+        <li>If the status byte is `F0` then this is a [=System
+        Exclusive=] message with no length restriction, and the last
+        byte should be `F7`</li>
+        <li>If the status byte is `F4`, `F5`, `F7`, `F9`, or `FD` then
+        the message is not valid</li>
+        </ul>
+      </div>
     </section>
     <section>
       <h2>
@@ -1029,13 +1055,13 @@
                 );</code>
               </p>
               <p>
-                The data contains one or more valid, complete [=MIDI messages=].
+                The data contains one or more complete, [=valid MIDI messages=].
                 Running status is not allowed in the data, as underlying systems
                 may not support it.
               </p>
               <p>
                 If <var>data</var> is not a valid sequence or does not contain
-                a valid [=MIDI message=], throw a <code>TypeError</code> exception.
+                a [=valid MIDI message=], throw a <code>TypeError</code> exception.
               </p>
               <p>
                 If <var>data</var> is a [=System Exclusive=] message, and the
