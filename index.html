@@ -330,7 +330,7 @@
                 <p>
                   <em><b>failure</b></em>: Let <var>error</var> be a new
                   {{DOMException}}. This exception's .name should be
-                  {{"SecurityError"}} if the user or their security settings
+                  {{"NotAllowedError"}} if the user or their security settings
                   denied the application from creating a MIDIAccess instance
                   with the requested options, or if the error is the result of
                   <var>document</var> not being [=allowed to use=] the feature,
@@ -375,7 +375,7 @@
                 {{requestMIDIAccess()}}, if this member is set to true, but
                 [=System Exclusive=] support is denied (either by policy or by
                 user action), the access request will fail with a
-                {{"SecurityError"}} error. If this support is not requested (and
+                {{"NotAllowedError"}} error. If this support is not requested (and
                 allowed), the system will throw exceptions if the user tries to
                 send [=System Exclusive=] messages, and will silently mask out
                 any [=System Exclusive=] messages received on the port.
@@ -392,7 +392,7 @@
                 {{requestMIDIAccess()}}, if this member is set to true, but
                 software synthesizer support is denied (either by policy or by
                 user action), the access request will fail with a
-                {{"SecurityError"}} error. If this support is not requested, the
+                {{"NotAllowedError"}} error. If this support is not requested, the
                 system should not include any software synthesizers in the
                 {{MIDIAccess}} exposure of available ports.
               </p>
