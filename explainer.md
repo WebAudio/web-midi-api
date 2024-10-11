@@ -7,7 +7,7 @@ The following are some examples of common MIDI usage in JavaScript.
 This example shows how to request access to the MIDI system.
 
 ```js
-var midi = null;  // global MIDIAccess object
+let midi = null;  // global MIDIAccess object
 
 function onMIDISuccess( midiAccess ) {
   console.log( "MIDI ready!" );
@@ -26,7 +26,7 @@ This example shows how to request access to the MIDI system, including the
 ability to send and receive System Exclusive messages.
 
 ```js
-var midi = null;  // global MIDIAccess object
+let midi = null;  // global MIDIAccess object
 
 function onMIDISuccess( midiAccess ) {
   console.log( "MIDI ready!" );
@@ -46,15 +46,15 @@ information to the console log, using ES6 for...of notation.
 
 ```js
 function listInputsAndOutputs( midiAccess ) {
-  for (var entry of midiAccess.inputs) {
-    var input = entry[1];
+  for (let entry of midiAccess.inputs) {
+    let input = entry[1];
     console.log( "Input port [type:'" + input.type + "'] id:'" + input.id +
       "' manufacturer:'" + input.manufacturer + "' name:'" + input.name +
       "' version:'" + input.version + "'" );
   }
 
-  for (var entry of midiAccess.outputs) {
-    var output = entry[1];
+  for (let entry of midiAccess.outputs) {
+    let output = entry[1];
     console.log( "Output port [type:'" + output.type + "'] id:'" + output.id +
       "' manufacturer:'" + output.manufacturer + "' name:'" + output.name +
       "' version:'" + output.version + "'" );
@@ -68,8 +68,8 @@ the console log.
 
 ```js
 function onMIDIMessage( event ) {
-  var str = "MIDI message received at timestamp " + event.timeStamp + "[" + event.data.length + " bytes]: ";
-  for (var i=0; i&lt;event.data.length; i++) {
+  let str = "MIDI message received at timestamp " + event.timeStamp + "[" + event.data.length + " bytes]: ";
+  for (let i=0; i&lt;event.data.length; i++) {
     str += "0x" + event.data[i].toString(16) + " ";
   }
   console.log( str );
@@ -87,8 +87,8 @@ queues a corresponding note off message for 1 second later.
 
 ```js
 function sendMiddleC( midiAccess, portID ) {
-  var noteOnMessage = [0x90, 60, 0x7f];    // note on, middle C, full velocity
-  var output = midiAccess.outputs.get(portID);
+  let noteOnMessage = [0x90, 60, 0x7f];    // note on, middle C, full velocity
+  let output = midiAccess.outputs.get(portID);
   output.send( noteOnMessage );  //omitting the timestamp means send immediately.
   output.send( [0x80, 60, 0x40], window.performance.now() + 1000.0 ); // Inlined array creation- note off, middle C,
                                                                       // release velocity = 64, timestamp = now + 1000ms.
@@ -100,8 +100,8 @@ This example loops all input messages on the first input port to the first
 output port - including System Exclusive messages.
 
 ```js
-var midi = null;  // global MIDIAccess object
-var output = null;
+let midi = null;  // global MIDIAccess object
+let output = null;
 
 function echoMIDIMessage( event ) {
   if (output) {
@@ -111,7 +111,7 @@ function echoMIDIMessage( event ) {
 
 function onMIDISuccess( midiAccess ) {
   console.log( "MIDI ready!" );
-  var input = midiAccess.inputs.entries().next();
+  let input = midiAccess.inputs.entries().next();
   if (input)
     input.onmidimessage = echoMIDIMessage;
   output = midiAccess.outputs.values().next().value;
@@ -135,14 +135,14 @@ are not. This sample is also hosted on <a href=
 "http://webaudiodemos.appspot.com/monosynth/index.html">webaudiodemos.appspot.com</a>.
 
 ```js
-var context=null;   // the Web Audio "context" object
-var midiAccess=null;  // the MIDIAccess object.
-var oscillator=null;  // the single oscillator
-var envelope=null;    // the envelope for the single oscillator
-var attack=0.05;      // attack speed
-var release=0.05;   // release speed
-var portamento=0.05;  // portamento/glide speed
-var activeNotes = []; // the stack of actively-pressed keys
+let context=null;   // the Web Audio "context" object
+let midiAccess=null;  // the MIDIAccess object.
+let oscillator=null;  // the single oscillator
+let envelope=null;    // the envelope for the single oscillator
+let attack=0.05;      // attack speed
+let release=0.05;   // release speed
+let portamento=0.05;  // portamento/glide speed
+let activeNotes = []; // the stack of actively-pressed keys
 
 window.addEventListener('load', function() {
       // patch up prefixes
@@ -167,9 +167,9 @@ window.addEventListener('load', function() {
 function onMIDIInit(midi) {
       midiAccess = midi;
 
-      var haveAtLeastOneDevice=false;
-      var inputs=midiAccess.inputs.values();
-      for ( var input = inputs.next(); input &amp;& !input.done; input = inputs.next()) {
+      let haveAtLeastOneDevice=false;
+      let inputs=midiAccess.inputs.values();
+      for ( let input = inputs.next(); input &amp;& !input.done; input = inputs.next()) {
         input.value.onmidimessage = MIDIMessageEventHandler;
         haveAtLeastOneDevice = true;
       }
@@ -209,7 +209,7 @@ function noteOn(noteNumber) {
 }
 
 function noteOff(noteNumber) {
-      var position = activeNotes.indexOf(noteNumber);
+      let position = activeNotes.indexOf(noteNumber);
       if (position!=-1) {
         activeNotes.splice(position,1);
       }
