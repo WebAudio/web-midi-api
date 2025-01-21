@@ -273,6 +273,10 @@
               If the user declines or the call is denied for any other reason,
               the Promise is rejected with a {{DOMException}} parameter.
             </p>
+            <p>
+              Multiple calls to <code>requestMIDIAccess()</code> are
+              allowed even if not all vended Promises have settled.
+            </p>
             <p data-link-for="Navigator">
               When the {{requestMIDIAccess()}} method is called, the user agent
               MUST run the following steps:
@@ -666,8 +670,9 @@
               Makes the [=MIDI device=] corresponding to the {{MIDIPort}}
               explicitly available. Note that this call is NOT required in order
               to use the {{MIDIPort}}- calling <code>send()</code> on a
-              {{MIDIOutput}} or attaching a MIDIMessageEvent handler on a
-              {{MIDIInput}} will cause an implicit open(). The underlying
+              {{MIDIOutput}}, attaching a MIDIMessageEvent {{EventHandler}} on a
+              {{MIDIInput}}, or adding a MIDIMessageEvent {{EventListener}} on a
+              {{MIDIInput}}  will cause an implicit open(). The underlying
               implementation may not need to do anything in response to this
               call. However, some underlying implementations may not be able to
               support shared access to [=MIDI devices=], so using explicit
@@ -697,6 +702,10 @@
               until the port becomes <a data-lt=
               "MIDIPortDeviceState.connected">"connected"</a> or all references
               to it are dropped.
+            </p>
+            <p>
+              Multiple calls to <code>open()</code> are allowed even
+              if not all vended Promises have settled.
             </p>
             <p>
               When this method is called, the user agent MUST run the
@@ -837,6 +846,10 @@
               rejected.
             </p>
             <p>
+              Multiple calls to <code>close()</code> are allowed even
+              if not all vended Promises have settled.
+            </p>
+            <p>
               When the <code>close()</code> method is called, the user agent
               MUST run the following steps:
             </p>
@@ -873,12 +886,13 @@
                 <p>
                   If the port is an input port, skip to the next step. If the
                   output port's <a data-lt="MIDIPort.state">.state</a> is not
-                  <a data-lt="MIDIPortDeviceState.connected">"connected"</a>,
-                  clear all enqueued send data and skip to the next step. Clear
-                  any enqueued send data in the system with timestamps in the
-                  future, then finish sending any send messages with no
-                  timestamp or with a timestamp in the past or present, prior
-                  to proceeding to the next step.
+                  <a data-lt="MIDIPortDeviceState.connected">"connected"</a>
+                  or if its .connection is "pending", clear all enqueued send
+                  data and skip to the next step. Clear any enqueued send data
+                  in the system with timestamps in the future, then finish
+                  sending any send messages with no timestamp or with a
+                  timestamp in the past or present, prior to proceeding to
+                  the next step.
                 </p>
               </li>
               <li>
@@ -903,11 +917,6 @@
                   <em><b>closed</b></em>: Call <var>resolver</var>'s
                   <code>accept(value)</code> method with <var>port</var> as
                   value argument.
-                </p>
-              </li>
-              <li>
-                <p>
-                  Terminate these steps.
                 </p>
               </li>
             </ol>
@@ -1064,7 +1073,10 @@
                   {{DOMHighResTimeStamp}} - a number of milliseconds measured
                   relative to the navigation start of the document). If
                   <code>timestamp</code> is set to zero (or another time in the
-                  past), the data is to be sent as soon as possible.
+                  past), the data is to be sent as soon as possible. Multiple
+                  calls to <code>send()</code> with the same timestamp must
+                  result in the data being sent in the order the calls were
+                  made.
                 </dd>
               </dl>
             </dd>
