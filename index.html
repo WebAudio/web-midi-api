@@ -807,7 +807,7 @@
                 <p>
                   <em><b>failure</b></em>: Let <var>error</var> be a new
                   {{DOMException}}. This exception's .name should be
-                  <code>"InvalidAccessError"</code> if the port is unavailable.
+                  <code>"NotAllowedError"</code> if the port is unavailable.
                 </p>
               </li>
               <li>
@@ -1043,7 +1043,7 @@
               <p>
                 If <var>data</var> is a [=System Exclusive=] message, and the
                 {{MIDIAccess}} did not enable [=System Exclusive=] access, throw
-                an <code>InvalidAccessError</code> exception.
+                an <code>NotAllowedError</code> exception.
               </p>
               <p>
                 If the port is <a data-lt=
