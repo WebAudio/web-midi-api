@@ -9,6 +9,22 @@
     'remove'></script>
     <script class='remove'>
       var respecConfig = {
+        lint: {
+          a11y: true,
+          "check-charset": true,
+          "check-internal-slots": true,
+          "check-punctuation": true,
+          "informative-dfn": true,
+          "local-refs-exist": true,
+          "no-captionless-tables": true,
+          "no-dfn-in-abstract": true,
+          "no-headingless-sections": true,
+          "no-http-props": true,
+          "no-unused-dfns": true,
+          "no-unused-vars": true,
+          "privsec-section": true,
+          "wpt-tests-exist": true,
+        },
         shortName: "webmidi",
         specStatus: "ED",
         copyrightStart: "2015",
@@ -343,7 +359,7 @@
                   {{MIDIAccess}} object. (It is possible to call
                   requestMIDIAccess() multiple times; this may prompt the user
                   multiple times, so it may not be best practice, and the same
-                  instance of MIDIAccess will not be returned each time.)
+                  instance of MIDIAccess will not be returned each time).
                 </p>
               </li>
               <li>
@@ -588,7 +604,7 @@
               persistent identifiers; in such cases, it will be more
               challenging to maintain identifiers when another interface is
               added or removed from the system. (This might throw off the index
-              of the requested port.) It is expected that the system will do
+              of the requested port). It is expected that the system will do
               the best it can to match a port across instances of the MIDI API:
               for example, an implementation may opaquely use some form of hash
               of the port interface manufacturer, name and index as the id, so
