@@ -596,9 +596,11 @@
               A unique ID of the port. This can be used by developers to
               remember ports the user has chosen for their application. The
               User Agent MUST ensure that the {{MIDIPort/id}} is unique to only
-              that port. The User Agent SHOULD ensure that the id is maintained
-              across instances of the application - e.g., when the system is
-              rebooted - and when a device is removed from the system.
+              that port. The User Agent SHOULD ensure that the {{MIDIPort/id}}
+              is unique per origin, and that the id is maintained across
+              instances of the application where permission to access [=MIDI
+              devices=] has been granted - e.g., when the system is rebooted -
+              and when a device is removed from the system.
               Applications may want to cache these ids locally to re-create a
               MIDI setup. Some systems may not support completely unique
               persistent identifiers; in such cases, it will be more
@@ -607,10 +609,10 @@
               of the requested port). It is expected that the system will do
               the best it can to match a port across instances of the MIDI API:
               for example, an implementation may opaquely use some form of hash
-              of the port interface manufacturer, name and index as the id, so
-              that a reference to that port id is likely to match the port when
-              plugged in. Applications may use the comparison of id of
-              MIDIPorts to test for equality.
+              of the origin and the port interface manufacturer, name and index
+              as the id, so that a reference to that port id is likely to match
+              the port when plugged in. Applications may use the comparison of
+              id of MIDIPorts to test for equality.
             </p>
           </dd>
           <dt>
