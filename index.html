@@ -1029,11 +1029,41 @@
           </h3>
           <pre class="idl">
           [SecureContext, Exposed=(Window,Worker)] interface MIDIOutput : MIDIPort {
+            readonly attribute unsigned long sendQueueSize;
+            attribute EventHandler ondequeue;
             undefined send(sequence&lt;octet&gt; data, optional DOMHighResTimeStamp timestamp = 0);
             undefined clear();
           };
           </pre>
           <dl>
+            <dt>
+              <dfn>sendQueueSize</dfn>
+            </dt>
+            <dd>
+              <p>
+                The number of bytes remaining in the {{MIDIOutput}}'s queue
+                waiting to be sent by the underlying system. While the
+                underlying system is saturated (i.e. active send requests have
+                reached an implementation-specific maximum and the system is
+                temporarily not able to accept more work), additional calls to
+                {{MIDIOutput/send()}} are buffered in the queue and increase
+                {{MIDIOutput/sendQueueSize}} by the number of bytes in
+                <code>data</code>. Once the underlying system makes sufficient
+                progress on the current workload, it becomes unsaturated and
+                processes queued data, decreasing {{MIDIOutput/sendQueueSize}}
+                by the number of bytes sent.
+              </p>
+            </dd>
+            <dt>
+              <dfn>ondequeue</dfn>
+            </dt>
+            <dd>
+              <p>
+                This [=event handler=], of type "dequeue", MUST be supported by
+                all objects implementing the {{MIDIOutput}} interface. It is
+                called to signal a decrease in {{MIDIOutput/sendQueueSize}}.
+              </p>
+            </dd>
             <dt>
               <dfn>send</dfn>
             </dt>
@@ -1074,6 +1104,14 @@
                 "MIDIPortConnectionState.closed">"closed"</a>, asynchronously
                 try to [=open the port=].
               </p>
+              <p>
+                Increase {{MIDIOutput/sendQueueSize}} by the number of bytes in
+                <var>data</var> when the message is enqueued. When the
+                underlying system finishes sending the enqueued <var>data</var>
+                to the port, decrease {{MIDIOutput/sendQueueSize}} by the number
+                of bytes in <var>data</var> and [=fire an event=] named
+                "dequeue" at the {{MIDIOutput}}.
+              </p>
               <dl class='parameters'>
                 <dt>
                   sequence&lt;octet&gt; data
@@ -1106,7 +1144,10 @@
                 the {{MIDIOutput}}'s queue. The implementation will
                 need to ensure the MIDI stream is left in a good state, so if
                 the output port is in the middle of a sysex message, a sysex
-                termination byte (0xf7) should be sent.
+                termination byte (0xf7) should be sent. If
+                {{MIDIOutput/sendQueueSize}} is greater than 0, set
+                {{MIDIOutput/sendQueueSize}} to 0 and [=fire an event=] named
+                "dequeue" at the {{MIDIOutput}}.
               </p>
             </dd>
           </dl>
