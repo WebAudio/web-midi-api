@@ -364,6 +364,16 @@
               </li>
               <li>
                 <p>
+                  Initialize the underlying MIDI system and populate
+                  <var>access</var>'s {{MIDIAccess/inputs}} and
+                  {{MIDIAccess/outputs}} with the currently available [=MIDI
+                  input ports=] and [=MIDI output ports=]. If the underlying
+                  systems raise any errors, jump to the step labeled
+                  <em>failure</em> below.
+                </p>
+              </li>
+              <li>
+                <p>
                   Call <var>resolver</var>'s <code>accept(value)</code> method
                   with <var>access</var> as value argument.
                 </p>
