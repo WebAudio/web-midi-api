@@ -6,12 +6,12 @@ on:
 jobs:
   main:
     name: Build, Validate and Deploy
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: w3c/spec-prod@v2
         with:
-          BUILD_FAIL_ON: "link-error"
+          BUILD_FAIL_ON: "everything"
           W3C_ECHIDNA_TOKEN: ${{ secrets.WEB_MIDI_ECHIDNA }}
           W3C_WG_DECISION_URL: https://lists.w3.org/Archives/Public/public-audio/2024AprJun/0011.html
           W3C_BUILD_OVERRIDE: |
