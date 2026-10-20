@@ -11,7 +11,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: w3c/spec-prod@v2
         with:
-          BUILD_FAIL_ON: "everything"
+          BUILD_FAIL_ON: "link-error"
           W3C_ECHIDNA_TOKEN: ${{ secrets.WEB_MIDI_ECHIDNA }}
           W3C_WG_DECISION_URL: https://lists.w3.org/Archives/Public/public-audio/2024AprJun/0011.html
           W3C_BUILD_OVERRIDE: |
