@@ -1063,6 +1063,11 @@
                 an <code>NotAllowedError</code> exception.
               </p>
               <p>
+                If <var>data</var> exceeds the maximum length supported by the
+                implementation or cannot be allocated in internal buffers, throw
+                a <code>RangeError</code> exception.
+              </p>
+              <p>
                 If the port is <a data-lt=
                 "MIDIPortDeviceState.disconnected">"disconnected"</a>, throw an
                 <code>InvalidStateError</code> exception.
