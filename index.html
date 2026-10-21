@@ -582,6 +582,7 @@
           readonly attribute DOMString? version;
           readonly attribute MIDIPortDeviceState state;
           readonly attribute MIDIPortConnectionState connection;
+          readonly attribute boolean sysexEnabled;
           attribute EventHandler onstatechange;
           Promise &lt;MIDIPort&gt; open();
           Promise &lt;MIDIPort&gt; close();
@@ -659,6 +660,13 @@
           </dt>
           <dd>
             The state of the connection to the device.
+          </dd>
+          <dt>
+            <dfn>sysexEnabled</dfn>
+          </dt>
+          <dd>
+            This attribute informs the user whether [=System Exclusive=]
+            support is enabled on this {{MIDIPort}}.
           </dd>
           <dt>
             <dfn>onstatechange</dfn>
