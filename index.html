@@ -274,11 +274,10 @@
             </p>
             <p>
               Requesting MIDI access SHOULD prompt the user for access to MIDI
-              devices, particularly if [=System Exclusive=] access is
-              requested. In some scenarios, this permission may have already
+              devices. In some scenarios, this permission may have already
               been implicitly or explicitly granted, in which case this prompt
-              may not appear.  If the user gives express permission or the call
-              is otherwise approved, the vended Promise is resolved. The
+              may not appear. If the user gives [=express permission=] or the
+              call is otherwise approved, the vended Promise is resolved. The
               underlying system may choose to allow the user to select specific
               [=MIDI interfaces=] to expose to this API (i.e. pick and choose
               interfaces on an individual basis), although this is not
@@ -295,8 +294,8 @@
               allowed even if not all vended Promises have settled.
             </p>
             <p data-link-for="Navigator">
-              When the {{requestMIDIAccess()}} method is called, the user agent
-              MUST run the following steps:
+              When the {{requestMIDIAccess()}} method is called with
+              <var>options</var>, the user agent MUST run the following steps:
             </p>
             <ol>
               <li>
@@ -326,31 +325,29 @@
               </li>
               <li>
                 <p>
-                  Optionally, e.g. based on a previously-established user
-                  preference, for security reasons, or due to platform
+                  Optionally, for security reasons or due to platform
                   limitations, jump to the step labeled <em>failure</em> below.
                 </p>
               </li>
               <li>
                 <p>
-                  Optionally, e.g. based on a previously-established user
-                  preference, jump to the step labeled <em>success</em> below.
+                  Let <var>descriptor</var> be a newly created
+                  {{MidiPermissionDescriptor}} with
+                  {{PermissionDescriptor/name}} initialized to
+                  <a>"midi"</a> and {{MidiPermissionDescriptor/sysex}}
+                  initialized to <var>options</var>'s {{MIDIOptions/sysex}}
+                  member if present and <code>false</code> otherwise.
                 </p>
               </li>
               <li>
                 <p>
-                  Prompt the user in a user-agent-specific manner for permission
-                  to provide the entry script's origin with a {{MIDIAccess}}
-                  object representing control over user's [=MIDI devices=]. This
-                  prompt may be contingent upon whether [=System Exclusive=]
-                  support was requested, and may allow the user to enable or
-                  disable that access.
+                  Let <var>permissionState</var> be the result of
+                  [=request permission to use|requesting permission to use=]
+                  <var>descriptor</var>.
                 </p>
                 <p>
-                  If permission is denied, jump to the step labeled
-                  <em>failure</em> below. If the user never responds, this
-                  algorithm will never progress beyond this step. If permission
-                  is granted, continue the following steps.
+                  If <var>permissionState</var> is {{PermissionState/"denied"}},
+                  jump to the step labeled <em>failure</em> below.
                 </p>
               </li>
               <li>
