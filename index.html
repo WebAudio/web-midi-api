@@ -978,10 +978,10 @@
                 supported by all objects implementing {{MIDIInput}} interface.
               </p>
               <p>
-                If the handler is set and the state attribute is not
-                <code>"opened"</code>, underlying implementation tries to make
-                the port available, and change the state attribute to
-                <code>"opened"</code>. If succeeded, {{MIDIConnectionEvent}} is
+                If the handler is set and the connection attribute is not
+                <code>"open"</code>, underlying implementation tries to make
+                the port available, and change the connection attribute to
+                <code>"open"</code>. If succeeded, {{MIDIConnectionEvent}} is
                 delivered to the corresponding <code>MIDIPort</code> and
                 {{MIDIAccess}}.
               </p>
