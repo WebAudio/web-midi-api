@@ -1,5 +1,5 @@
- {
-    "group":      ["46884"]
-,   "contacts":   ["svgeesus"]
-,   "repo-type":  "rec-track"
+{
+    "group":     "wg/audio"
+,   "contacts":  ["svgeesus"]
+,   "repo-type": "rec-track"
 }
