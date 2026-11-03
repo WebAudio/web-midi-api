@@ -51,17 +51,7 @@
         github: "WebAudio/web-midi-api",
         group: "wg/audio",
         implementationReportURI: "https://wpt.fyi/results/webmidi",
-        otherLinks: [
-          {
-            key: "Implementation report:",
-            data: [
-              {
-                value: "No preliminary interoperability or implementation report exists.",
-              },
-            ],
-          },
-        ],
-        previousPublishDate: "2013-11-26",
+        previousPublishDate: "2015-03-17",
         previousMaturity: "WD",
         testSuiteURI: "https://github.com/web-platform-tests/wpt/tree/master/webmidi",
         xref: {
@@ -192,24 +182,24 @@
         <ul>
         <li>The first byte (the status byte) should have the high bit
         set, any following bytes should not unless they are part of a
-        [=System Exclusive=] message</li>
+        [=System Exclusive=] message.</li>
         <li>If the high nibble of the status byte in hex is `8`, `9`,
         `A`, `B`, or `E` then the total message length should be 3
-        bytes
+        bytes.</li>
         <li>If the high nibble of the status byte is `C` or `D` then
-        the total message length should be 2 bytes</li>
+        the total message length should be 2 bytes.</li>
         <li>If the status byte is `F1` or `F3` then the total message
-        length should be 2 bytes</li>
+        length should be 2 bytes.</li>
         <li>If the status byte is `F2` then the total message length
-        should be 3 bytes</li>
+        should be 3 bytes.</li>
         <li>If the status byte is `F6`, `F8`, `FA`, `FB`, `FC`, `FE`,
         or `FF` then the total message length should be 1 byte (only
-        the status byte)</li>
+        the status byte).</li>
         <li>If the status byte is `F0` then this is a [=System
         Exclusive=] message with no length restriction, and the last
-        byte should be `F7`</li>
+        byte should be `F7`.</li>
         <li>If the status byte is `F4`, `F5`, `F7`, `F9`, or `FD` then
-        the message is not valid</li>
+        the message is not valid.</li>
         </ul>
       </div>
     </section>
@@ -222,7 +212,7 @@
           Permissions Integration
         </h2>
         <p>
-          The Web Midi API is a [=powerful feature=] that is identified
+          The Web MIDI API is a [=powerful feature=] that is identified
           by the [=powerful feature/name=] <a>"midi"</a>. It integrates with
           [[[Permissions]]] by defining the following permission-related flags:
         </p>
@@ -248,7 +238,7 @@
           Permissions Policy Integration
         </h2>
         <p>
-          The Web Midi API defines a [=policy-controlled feature=] named
+          The Web MIDI API defines a [=policy-controlled feature=] named
           <dfn class="permission">"midi"</dfn> which has a
           [=policy-controlled feature/default allowlist=] of `'self'`.
         </p>
@@ -444,10 +434,10 @@
                 {{MIDIAccess}} exposure of available ports.
               </p>
               <p>
-                Note that may result in a two-step request procedure if software
-                synthesizer support is desired but not required - software
-                synthesizers may be disabled when MIDI hardware device access is
-                allowed.
+                Note that this may result in a two-step request procedure if
+                software synthesizer support is desired but not required -
+                software synthesizers may be disabled when MIDI hardware device
+                access is allowed.
               </p>
             </dd>
           </dl>
@@ -532,7 +522,7 @@
               port changes the state attribute.
             </p>
             <p>
-              This [=event handler=], of type {{MIDIConnectionEvent}}, MUST be
+              This [=event handler=], of type "statechange", MUST be
               supported by all objects implementing the {{MIDIAccess}}
               interface.
             </p>
@@ -686,10 +676,10 @@
             <p>
               Makes the [=MIDI device=] corresponding to the {{MIDIPort}}
               explicitly available. Note that this call is NOT required in order
-              to use the {{MIDIPort}}- calling <code>send()</code> on a
+              to use the {{MIDIPort}} - calling <code>send()</code> on a
               {{MIDIOutput}}, attaching a MIDIMessageEvent {{EventHandler}} on a
               {{MIDIInput}}, or adding a MIDIMessageEvent {{EventListener}} on a
-              {{MIDIInput}}  will cause an implicit open(). The underlying
+              {{MIDIInput}} will cause an implicit open(). The underlying
               implementation may not need to do anything in response to this
               call. However, some underlying implementations may not be able to
               support shared access to [=MIDI devices=], so using explicit
@@ -709,7 +699,7 @@
             <p>
               If access to a connected port is not available (for example, the
               port is already in use in an exclusive-access-only platform), the
-              Promise is rejected (if any) is invoked.
+              Promise is rejected.
             </p>
             <p>
               If <code>open()</code> is called on a port that is <a data-lt=
@@ -978,12 +968,13 @@
                 supported by all objects implementing {{MIDIInput}} interface.
               </p>
               <p>
-                If the handler is set and the state attribute is not
-                <code>"opened"</code>, underlying implementation tries to make
-                the port available, and change the state attribute to
-                <code>"opened"</code>. If succeeded, {{MIDIConnectionEvent}} is
-                delivered to the corresponding <code>MIDIPort</code> and
-                {{MIDIAccess}}.
+                If the handler is set and the {{MIDIPort/connection}} attribute
+                is not <a data-lt="MIDIPortConnectionState.open">"open"</a>, the
+                underlying implementation tries to make the port available, and
+                change the {{MIDIPort/connection}} attribute to
+                <a data-lt="MIDIPortConnectionState.open">"open"</a>. If
+                succeeded, {{MIDIConnectionEvent}} is delivered to the
+                corresponding {{MIDIPort}} and {{MIDIAccess}}.
               </p>
             </dd>
           </dl>
@@ -1060,7 +1051,7 @@
               <p>
                 If <var>data</var> is a [=System Exclusive=] message, and the
                 {{MIDIAccess}} did not enable [=System Exclusive=] access, throw
-                an <code>NotAllowedError</code> exception.
+                a <code>NotAllowedError</code> exception.
               </p>
               <p>
                 If the port is <a data-lt=
@@ -1195,7 +1186,8 @@
               either explicitly (through {{MIDIPort.open()}}) or implicitly (by
               adding a <a data-lt="MIDIInput.onmidimessage">midimessage</a>
               event handler on an input port, or calling {{MIDIOutput.send()}}
-              on an output port, this should be the default state of the device.
+              on an output port), this should be the default state of the
+              device.
             </dd>
             <dt>
               <dfn>pending</dfn>
@@ -1220,9 +1212,9 @@
         <p>
           An event object implementing this interface is passed to a
           {{MIDIInput}}'s onmidimessage handler when [=MIDI messages=] are
-          received.  Note that the DOM {{Event}} <code>timeStamp</code>
+          received. Note that the DOM {{Event}} <code>timeStamp</code>
           attribute is defined as a {{DOMHighResTimeStamp}}, and represents the
-          high-resolution time of when the event was received or is to be sent.
+          high-resolution time of when the event was received.
         </p>
         <pre class="idl">
         [SecureContext, Exposed=(Window,Worker)]
@@ -1430,7 +1422,7 @@
             </li>
           </ol>
           <p>
-            In order to enable to the above attack, a [=MIDI device=]
+            In order to enable the above attack, a [=MIDI device=]
             would need <em>all</em> of the following to be true:
           </p>
           <ul>
